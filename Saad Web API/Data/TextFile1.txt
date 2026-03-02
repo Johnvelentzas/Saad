@@ -1,0 +1,106 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Customers {
+  Id int [primary key]
+  Name varchar
+  LastName varchar
+  Telephone char(15)
+  AFM int
+  Type Enum('Retail', 'Wholesale')
+  Created_at timestamp
+}
+
+Table Orders {
+  Id int [primary key]
+  CostumerId int
+  TotalPrice float
+  RequiredDeposit float
+  HasDeposit bool
+  Delivered bool
+  SaleChannel varchar
+  Comments varchar
+  Created_at timestamp
+}
+
+Table Payments {
+  Id int [primary key]
+}
+
+Table Products {
+  Id int [primary key]
+  OrderId int
+  CategoryId int
+  //PatternId int
+  Model varchar
+  Rendezvous time
+  IsComplete bool
+  DateOfCreation date
+  DateOfDelivery date
+  Comments varchar
+  Created_at timestamp
+}
+
+Table ProductCategories {
+  Id int [primary key]
+  Category varchar
+}
+
+Table Patterns {
+  Id int [primary key]
+  Name varchar
+  Storage varchar
+  Price int
+}
+
+Table Tasks {
+  Id int [primary key]
+  ProcessId int
+  ProductId int
+  status Enum('Pending', 'Cancelled', 'In Progress', 'Complete')
+}
+
+Table Processes {
+  Id int [primary key]
+  Name varchar
+  Description varchar
+  Price int
+}
+
+Table TaskDependencies {
+  Id int [primary key]
+  TaskId int
+  DependsOnId int
+}
+
+Table TaskAttributes {
+  Id int [primary key]
+  TaskId int
+  ValueId int
+}
+
+Table AttributeValues {
+  Id int [primary key]
+  AttributeName varchar
+  AttributeValue varchar
+}
+
+Ref : Orders.CostumerId > Customers.Id
+
+Ref : Products.OrderId > Orders.Id
+
+//Ref : Products.PatternId > Patterns.Id
+
+Ref: Tasks.ProcessId > Processes.Id
+
+Ref: Products.Id < Tasks.ProductId
+
+Ref: Tasks.Id < TaskDependencies.TaskId
+
+Ref: Tasks.Id < TaskDependencies.DependsOnId
+
+Ref: Tasks.Id < TaskAttributes.TaskId
+
+Ref: TaskAttributes.ValueId > AttributeValues.Id
+
+Ref: Products.CategoryId > ProductCategories.Id

@@ -1,6 +1,8 @@
-@Saad_Web_API_HostAddress = http://localhost:5167
+@root = http://localhost:5167
 
-GET {{Saad_Web_API_HostAddress}}/weatherforecast/
+GET {{root}}/api/Customers/
 Accept: application/json
 
 ###
+GET {{root}}/api/Customers/1
+Accept: application/json

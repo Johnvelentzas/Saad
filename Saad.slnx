@@ -1,3 +1,7 @@
 <Solution>
+  <Project Path="Models/Models.csproj" Id="ab71cc2a-b769-4432-a8f7-3126bb5099f1" />
+  <Project Path="Producion Line Manager/Producion Line Manager.csproj" Id="6d75e321-ca14-4ec4-a459-e41f448372e3">
+    <Deploy Solution="Debug|*" />
+  </Project>
   <Project Path="Saad Web API/Saad Web API.csproj" />
 </Solution>
