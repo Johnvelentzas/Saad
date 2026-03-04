@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Attributes
 {
-    internal class PatternAreas
+    public class PatternAreas
     {
         [Key]
         public int Id { get; set; }

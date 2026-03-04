@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Attributes
 {
-    internal class Fabrics
+    public class Fabrics
     {
         [Key]
         public int Id { get; set; }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Attributes
 {
-    internal class Models
+    public class Models
     {
         [Key]
         public int Id { get; set; }

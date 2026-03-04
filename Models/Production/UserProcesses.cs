@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Production
 {
-    internal class UserProcesses
+    public class UserProcesses
     {
         [Key]
         public int Id { get; set; }

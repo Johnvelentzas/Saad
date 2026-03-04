@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Production
 {
-    internal class Users
+    public class Users
     {
         [Key]
         public int Id { get; set; }

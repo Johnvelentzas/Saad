@@ -5,7 +5,7 @@ namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersControllertest : ControllerBase
+    public class CustomersController : ControllerBase
     {
         // GET: api/<CustomersController>
         [HttpGet]
