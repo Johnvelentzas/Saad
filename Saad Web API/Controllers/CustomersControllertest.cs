@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Saad_Web_API.Models.Entities.Finances;
+using Models.Finances;
 
 namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class CustomersControllertest : ControllerBase
     {
         // GET: api/<CustomersController>
         [HttpGet]
-        public IEnumerable<Costumers> Get()
+        public IEnumerable<Customers> Get()
         {
             return null;
             //TODO : Implement the logic to get all customers from the database and return them as a

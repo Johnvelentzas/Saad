@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Saad_Web_API.Models.Entities.Finances;
-using Saad_Web_API.Models.Entities.Production;
+using Models.Finances;
+using Models.Attributes;
+using Models.Production;
 
 namespace Saad_Web_API.Data
 {
@@ -10,7 +11,7 @@ namespace Saad_Web_API.Data
         {
 
         }
-        public DbSet<Costumers> Costumers { get; set; }
+        //public DbSet<Customers> Customers { get; set; }
         public DbSet<Products> Products { get; set; }
         public DbSet<Orders> Orders { get; set; }
     }

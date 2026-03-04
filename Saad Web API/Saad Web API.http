@@ -1,6 +1,19 @@
 @root = http://localhost:5167
 
+### Returns a list of all customers in the database.
 GET {{root}}/api/Customers/
+Accept: application/json
+
+### Returns a single customer with the specified ID.
+GET {{root}}/api/Customers/1
+Accept: application/json
+
+###
+GET {{root}}/api/Customers/1
+Accept: application/json
+
+###
+GET {{root}}/api/Customers/1
 Accept: application/json
 
 ###
