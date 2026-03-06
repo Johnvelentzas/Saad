@@ -8,13 +8,32 @@ Accept: application/json
 GET {{root}}/api/Customers/1
 Accept: application/json
 
-###
-GET {{root}}/api/Customers/1
-Accept: application/json
+### Updates a customer on the database
+PUT {{root}}/api/Customers/1
+Content-Type: application/json
+
+{
+  "Id": "1",
+  "FirstName": "Yiannis", 
+  "LastName": "Velentzas", 
+  "Email": "yiannis.velentzas@gmail.com", 
+  "Telephone": "+30 6994443633", 
+  "TaxNumber": "123456789",
+  "CreatedDate": "2026-03-06"
+}
 
 ###
-GET {{root}}/api/Customers/1
-Accept: application/json
+POST {{root}}/api/Customers
+Content-Type: application/json
+
+{
+  "FirstName": "John", 
+  "LastName": "Velentzas", 
+  "Email": "yiannis.velentzas@gmail.com", 
+  "Telephone": "+30 6994443633", 
+  "TaxNumber": "123456789",
+  "CreatedDate": "2026-03-06"
+}
 
 ###
 GET {{root}}/api/Customers/1

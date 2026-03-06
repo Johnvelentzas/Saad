@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Models.Finances;
 using Saad_Web_API.Data;
-using System.Linq.Expressions;
 
 namespace Saad_Web_API.Controllers
 {
@@ -27,7 +25,8 @@ namespace Saad_Web_API.Controllers
 
         // GET api/Customers/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customers>> GetCustomerById(int id)
+        public async Task<ActionResult<Customers>> GetCustomerById(
+            [FromRoute]int id)
         {
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
@@ -39,7 +38,7 @@ namespace Saad_Web_API.Controllers
 
         // PUT api/Customers/id
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(
+        public async Task<IActionResult> UpdateCustomer(
             [FromRoute]int id, 
             [FromBody] Customers customer)
         {
@@ -67,7 +66,7 @@ namespace Saad_Web_API.Controllers
 
         // POST api/Customers
         [HttpPost]
-        public async Task<ActionResult<Customers>> PostCustomer(
+        public async Task<ActionResult<Customers>> CreateCustomer(
             [FromBody] Customers customer)
         {
             var newCustomer = new Customers
@@ -88,7 +87,8 @@ namespace Saad_Web_API.Controllers
 
         // DELETE api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteCustomer(
+            [FromRoute]int id)
         {
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
@@ -100,8 +100,8 @@ namespace Saad_Web_API.Controllers
             return NoContent();
         }
 
-        // GET api/Customers/Search?query=searchTerm
-        [HttpGet("Search")]
+        // GET api/Customers/search?name=&TN=&email=&telephone=
+        [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Customers>>> SearchCustomers(
             [FromQuery] string? name, 
             [FromQuery] string? TN, 
