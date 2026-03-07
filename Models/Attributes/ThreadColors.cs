@@ -2,7 +2,7 @@
 
 namespace Models.Attributes
 {
-    public class ThreadColors
+    public class ThreadColors : IEntity
     {
         [Key]
         public int Id { get; set; }

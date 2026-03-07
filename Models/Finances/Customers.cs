@@ -2,7 +2,7 @@
 
 namespace Models.Finances
 {
-    public class Customers
+    public class Customers : IEntity
     {
         [Key]
         public int Id { get; set; }

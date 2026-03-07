@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Production
 {
-    public class TaskDependencies
+    public class TaskDependencies : IEntity
     {
         [Key]
         public int Id { get; set; }

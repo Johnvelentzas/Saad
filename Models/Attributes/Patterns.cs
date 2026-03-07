@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Attributes
 {
-    public class Patterns
+    public class Patterns : IEntity
     {
         [Key]
         public int Id { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Models.Attributes
 {
-    public class TaskAtributes
+    public class TaskAtributes : IEntity
     {
         [Key]
         public int Id { get; set; }

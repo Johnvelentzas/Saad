@@ -2,7 +2,7 @@
 
 namespace Models.Attributes
 {
-    public class SewingTypes
+    public class SewingTypes : IEntity
     {
         [Key]
         public int Id { get; set; }

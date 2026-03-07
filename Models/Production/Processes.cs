@@ -2,7 +2,7 @@
 
 namespace Models.Production
 {
-    public class Processes
+    public class Processes : IEntity
     {
         [Key]
         public int Id { get; set; }
