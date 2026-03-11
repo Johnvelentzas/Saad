@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Attributes
 {
@@ -6,7 +7,9 @@ namespace Models.Attributes
     {
         [Key]
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Value { get; set; }
+        [ForeignKey("Tasks")]
+        public required int TaskId { get; set; }
+        [ForeignKey("AttributeValues")]
+        public required int AttributeId { get; set; }
     }
 }

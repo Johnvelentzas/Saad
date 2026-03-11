@@ -42,7 +42,7 @@ namespace Saad_Web_API.Controllers
             {
                 return NotFound();
             }
-            var products = await _context.Products.Where(o => o.Id == id).ToListAsync();
+            var products = await _context.Products.Where(o => o.OrderId == id).ToListAsync();
             return Ok(products);
         }
     }
