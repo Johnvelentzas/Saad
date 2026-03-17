@@ -8,7 +8,7 @@ namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : BasicController<UserProcesses>
+    public class UsersController : BasicController<Users>
     {
         public UsersController(ApplicationDbContext context) : base(context)
         {
@@ -25,6 +25,20 @@ namespace Saad_Web_API.Controllers
                 querry.Where(o => o.Name == name);
             }
             return Ok(await querry.ToListAsync());
+        }
+
+        //GET api/users/{id}/processes
+        [HttpGet("{id}/processes")]
+        public async Task<ActionResult<IEnumerable<Processes>>> GetUserProcesses(
+            [FromRoute] int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var processes = await _context.Processes.Where(p => _context.UserProcesses.Where(up => up.UserId == user.Id && up.ProcessId == p.Id).Any()).ToListAsync();
+            return Ok(processes);
         }
     }
 }

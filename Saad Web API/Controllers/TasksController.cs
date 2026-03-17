@@ -18,7 +18,7 @@ namespace Saad_Web_API.Controllers
 
         //GET api/tasks/{id}/process
         [HttpGet("{id}/process")]
-        public async Task<ActionResult<Processes>> GetTaskProces(
+        public async Task<ActionResult<Processes>> GetTaskProcess(
             [FromRoute] int id)
         {
             var task = await _context.Tasks.FindAsync(id);
@@ -52,7 +52,18 @@ namespace Saad_Web_API.Controllers
 
         //GET api/tasks/{id}/attributes
         [HttpGet("{id}/attributes")]
-        public async Task<ActionResult<IEnumerable<AttributeValues>>>
+        public async Task<ActionResult<IEnumerable<AttributeValues>>> GetTaskAttributes(
+            [FromRoute] int id)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            var attributes = await _context.TaskAtributes.Where(a => a.TaskId == id).ToListAsync();
+            var attributeValues = await _context.AttributeValues.Where(a => attributes.Where(o => o.AttributeId == a.Id).Any()).ToListAsync();
+            return Ok(attributeValues);
+        }
 
         public static async Task<IEnumerable<Tasks>> GetActiveTasks(ApplicationDbContext _context)
         {

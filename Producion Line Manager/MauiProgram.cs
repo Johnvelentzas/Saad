@@ -13,6 +13,15 @@ namespace Producion_Line_Manager
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("SFPRODISPLAYBLACKITALIC.OTF", "SFProDisplayBlackItalic");
+                    fonts.AddFont("SFPRODISPLAYBOLD.OTF", "SFProDisplayBold");
+                    fonts.AddFont("SFPRODISPLAYHEAVYITALIC.OTF", "SFProDisplayHeavyItalic");
+                    fonts.AddFont("SFPRODISPLAYLIGHTITALIC.OTF", "SFProDisplayLightItalic");
+                    fonts.AddFont("SFPRODISPLAYMEDIUM.OTF", "SFProDisplayMedium");
+                    fonts.AddFont("SFPRODISPLAYREGULAR.OTF", "SFProDisplayRegular");
+                    fonts.AddFont("SFPRODISPLAYSEMIBOLDITALIC.OTF", "SFProDisplaySemiboldItalic");
+                    fonts.AddFont("SFPRODISPLAYTHINITALIC.OTF", "SFProDisplayThinItalic");
+                    fonts.AddFont("SFPRODISPLAYULTRALIGHTITALIC.OTF", "SFProDisplayUltralightItalic");
                 });
 
 #if DEBUG

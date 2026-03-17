@@ -1,4 +1,4 @@
-﻿namespace Producion_Line_Manager
+﻿namespace Producion_Line_Manager.Views
 {
     public partial class MainPage : ContentPage
     {

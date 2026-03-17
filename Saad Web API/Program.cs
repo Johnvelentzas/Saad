@@ -32,4 +32,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// --- DATA INITIALIZATION START ---
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    DbInitializer.Initialize(context);
+}
+// --- DATA INITIALIZATION END ---
+
 app.Run();

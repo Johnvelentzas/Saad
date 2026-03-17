@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Producion_Line_Manager.Views.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Producion_Line_Manager.Views"
+    Title="Producion_Line_Manager"
+    FlyoutBehavior="Locked">
+
+    <FlyoutItem 
+        Title="Home">
+        <Tab
+            Title="1">
+            <ShellContent ContentTemplate="{DataTemplate local:ItemListPage}" />
+        </Tab>
+        <Tab
+            Title="2">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem 
+        Title="More">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem
+        Title="Settings">
+        <Tab
+            Title="Settings">
+            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+        </Tab>
+    </FlyoutItem>
+</Shell>

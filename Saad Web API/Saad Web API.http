@@ -1,5 +1,25 @@
 @root = http://localhost:5167
 
+### Returns a list of all processes in the database
+GET {{root}}/api/Processes/
+Accept: application/json
+
+### Returns a list of all Users in the database
+GET {{root}}/api/Users/
+Accept: application/json
+
+### Returns a list of all UserProcesses in the database
+GET {{root}}/api/UserProcesses/
+Accept: application/json
+
+### Returns a list of all UserProcesses of admin user with id 1
+GET {{root}}/api/Users/1/Processes
+Accept: application/json
+
+### Returns a list of all UserProcesses of user with id 1
+GET {{root}}/api/Users/2/Processes
+Accept: application/json
+
 ### Returns a list of all customers in the database.
 GET {{root}}/api/Customers/
 Accept: application/json

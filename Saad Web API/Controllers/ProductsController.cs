@@ -75,7 +75,7 @@ namespace Saad_Web_API.Controllers
                 return NotFound();
             }
             var tasks = await _context.Tasks.Where(o => o.ProductId == id).ToListAsync();
-            return Ok(Tasks);
+            return Ok(tasks);
         }
     }
 }
