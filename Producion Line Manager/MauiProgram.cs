@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Producion_Line_Manager.Helpers;
+using Producion_Line_Manager.Services;
+using Producion_Line_Manager.ViewModels;
+using Producion_Line_Manager.Views;
 
 namespace Producion_Line_Manager
 {
@@ -22,13 +26,43 @@ namespace Producion_Line_Manager
                     fonts.AddFont("SFPRODISPLAYSEMIBOLDITALIC.OTF", "SFProDisplaySemiboldItalic");
                     fonts.AddFont("SFPRODISPLAYTHINITALIC.OTF", "SFProDisplayThinItalic");
                     fonts.AddFont("SFPRODISPLAYULTRALIGHTITALIC.OTF", "SFProDisplayUltralightItalic");
-                });
+                })
+                .RegisterServices()
+                .RegisterViewModels()
+                .RegisterViews();
+
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+            var app = builder.Build();
 
-            return builder.Build();
+            ServiceHelper.Initialize(app.Services);
+
+            return app;
+        }
+
+        public static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<RestService>();
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<MainNavigationViewModel>();
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<MainNavigationPage>();
+            mauiAppBuilder.Services.AddSingleton<SettingsPage>();
+            mauiAppBuilder.Services.AddSingleton<UserSelectionPage>();
+
+            return mauiAppBuilder;
         }
     }
 }

@@ -1,8 +1,5 @@
-using Saad_Web_API.Data;
 using Microsoft.EntityFrameworkCore;
-using Models.Attributes;
-using Models.Finances;
-using Models.Production;
+using Saad_Web_API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

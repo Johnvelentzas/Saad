@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Saad_Web_API.Data;
 using Models;
+using Saad_Web_API.Data;
 
 namespace Saad_Web_API.Controllers
 {

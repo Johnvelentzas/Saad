@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.Production;
 using Saad_Web_API.Data;
-using System.Diagnostics;
 
 namespace Saad_Web_API.Controllers
 {

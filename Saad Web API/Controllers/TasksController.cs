@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models.Production;
 using Models.Attributes;
+using Models.Production;
 using Saad_Web_API.Data;
-using System.Collections;
 
 namespace Saad_Web_API.Controllers
 {
@@ -33,7 +32,7 @@ namespace Saad_Web_API.Controllers
         //Get api/tasks/filter?{iscomplete}&{active}
         [HttpGet("filter")]
         public async Task<ActionResult<IEnumerable<Tasks>>> GetFilteredTasks(
-            [FromQuery] bool? isComplete = null, 
+            [FromQuery] bool? isComplete = null,
             [FromQuery] bool? active = null)
         {
             var query = _context.Tasks.AsQueryable();

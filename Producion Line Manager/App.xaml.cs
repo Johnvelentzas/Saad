@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Producion_Line_Manager.Views;
+﻿using Producion_Line_Manager.Views;
 
 namespace Producion_Line_Manager
 {
@@ -12,7 +11,7 @@ namespace Producion_Line_Manager
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            return new Window(new MainNavigationPage());
         }
 
         protected override void OnStart()

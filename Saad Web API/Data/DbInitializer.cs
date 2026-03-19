@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Saad_Web_API.Data
+﻿namespace Saad_Web_API.Data
 {
     public static class DbInitializer
     {
@@ -61,7 +59,7 @@ namespace Saad_Web_API.Data
                 _context.UserProcesses.AddRange(userProcesses);
                 _context.SaveChanges();
             }
-               
+
         }
     }
 }

@@ -1,8 +1,8 @@
 namespace Producion_Line_Manager.Views;
 
-public partial class SettingsPage : ContentPage
+public partial class UserSelectionPage : ContentPage
 {
-    public SettingsPage()
+    public UserSelectionPage()
     {
         InitializeComponent();
     }

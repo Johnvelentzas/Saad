@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models.Finances;
 using Models.Attributes;
+using Models.Finances;
 using Models.Production;
 
 namespace Saad_Web_API.Data

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
-namespace Producion_Line_Manager.ViewModel
+namespace Producion_Line_Manager.ViewModels
 {
     public partial class BaseViewModel : ObservableObject
     {
@@ -10,11 +9,11 @@ namespace Producion_Line_Manager.ViewModel
         }
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsNotBusy))]
-        string title = "Page";
+        private string _title = "page";
 
         [ObservableProperty]
-        bool isBusy = false;
+        [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        private bool _isBusy = false;
 
         public bool IsNotBusy => !IsBusy;
     }
