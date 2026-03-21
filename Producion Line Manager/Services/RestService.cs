@@ -2,18 +2,26 @@
 using Models.Attributes;
 using Models.Finances;
 using Models.Production;
+using System.Diagnostics;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Producion_Line_Manager.Services
 {
     public class RestService
     {
         HttpClient _client;
-        string _rootURI = "http://localhost:5167";
+        JsonSerializerOptions _serializerOptions;
+        string _rootURI = "http://localhost:5167/api";
 
         public RestService()
         {
             _client = new HttpClient();
+            _serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
         }
 
         List<AttributeValues> AttributeValues = new();
@@ -68,6 +76,7 @@ namespace Producion_Line_Manager.Services
         {
             var uri = $"{_rootURI}/users/{user.Id}/processes";
             var response = await _client.GetAsync(uri);
+            Debug.WriteLine($"Fetching processes for user {user.Name} (ID: {user.Id}) - Status Code: {response.StatusCode} and cpntent: {response.Content.ToString}");
             if (response.IsSuccessStatusCode)
             {
                 Processes = await response.Content.ReadFromJsonAsync<List<Processes>>() ?? new();

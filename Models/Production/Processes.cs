@@ -15,7 +15,6 @@ namespace Models.Production
         Customers,
         Orders,
         Products,
-        Tasks,
         Users,
         Models,
         Patterns,

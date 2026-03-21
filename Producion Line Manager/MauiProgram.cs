@@ -34,6 +34,7 @@ namespace Producion_Line_Manager
 
 #if DEBUG
             builder.Logging.AddDebug();
+            
 #endif
             var app = builder.Build();
 

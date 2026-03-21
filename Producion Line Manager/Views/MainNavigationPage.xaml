@@ -1,13 +1,134 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels"
+             x:DataType="vm:MainNavigationViewModel"
              x:Class="Producion_Line_Manager.Views.MainNavigationPage"
-             Title="MainNavigationPage">
-    <VerticalStackLayout
-        WidthRequest="30">
-        <Label 
-            Text="ddddddddddddddddddddddddddddddddddddddddddWelcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+    <Grid
+        Grid.Row="1"
+        Grid.Column="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Border Style="{StaticResource Level0_Elevated}"
+                Margin="10">
+            <ScrollView Margin="5"
+                        VerticalOptions="Fill"
+                        Padding="5">
+                <VerticalStackLayout VerticalOptions="Start">
+                    <HorizontalStackLayout HeightRequest="60"
+                                           Spacing="10">
+                        <Border HeightRequest="60" 
+                                WidthRequest="60" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="Center"
+                                Background="LightGrey" 
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="30" />
+                            </Border.StrokeShape>
+
+                            <Label  Text="ACCOUNT" 
+                                    TextColor="Black" 
+                                    HorizontalOptions="Center" 
+                                    VerticalOptions="Center" 
+                                    FontSize="10"
+                                    FontAttributes="Bold"/>
+                        </Border>
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="{Binding User.Name}"
+                                   FontSize="28"/>
+                            <Label Text="All Activities"
+                                   FontSize="14"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}"
+                                         Margin="0, 10, 0, 10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:Tab">
+                                <Grid HeightRequest="50"
+                                      Padding="10, 0, 10, 0"
+                                      ColumnDefinitions="Auto, *, Auto"
+                                      ColumnSpacing="10"
+                                      x:Name="TabButton">
+                                    <Border Grid.Column="0"
+                                            HeightRequest="30"
+                                            WidthRequest="30"
+                                            Background="LightGrey"
+                                            StrokeThickness="0"
+                                            x:Name="TabIcon">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10"/>
+                                        </Border.StrokeShape>
+                                    </Border>
+                                    <Label Text="{Binding Name}"
+                                           Grid.Column="1"
+                                           VerticalOptions="Center"
+                                           FontSize="16"
+                                           x:Name="TabName"/>
+                                    <Border x:Name="ExpandButton"
+                                            Grid.Column="2"
+                                            HeightRequest="20"
+                                            WidthRequest="20"
+                                            Background="LightGrey"
+                                            StrokeThickness="0"
+                                            IsVisible="False">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8"/>
+                                        </Border.StrokeShape>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=ToggleTabCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                    <Grid.Triggers>
+                                        <DataTrigger TargetType="Grid"
+                                                     Binding="{Binding HasChildren}"
+                                                     Value="True">
+                                            <Setter TargetName="ExpandButton"
+                                                    Property="IsVisible"
+                                                    Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Grid"
+                                                     Binding="{Binding IsSubTab}"
+                                                     Value="True">
+                                            <Setter TargetName="TabButton"
+                                                    Property="Padding"
+                                                    Value="30, 0, 10, 0"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Grid"
+                                                     Binding="{Binding IsSeparator}"
+                                                     Value="True">
+                                            <Setter TargetName="TabButton"
+                                                    Property="HeightRequest"
+                                                    Value="1"/>
+                                            <Setter TargetName="TabButton"
+                                                    Property="Background"
+                                                    Value="{StaticResource Gray400}"/>
+                                            <Setter TargetName="TabButton"
+                                                    Property="Opacity"
+                                                    Value="0.2"/>
+                                            <Setter TargetName="TabName"
+                                                    Property="IsVisible"
+                                                    Value="False"/>
+                                            <Setter TargetName="TabIcon"
+                                                    Property="IsVisible"
+                                                    Value="False"/>
+                                        </DataTrigger>
+                                    </Grid.Triggers>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </Grid>
 </ContentPage>
