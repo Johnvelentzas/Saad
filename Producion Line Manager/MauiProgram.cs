@@ -46,6 +46,7 @@ namespace Producion_Line_Manager
         public static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<RestService>();
+            mauiAppBuilder.Services.AddSingleton<NavigationService>();
 
             return mauiAppBuilder;
         }
@@ -53,6 +54,8 @@ namespace Producion_Line_Manager
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<MainNavigationViewModel>();
+            mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
+            mauiAppBuilder.Services.AddSingleton<UserSelectionViewModel>();
 
             return mauiAppBuilder;
         }

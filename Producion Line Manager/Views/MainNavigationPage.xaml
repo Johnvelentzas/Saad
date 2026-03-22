@@ -6,7 +6,8 @@
              x:DataType="vm:MainNavigationViewModel"
              x:Class="Producion_Line_Manager.Views.MainNavigationPage"
              Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+             NavigationPage.HasNavigationBar="False">
     <Grid
         Grid.Row="1"
         Grid.Column="2">
@@ -19,111 +20,162 @@
         </Grid.ColumnDefinitions>
         <Border Style="{StaticResource Level0_Elevated}"
                 Margin="10">
-            <ScrollView Margin="5"
-                        VerticalOptions="Fill"
-                        Padding="5">
-                <VerticalStackLayout VerticalOptions="Start">
-                    <HorizontalStackLayout HeightRequest="60"
-                                           Spacing="10">
-                        <Border HeightRequest="60" 
-                                WidthRequest="60" 
-                                HorizontalOptions="Center" 
-                                VerticalOptions="Center"
-                                Background="LightGrey" 
-                                StrokeThickness="0">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="30" />
-                            </Border.StrokeShape>
-
-                            <Label  Text="ACCOUNT" 
-                                    TextColor="Black" 
+            <ScrollView VerticalOptions="Fill">
+                <VerticalStackLayout VerticalOptions="Start"
+                                     Padding="10, 10, 10, 10">
+                    <Border StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="30"/>
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout HeightRequest="80"
+                                               Spacing="10"
+                                               Padding="10, 10, 10, 10">
+                        
+                            <HorizontalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateToUserSelectionCommand}"/>
+                            </HorizontalStackLayout.GestureRecognizers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="UserInfoButtonStates">
+                                        <VisualState x:Name="Normal">
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor"
+                                                        Value="Black"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border HeightRequest="60" 
+                                    WidthRequest="60" 
                                     HorizontalOptions="Center" 
-                                    VerticalOptions="Center" 
-                                    FontSize="10"
-                                    FontAttributes="Bold"/>
-                        </Border>
-                        <VerticalStackLayout VerticalOptions="Center">
-                            <Label Text="{Binding User.Name}"
-                                   FontSize="28"/>
-                            <Label Text="All Activities"
-                                   FontSize="14"/>
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}"
-                                         Margin="0, 10, 0, 10">
+                                    VerticalOptions="Center"
+                                    Background="LightGrey" 
+                                    StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="30" />
+                                </Border.StrokeShape>
+
+                                <Label  Text="ACCOUNT" 
+                                        TextColor="Black" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center" 
+                                        FontSize="10"
+                                        FontAttributes="Bold"/>
+                            </Border>
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{Binding User.Name}"
+                                       FontSize="28"/>
+                                <Label Text="All Activities"
+                                       FontSize="14"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Border>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:Tab">
-                                <Grid HeightRequest="50"
-                                      Padding="10, 0, 10, 0"
-                                      ColumnDefinitions="Auto, *, Auto"
-                                      ColumnSpacing="10"
-                                      x:Name="TabButton">
-                                    <Border Grid.Column="0"
-                                            HeightRequest="30"
-                                            WidthRequest="30"
-                                            Background="LightGrey"
-                                            StrokeThickness="0"
-                                            x:Name="TabIcon">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="10"/>
-                                        </Border.StrokeShape>
-                                    </Border>
-                                    <Label Text="{Binding Name}"
-                                           Grid.Column="1"
-                                           VerticalOptions="Center"
-                                           FontSize="16"
-                                           x:Name="TabName"/>
-                                    <Border x:Name="ExpandButton"
-                                            Grid.Column="2"
-                                            HeightRequest="20"
-                                            WidthRequest="20"
-                                            Background="LightGrey"
-                                            StrokeThickness="0"
-                                            IsVisible="False">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="8"/>
-                                        </Border.StrokeShape>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=ToggleTabCommand}"
-                                                                  CommandParameter="{Binding .}"/>
-                                        </Border.GestureRecognizers>
-                                    </Border>
-                                    <Grid.Triggers>
-                                        <DataTrigger TargetType="Grid"
-                                                     Binding="{Binding HasChildren}"
-                                                     Value="True">
-                                            <Setter TargetName="ExpandButton"
-                                                    Property="IsVisible"
-                                                    Value="True"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Grid"
-                                                     Binding="{Binding IsSubTab}"
-                                                     Value="True">
-                                            <Setter TargetName="TabButton"
-                                                    Property="Padding"
-                                                    Value="30, 0, 10, 0"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Grid"
-                                                     Binding="{Binding IsSeparator}"
-                                                     Value="True">
-                                            <Setter TargetName="TabButton"
-                                                    Property="HeightRequest"
-                                                    Value="1"/>
-                                            <Setter TargetName="TabButton"
-                                                    Property="Background"
-                                                    Value="{StaticResource Gray400}"/>
-                                            <Setter TargetName="TabButton"
-                                                    Property="Opacity"
-                                                    Value="0.2"/>
-                                            <Setter TargetName="TabName"
-                                                    Property="IsVisible"
-                                                    Value="False"/>
-                                            <Setter TargetName="TabIcon"
-                                                    Property="IsVisible"
-                                                    Value="False"/>
-                                        </DataTrigger>
-                                    </Grid.Triggers>
-                                </Grid>
+                                <Border StrokeThickness="0"
+                                        Margin="10, 5, 10, 5">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="30"/>
+                                    </Border.StrokeShape>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="TabListButton">
+                                                <VisualState x:Name="Normal">
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor"
+                                                            Value="Grey"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor"
+                                                            Value="Black"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Grid Padding="15, 10, 15, 10"
+                                          ColumnDefinitions="Auto, *, Auto"
+                                          ColumnSpacing="10"
+                                          x:Name="TabButton">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=}"/>
+                                        </Grid.GestureRecognizers>
+
+                                        <Border Grid.Column="0"
+                                                HeightRequest="30"
+                                                WidthRequest="30"
+                                                Background="LightGrey"
+                                                StrokeThickness="0"
+                                                x:Name="TabIcon">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="10"/>
+                                            </Border.StrokeShape>
+                                        </Border>
+                                        <Label Text="{Binding Name}"
+                                               Grid.Column="1"
+                                               VerticalOptions="Center"
+                                               FontSize="16"
+                                               x:Name="TabName"/>
+                                        <Border x:Name="ExpandButton"
+                                                Grid.Column="2"
+                                                HeightRequest="20"
+                                                WidthRequest="20"
+                                                Background="LightGrey"
+                                                StrokeThickness="0"
+                                                IsVisible="False">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8"/>
+                                            </Border.StrokeShape>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=ToggleTabCommand}"
+                                                                      CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                        </Border>
+                                        <Grid.Triggers>
+                                            <DataTrigger TargetType="Grid"
+                                                         Binding="{Binding HasChildren}"
+                                                         Value="True">
+                                                <Setter TargetName="ExpandButton"
+                                                        Property="IsVisible"
+                                                        Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Grid"
+                                                         Binding="{Binding IsSubTab}"
+                                                         Value="True">
+                                                <Setter TargetName="TabButton"
+                                                        Property="Padding"
+                                                        Value="30, 10, 15, 10"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Grid"
+                                                         Binding="{Binding IsSeparator}"
+                                                         Value="True">
+                                                <Setter TargetName="TabButton"
+                                                        Property="HeightRequest"
+                                                        Value="1"/>
+                                                <Setter TargetName="TabButton"
+                                                        Property="Background"
+                                                        Value="{StaticResource Gray200}"/>
+                                                <Setter TargetName="TabButton"
+                                                        Property="Opacity"
+                                                        Value="0.2"/>
+                                                <Setter TargetName="TabName"
+                                                        Property="IsVisible"
+                                                        Value="False"/>
+                                                <Setter TargetName="TabIcon"
+                                                        Property="IsVisible"
+                                                        Value="False"/>
+                                            </DataTrigger>
+                                        </Grid.Triggers>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>

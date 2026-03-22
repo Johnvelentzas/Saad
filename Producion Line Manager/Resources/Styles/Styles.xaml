@@ -39,7 +39,7 @@
     </Style>
 
     <Style x:Key="Level0_Elevated" TargetType="Border">
-        <Setter Property="StrokeShape" Value="RoundRectangle 38"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 20"/>
         <Setter Property="StrokeThickness" Value="0"/>
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"/>
         <Setter Property="Shadow" Value="{StaticResource Key=SoftShadow}"/>

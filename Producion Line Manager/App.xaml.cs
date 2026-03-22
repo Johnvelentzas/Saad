@@ -11,7 +11,7 @@ namespace Producion_Line_Manager
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainNavigationPage());
+            return new Window(new NavigationPage(new MainNavigationPage()));
         }
 
         protected override void OnStart()

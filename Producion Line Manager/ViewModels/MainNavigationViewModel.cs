@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
+using Producion_Line_Manager.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -15,8 +16,10 @@ namespace Producion_Line_Manager.ViewModels
 
         private readonly RestService restService;
 
+        private readonly NavigationService navigationService;
+
         [ObservableProperty]
-        private Users _user;
+        private Users? _user;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DisplayTabs))]
@@ -27,18 +30,34 @@ namespace Producion_Line_Manager.ViewModels
 
         public MainNavigationViewModel()
         {
-            //var savedUser = Preferences.Default.Get("User", new Users() { Id = 1, Name = "Admin" });
-            User = new Users {Id = 1, Name = "Admin" };
             Title = "Main Navigation";
             Processes = new ObservableCollection<Processes>();
             DisplayTabs = new ObservableCollection<Tab>();
             restService = ServiceHelper.GetService<RestService>();
+            navigationService = ServiceHelper.GetService<NavigationService>();
         }
 
         [RelayCommand]
         public async Task FetchData()
         {
             if (IsBusy) return;
+
+            IsBusy = true;
+
+            var savedUserId = Preferences.Default.Get("UserId", "NoUser");
+            if (savedUserId == "NoUser")
+            {
+                await navigationService.NavigateTo<UserSelectionPage>();
+                IsBusy = false;
+                return;
+            }
+            var foundUser = await restService.GetUser(int.Parse(savedUserId));
+            if (foundUser != null)
+            {
+                User = foundUser;
+            }
+
+
 
             try
             {
@@ -63,7 +82,7 @@ namespace Producion_Line_Manager.ViewModels
 
                 foreach (var type in BasicTabs)
                 {
-                    foreach(var process in Processes.Where(p => p.Type == type))
+                    foreach (var process in Processes.Where(p => p.Type == type))
                     {
                         if (!hasBasic)
                         {
@@ -87,7 +106,7 @@ namespace Producion_Line_Manager.ViewModels
                 }
                 foreach (var type in CalendarTabs)
                 {
-                    
+
                     foreach (var process in Processes.Where(p => p.Type == type))
                     {
                         if (!hasCalendar)
@@ -200,7 +219,7 @@ namespace Producion_Line_Manager.ViewModels
             ProcessesType.Bolt,
             ProcessesType.Inspect
         };
-        
+
         [RelayCommand]
         public async Task ToggleTab(Tab tab)
         {
@@ -227,7 +246,7 @@ namespace Producion_Line_Manager.ViewModels
             if (tab.HasChildren)
             {
                 var index = DisplayTabs.IndexOf(tab);
-                foreach(var child in tab.Children)
+                foreach (var child in tab.Children)
                 {
                     if (!DisplayTabs.Contains(child))
                     {
@@ -252,18 +271,29 @@ namespace Producion_Line_Manager.ViewModels
                 }
             }
         }
-        
+
         [RelayCommand]
-        public async Task GoToSettings()
+        public async Task NavigateToUserSelection()
         {
-            return;
+            await navigationService.NavigateTo<UserSelectionPage>();
         }
 
         [RelayCommand]
-        public async Task GoToUserSelection()
+        public async Task NavigateToSettings()
         {
-            return;
+            await navigationService.NavigateTo<SettingsPage>();
         }
 
+        [RelayCommand]
+        public async Task AttachOverviewView()
+        {
+
+        }
+
+        [RelayCommand]
+        public async Task AttachListView(Tab tab)
+        {
+
+        }
     }
 }
