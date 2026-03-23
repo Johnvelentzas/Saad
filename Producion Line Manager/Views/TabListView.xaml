@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Producion_Line_Manager.Views.TabListView"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels"
+             x:DataType="vm:TabListViewModel"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+             NavigationPage.HasNavigationBar="False">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0"
+              Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="1"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                
+            </Grid>
+            <BoxView Grid.Row="1"
+                     Color="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+                
+            </BoxView>
+            <ScrollView Grid.Row="2">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding ##}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:##">
+                            
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+        <BoxView Grid.Column="1"
+                 Color="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+        </BoxView>
+        <Grid Grid.Column="2"
+              Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ScrollView Grid.Row="0"
+                        HorizontalOptions="End"
+                        Padding="0, 10, 0, 10"
+                        Background="{StaticResource White}"
+                        Opacity="0.5">
+                <HorizontalStackLayout Spacing="10">
+
+                </HorizontalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentView>

@@ -19,6 +19,9 @@ namespace Producion_Line_Manager.ViewModels
         private readonly NavigationService navigationService;
 
         [ObservableProperty]
+        private ContentView _activeView;
+
+        [ObservableProperty]
         private Users? _user;
 
         [ObservableProperty]
@@ -287,13 +290,15 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task AttachOverviewView()
         {
-
+            var overviewView = ServiceHelper.GetService<OverviewView>();
+            ActiveView = overviewView;
         }
 
         [RelayCommand]
         public async Task AttachListView(Tab tab)
         {
-
+            var listView = ServiceHelper.GetService<TabListView>();
+            ActiveView = listView;
         }
     }
 }

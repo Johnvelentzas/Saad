@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Models;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using Producion_Line_Manager.ViewModels;
@@ -56,6 +57,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddSingleton<MainNavigationViewModel>();
             mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
             mauiAppBuilder.Services.AddSingleton<UserSelectionViewModel>();
+            mauiAppBuilder.Services.AddTransient<TabListViewModel>();
+            mauiAppBuilder.Services.AddTransient<OverviewViewModel>();
 
             return mauiAppBuilder;
         }
@@ -65,6 +68,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddSingleton<MainNavigationPage>();
             mauiAppBuilder.Services.AddSingleton<SettingsPage>();
             mauiAppBuilder.Services.AddSingleton<UserSelectionPage>();
+            mauiAppBuilder.Services.AddTransient<TabListView>();
+            mauiAppBuilder.Services.AddTransient<OverviewView>();
 
             return mauiAppBuilder;
         }

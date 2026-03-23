@@ -21,6 +21,7 @@ public partial class MainNavigationPage : ContentPage
         if (BindingContext is MainNavigationViewModel vm)
         {
             vm.FetchDataCommand.ExecuteAsync(null);
+            vm.AttachOverviewViewCommand.Execute(null);
         }
     }
 }

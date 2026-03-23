@@ -76,7 +76,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\ListView.xaml">
+	  <Compile Update="Views\OverviewView.xaml.cs">
+	    <DependentUpon>OverviewView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\TabListView.xaml.cs">
+	    <DependentUpon>TabListView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\OverviewView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TabListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\MainNavigationPage.xaml">

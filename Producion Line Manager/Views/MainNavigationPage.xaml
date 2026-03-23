@@ -8,9 +8,7 @@
              Title="{Binding Title}"
              BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
              NavigationPage.HasNavigationBar="False">
-    <Grid
-        Grid.Row="1"
-        Grid.Column="2">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -106,7 +104,8 @@
                                           ColumnSpacing="10"
                                           x:Name="TabButton">
                                         <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=}"/>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainNavigationViewModel}}, Path=AttachListViewCommand}"
+                                                                  CommandParameter="{Binding .}"/>
                                         </Grid.GestureRecognizers>
 
                                         <Border Grid.Column="0"
@@ -182,5 +181,9 @@
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
+        <ContentView Grid.Column="1"
+                     Content="{Binding ActiveView}">
+            
+        </ContentView>
     </Grid>
 </ContentPage>
