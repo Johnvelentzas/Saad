@@ -29,13 +29,13 @@ namespace Producion_Line_Manager.ViewModels
         private ObservableCollection<Processes> _processes;
 
         [ObservableProperty]
-        private ObservableCollection<Tab> _displayTabs;
+        private ObservableCollection<TabItem> _displayTabs;
 
         public MainNavigationViewModel()
         {
             Title = "Main Navigation";
             Processes = new ObservableCollection<Processes>();
-            DisplayTabs = new ObservableCollection<Tab>();
+            DisplayTabs = new ObservableCollection<TabItem>();
             restService = ServiceHelper.GetService<RestService>();
             navigationService = ServiceHelper.GetService<NavigationService>();
         }
@@ -74,9 +74,9 @@ namespace Producion_Line_Manager.ViewModels
                 {
                     Processes.Add(process);
                 }
-                Tab? Tasks = null;
-                Tab? Calendar = null;
-                Tab? Foam = null;
+                TabItem? Tasks = null;
+                TabItem? Calendar = null;
+                TabItem? Foam = null;
 
                 var hasBasic = false;
                 var hasProduction = false;
@@ -90,9 +90,9 @@ namespace Producion_Line_Manager.ViewModels
                         if (!hasBasic)
                         {
                             hasBasic = true;
-                            DisplayTabs.Add(new Tab());
+                            DisplayTabs.Add(new TabItem());
                         }
-                        DisplayTabs.Add(Tab.FromProcess(process));
+                        DisplayTabs.Add(TabItem.FromProcess(process));
                     }
                 }
                 foreach (var type in ProductionTabs)
@@ -102,9 +102,9 @@ namespace Producion_Line_Manager.ViewModels
                         if (!hasProduction)
                         {
                             hasProduction = true;
-                            DisplayTabs.Add(new Tab());
+                            DisplayTabs.Add(new TabItem());
                         }
-                        DisplayTabs.Add(Tab.FromProcess(process));
+                        DisplayTabs.Add(TabItem.FromProcess(process));
                     }
                 }
                 foreach (var type in CalendarTabs)
@@ -115,14 +115,14 @@ namespace Producion_Line_Manager.ViewModels
                         if (!hasCalendar)
                         {
                             hasCalendar = true;
-                            DisplayTabs.Add(new Tab());
+                            DisplayTabs.Add(new TabItem());
                         }
                         if (Calendar == null)
                         {
-                            Calendar = new Tab(101, "Calendar", null, null);
+                            Calendar = new TabItem(101, "Calendar", null, null);
                             DisplayTabs.Add(Calendar);
                         }
-                        var tab = Tab.FromProcess(process);
+                        var tab = TabItem.FromProcess(process);
                         tab.IsSubTab = true;
                         Calendar.AddChild(tab);
 
@@ -137,14 +137,14 @@ namespace Producion_Line_Manager.ViewModels
                         if (!hasTasks)
                         {
                             hasTasks = true;
-                            DisplayTabs.Add(new Tab());
+                            DisplayTabs.Add(new TabItem());
                         }
                         if (Tasks == null)
                         {
-                            Tasks = new Tab(100, "Tasks", null, null);
+                            Tasks = new TabItem(100, "Tasks", null, null);
                             DisplayTabs.Add(Tasks);
                         }
-                        var tab = Tab.FromProcess(process);
+                        var tab = TabItem.FromProcess(process);
                         tab.IsSubTab = true;
                         Tasks.AddChild(tab);
 
@@ -158,16 +158,16 @@ namespace Producion_Line_Manager.ViewModels
                     {
                         if (Tasks == null)
                         {
-                            Tasks = new Tab(100, "Tasks", null, null);
+                            Tasks = new TabItem(100, "Tasks", null, null);
                             DisplayTabs.Add(Tasks);
                         }
                         if (Foam == null)
                         {
-                            Foam = new Tab(102, "Foam", null, null);
+                            Foam = new TabItem(102, "Foam", null, null);
                             Foam.IsSubTab = true;
                             Tasks.AddChild(Foam);
                         }
-                        var tab = Tab.FromProcess(process);
+                        var tab = TabItem.FromProcess(process);
                         tab.IsSubTab = true;
                         Foam.AddChild(tab);
 
@@ -224,7 +224,7 @@ namespace Producion_Line_Manager.ViewModels
         };
 
         [RelayCommand]
-        public async Task ToggleTab(Tab tab)
+        public async Task ToggleTab(TabItem tab)
         {
             if (tab == null || !tab.HasChildren) return;
 
@@ -244,7 +244,7 @@ namespace Producion_Line_Manager.ViewModels
 
         }
 
-        private async Task ExpandTab(Tab tab)
+        private async Task ExpandTab(TabItem tab)
         {
             if (tab.HasChildren)
             {
@@ -260,7 +260,7 @@ namespace Producion_Line_Manager.ViewModels
             }
         }
 
-        private async Task CollapseTab(Tab tab)
+        private async Task CollapseTab(TabItem tab)
         {
             if (tab.HasChildren)
             {
@@ -295,7 +295,7 @@ namespace Producion_Line_Manager.ViewModels
         }
 
         [RelayCommand]
-        public async Task AttachListView(Tab tab)
+        public async Task AttachListView(TabItem tab)
         {
             var listView = ServiceHelper.GetService<TabListView>();
             ActiveView = listView;

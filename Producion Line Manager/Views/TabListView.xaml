@@ -4,6 +4,7 @@
              x:Class="Producion_Line_Manager.Views.TabListView"
              xmlns:models="clr-namespace:Models.Production;assembly=Models"
              xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels"
+             xmlns:helpers="clr-namespace:Producion_Line_Manager.Helpers"
              x:DataType="vm:TabListViewModel"
              BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
              NavigationPage.HasNavigationBar="False">
@@ -34,9 +35,9 @@
                 
             </BoxView>
             <ScrollView Grid.Row="2">
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding ##}">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="vm:##">
+                        <DataTemplate x:DataType="helpers:ListItem">
                             
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>

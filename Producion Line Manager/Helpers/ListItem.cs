@@ -5,7 +5,7 @@ using Models;
 
 namespace Producion_Line_Manager.Helpers
 {
-    public partial class ListItem<T> : ObservableObject where T : IEntity
+    public partial class ListItem : ObservableObject
     {
         [ObservableProperty]
         private int _id;
@@ -17,11 +17,14 @@ namespace Producion_Line_Manager.Helpers
         private string? _description;
 
         [ObservableProperty]
-        private IEntity entity;
+        private IEntity _entity;
 
-        public ListItem()
+        public ListItem(int id, string name, string description, IEntity entity)
         {
-
+            Id = id;
+            Name = name;
+            Description = description;
+            Entity = entity;
         }
     }
 }

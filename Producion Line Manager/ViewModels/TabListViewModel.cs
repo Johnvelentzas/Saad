@@ -2,7 +2,6 @@
 using Producion_Line_Manager.Helpers;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Models;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Producion_Line_Manager.ViewModels
@@ -13,10 +12,10 @@ namespace Producion_Line_Manager.ViewModels
         private readonly RestService restService;
 
         [ObservableProperty]
-        private ObservableCollection<ListItem<IEntity>> _items;
+        private ObservableCollection<ListItem> _items;
 
         [ObservableProperty]
-        private ListItem<IEntity>? _selectedItem;
+        private ListItem? _selectedItem;
 
         [ObservableProperty]
         private Tab _currentTab;
@@ -29,7 +28,7 @@ namespace Producion_Line_Manager.ViewModels
         {
             Title = "List View";
             restService = ServiceHelper.GetService<RestService>();
-            Items = new ObservableCollection<IEntity>();
+            Items = new ObservableCollection<ListItem>();
         }
 
         [RelayCommand]
@@ -41,5 +40,8 @@ namespace Producion_Line_Manager.ViewModels
             }
 
         }
+
+
+        
     }
 }
