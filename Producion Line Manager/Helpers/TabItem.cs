@@ -38,6 +38,9 @@ namespace Producion_Line_Manager.Helpers
         [ObservableProperty]
         private bool _isSeparator = false;
 
+        [ObservableProperty]
+        private bool _isActive = false;
+
         public TabItem(int id, string name, string? details, ProcessesType? type)
         {
             Id = id;

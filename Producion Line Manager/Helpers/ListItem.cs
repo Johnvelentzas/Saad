@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
+using Models.Finances;
 
 namespace Producion_Line_Manager.Helpers
 {
@@ -19,12 +20,34 @@ namespace Producion_Line_Manager.Helpers
         [ObservableProperty]
         private IEntity _entity;
 
+        [ObservableProperty]
+        private bool _isSelected;
+
         public ListItem(int id, string name, string description, IEntity entity)
         {
             Id = id;
             Name = name;
             Description = description;
             Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Customers customer)
+        {
+            Id = customer.Id;
+            Name = $"{customer.FirstName} {customer.LastName}";
+            if(customer.TaxNumber != null)
+            {
+                Description = customer.TaxNumber.ToString();
+            }else if(customer.Telephone != null)
+            {
+                Description = customer.Telephone.ToString();
+            }else if(customer.Email != null)
+            {
+                Description = customer.Email.ToString();
+            }
+            Entity = customer;
+            IsSelected = false;
         }
     }
 }

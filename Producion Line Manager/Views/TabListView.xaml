@@ -28,17 +28,73 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid>
-                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <VerticalStackLayout Padding="10, 0, 10, 5"
+                                     VerticalOptions="End">
+                    <Label Text="{Binding Title}"
+                           FontSize="32"
+                           FontFamily="SFProDisplayMedium"/>
+                    <Label Text="{Binding ItemNumber}"/>
+                </VerticalStackLayout>
+                <Border Grid.Column="1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="10"
+                        Background="{StaticResource Gray100}">
+                    
+                </Border>
             </Grid>
             <BoxView Grid.Row="1"
-                     Color="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+                     BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
                 
             </BoxView>
             <ScrollView Grid.Row="2">
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="helpers:ListItem">
-                            
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="1"/>
+                                </Grid.RowDefinitions>
+                                <SwipeView>
+                                    <SwipeView.LeftItems>
+                                        <SwipeItems>
+                                            <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
+                                                           CommandParameter="{Binding .}">
+                                                <Border BackgroundColor="Red">
+                                                    <Label Text="Delete"/>
+                                                </Border>
+                                            </SwipeItemView>
+                                        </SwipeItems>
+                                    </SwipeView.LeftItems>
+                                    <Border Padding="10"
+                                            HeightRequest="70">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border"
+                                                         Binding="{Binding IsSelected}"
+                                                         Value="true">
+                                                <Setter Property="BackgroundColor"
+                                                        Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label Text="{Binding Name}"
+                                                   VerticalOptions="Start"
+                                                   FontSize="18"/>
+                                            <Label Text="{Binding Description}"
+                                                   VerticalOptions="Start"
+                                                   FontSize="12"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </SwipeView>
+                                <Border Grid.Row="1"
+                                        BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+                                </Border>
+                            </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>

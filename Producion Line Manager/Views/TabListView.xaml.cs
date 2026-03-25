@@ -13,5 +13,14 @@ public partial class TabListView : ContentView
 	{
         InitializeComponent();
 		_viewModel = ServiceHelper.GetService<TabListViewModel>();
+		BindingContext = _viewModel;
+    }
+
+	public async Task OpenTab(TabItem tab)
+	{
+        if (BindingContext is TabListViewModel vm)
+        {
+            await vm.OpenTab(tab);
+        }
     }
 }

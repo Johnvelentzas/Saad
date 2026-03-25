@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Models.Production;assembly=Models"
              xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels"
+             xmlns:helpers="clr-namespace:Producion_Line_Manager.Helpers"
              x:DataType="vm:MainNavigationViewModel"
              x:Class="Producion_Line_Manager.Views.MainNavigationPage"
              Title="{Binding Title}"
@@ -28,24 +29,10 @@
                         <HorizontalStackLayout HeightRequest="80"
                                                Spacing="10"
                                                Padding="10, 10, 10, 10">
-                        
+
                             <HorizontalStackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding NavigateToUserSelectionCommand}"/>
                             </HorizontalStackLayout.GestureRecognizers>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroupList>
-                                    <VisualStateGroup x:Name="UserInfoButtonStates">
-                                        <VisualState x:Name="Normal">
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor"
-                                                        Value="Black"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateGroupList>
-                            </VisualStateManager.VisualStateGroups>
                             <Border HeightRequest="60" 
                                     WidthRequest="60" 
                                     HorizontalOptions="Center" 
@@ -73,32 +60,20 @@
                     </Border>
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="vm:Tab">
+                            <DataTemplate x:DataType="helpers:TabItem">
                                 <Border StrokeThickness="0"
                                         Margin="10, 5, 10, 5">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border"
+                                                     Binding="{Binding IsActive}"
+                                                     Value="true">
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="30"/>
                                     </Border.StrokeShape>
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroupList>
-                                            <VisualStateGroup x:Name="TabListButton">
-                                                <VisualState x:Name="Normal">
-                                                </VisualState>
-                                                <VisualState x:Name="PointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Property="BackgroundColor"
-                                                            Value="Grey"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="Selected">
-                                                    <VisualState.Setters>
-                                                        <Setter Property="BackgroundColor"
-                                                            Value="Black"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateGroupList>
-                                    </VisualStateManager.VisualStateGroups>
                                     <Grid Padding="15, 10, 15, 10"
                                           ColumnDefinitions="Auto, *, Auto"
                                           ColumnSpacing="10"

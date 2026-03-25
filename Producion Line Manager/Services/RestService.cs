@@ -61,6 +61,17 @@ namespace Producion_Line_Manager.Services
             return Users;
         }
 
+        public async Task<List<Customers>> GetCustomers()
+        {
+            var uri = $"{_rootURI}/customers";
+            var response = await _client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                Customers = await response.Content.ReadFromJsonAsync<List<Customers>>() ?? new();
+            }
+            return Customers;
+        }
+
         public async Task<Users?> GetUser(int id)
         {
             var uri = $"{_rootURI}/users/{id}";

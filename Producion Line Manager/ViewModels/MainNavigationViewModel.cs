@@ -31,6 +31,12 @@ namespace Producion_Line_Manager.ViewModels
         [ObservableProperty]
         private ObservableCollection<TabItem> _displayTabs;
 
+        [ObservableProperty]
+        private TabItem _activeTab = new TabItem();
+
+        [ObservableProperty]
+        private bool _isOverviewActive = false;
+
         public MainNavigationViewModel()
         {
             Title = "Main Navigation";
@@ -290,6 +296,8 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task AttachOverviewView()
         {
+            ActiveTab.IsActive = false;
+            IsOverviewActive = true;
             var overviewView = ServiceHelper.GetService<OverviewView>();
             ActiveView = overviewView;
         }
@@ -297,7 +305,11 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task AttachListView(TabItem tab)
         {
+            ActiveTab.IsActive = false;
+            ActiveTab = tab;
+            ActiveTab.IsActive = true;
             var listView = ServiceHelper.GetService<TabListView>();
+            await listView.OpenTab(ActiveTab);
             ActiveView = listView;
         }
     }

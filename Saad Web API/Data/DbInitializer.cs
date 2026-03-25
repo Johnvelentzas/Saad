@@ -1,4 +1,6 @@
-﻿namespace Saad_Web_API.Data
+﻿using Models.Finances;
+
+namespace Saad_Web_API.Data
 {
     public static class DbInitializer
     {
@@ -57,6 +59,28 @@
                 _context.UserProcesses.AddRange(adminProcesses);
                 _context.Users.Add(user);
                 _context.UserProcesses.AddRange(userProcesses);
+                _context.SaveChanges();
+            }
+            if (!_context.Customers.Any())
+            {
+                var customers = new List<Customers>();
+                customers.Add(new Customers
+                {
+                    FirstName = "Ioannis",
+                    LastName = "Velentzas",
+                    TaxNumber = "418256581723",
+                    CreatedDate = DateTime.Now
+                });
+
+                customers.Add(new Customers
+                {
+                    FirstName = "Cevin",
+                    LastName = "Schmidt",
+                    TaxNumber = "576882734",
+                    CreatedDate = DateTime.Now
+                });
+
+                _context.AddRange(customers);
                 _context.SaveChanges();
             }
 
