@@ -58,3 +58,11 @@ Content-Type: application/json
 ###
 GET {{root}}/api/Customers/1
 Accept: application/json
+
+###
+GET {{root}}/api/customers/search?filters=Wholesale&page=1&pagesize=100&sort=IdDecending
+Accept: application/json
+
+###
+GET {{root}}/api/categories?page=1&pagesize=100&sort=IdDecending
+Accept: application/json

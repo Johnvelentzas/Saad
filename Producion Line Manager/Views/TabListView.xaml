@@ -24,13 +24,14 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="120"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="1"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid Padding="10">
+            <Grid Padding="10, 10, 10, 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="10"/>
                 </Grid.ColumnDefinitions>
                 <VerticalStackLayout VerticalOptions="End">
                     <Label Text="{Binding Title}"
@@ -41,6 +42,11 @@
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                         <Label Text="{Binding Description}"
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
+                        <Label Text="-"/>
+                        <Label Text="{Binding UrgentItemNumber}"
+                               TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
+                        <Label Text="{Binding UrgentDescription}"
+                               TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
                 <Border Grid.Column="1"
@@ -48,14 +54,61 @@
                         HorizontalOptions="Center"
                         Margin="10"
                         Background="{StaticResource Gray100}">
-                    
                 </Border>
             </Grid>
-            <BoxView Grid.Row="1"
+            <ScrollView Padding="5"
+                        Grid.Row="1">
+                <HorizontalStackLayout Spacing="5">
+                    <HorizontalStackLayout BindableLayout.ItemsSource="{Binding ActiveFilters}"
+                                           Spacing="5">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="helpers:EntityFilterItem">
+                                <Border HeightRequest="25"
+                                        Background="{AppThemeBinding Dark={StaticResource Gray500 }, Light={StaticResource Gray200}}"
+                                        StrokeThickness="0"
+                                        Padding="10, 0, 10, 0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeactivateFilterCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="15" />
+                                    </Border.StrokeShape>
+                                    
+                                    <Label Text="{Binding Name}"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterOptions}"
+                                           Spacing="5">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="helpers:EntityFilterItem">
+                                <Border HeightRequest="25"
+                                        Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                                        StrokeThickness="0"
+                                        Padding="10, 0, 10, 0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=ActivateFilterCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="15" />
+                                    </Border.StrokeShape>
+                                    <Label Text="{Binding Name}"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </ScrollView>
+            <BoxView Grid.Row="2"
                      BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
                 
             </BoxView>
-            <ScrollView Grid.Row="2">
+            <ScrollView Grid.Row="3">
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="helpers:ListItem">

@@ -1,4 +1,5 @@
-﻿using Models.Finances;
+﻿using Models.Attributes;
+using Models.Finances;
 
 namespace Saad_Web_API.Data
 {
@@ -69,7 +70,8 @@ namespace Saad_Web_API.Data
                     FirstName = "Ioannis",
                     LastName = "Velentzas",
                     TaxNumber = "418256581723",
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    Type = CustomerType.Wholesale
                 });
 
                 customers.Add(new Customers
@@ -77,10 +79,26 @@ namespace Saad_Web_API.Data
                     FirstName = "Cevin",
                     LastName = "Schmidt",
                     TaxNumber = "576882734",
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    Type = CustomerType.Retail
                 });
 
                 _context.AddRange(customers);
+                _context.SaveChanges();
+            }
+            if (!_context.ProductCategories.Any())
+            {
+                var categories = new List<ProductCategories>();
+                categories.Add(new ProductCategories
+                {
+                    CategoryName = "Moto Covers"
+                });
+                categories.Add(new ProductCategories
+                {
+                    CategoryName = "Yacht Covers"
+                });
+
+                _context.AddRange(categories);
                 _context.SaveChanges();
             }
 

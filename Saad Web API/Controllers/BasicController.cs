@@ -113,8 +113,8 @@ namespace Saad_Web_API.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<RequestResult<T>>> GetSearchPage(
             [FromQuery] List<FilterType> filters,
-            [FromQuery] SearchType searchType,
-            [FromQuery] string searchValue,
+            [FromQuery] SearchType searchType = SearchType.General,
+            [FromQuery] string searchValue = "",
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
             [FromQuery] SortType sort = SortType.IdDecending)

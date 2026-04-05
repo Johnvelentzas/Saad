@@ -15,15 +15,23 @@ namespace Producion_Line_Manager.ViewModels
 
         private readonly RestService restService;
 
-        [ObservableProperty]
-        private ObservableCollection<ListItem> _items = new ObservableCollection<ListItem>();
+        private Models.Production.ProcessesType CurrentProcessesType;
 
         private int Page = 1;
         private int TotalPages = 1;
         private int PageSize = 100;
 
         [ObservableProperty]
-        private ObservableCollection<ListItem> _urgentItems = new ObservableCollection<ListItem>();
+        private TabItem? _currentTab;
+
+        [ObservableProperty]
+        private ObservableCollection<EntitySortItem> _sortOptions = new ObservableCollection<EntitySortItem>();
+
+        [ObservableProperty]
+        private EntitySortItem _activeSort = new EntitySortItem();
+
+        [ObservableProperty]
+        private bool _openSortMenu = false;
 
         [ObservableProperty]
         private int _itemNumber = 0;
@@ -38,33 +46,38 @@ namespace Producion_Line_Manager.ViewModels
         private string _urgentDescription = "Urgent";
 
         [ObservableProperty]
-        private ListItem? _selectedItem;
-
-        [ObservableProperty]
-        private TabItem? _currentTab;
-
-        private Models.Production.ProcessesType CurrentProcessesType;
-
-        [ObservableProperty]
-        private ContentView? _activeDetailView;
-
-        [ObservableProperty]
-        private ObservableCollection<EntitySortItem> _sortOptions = new ObservableCollection<EntitySortItem>();
-
-        [ObservableProperty]
-        private EntitySortItem _activeSort = new EntitySortItem();
+        private ObservableCollection<EntityFilterItem> _activeFilters = new ObservableCollection<EntityFilterItem>();
 
         [ObservableProperty]
         private ObservableCollection<EntityFilterItem> _filterOptions = new ObservableCollection<EntityFilterItem>();
 
+
         [ObservableProperty]
-        private ObservableCollection<EntityFilterItem> _activeFilters = new ObservableCollection<EntityFilterItem>();
+        private ObservableCollection<EntityFilterItem> _hiddenFilters = new ObservableCollection<EntityFilterItem>();
+
+        [ObservableProperty]
+        private ObservableCollection<ListItem> _urgentItems = new ObservableCollection<ListItem>();
+
+        [ObservableProperty]
+        private ObservableCollection<ListItem> _items = new ObservableCollection<ListItem>();
+
+        [ObservableProperty]
+        private ListItem? _selectedItem;
+
+        [ObservableProperty]
+        private bool _hasSearchBar = true;
+
+        [ObservableProperty]
+        private bool _hasEditButton = true;
 
         [ObservableProperty]
         private SearchType _searchType = SearchType.General;
 
         [ObservableProperty]
         private string _searchQuerry = String.Empty;
+
+        [ObservableProperty]
+        private ContentView? _activeDetailView;
 
         public TabListViewModel()
         {
@@ -89,6 +102,9 @@ namespace Producion_Line_Manager.ViewModels
         public async Task SetItemSource()
         {
             if (CurrentTab == null) { return; }
+            SortOptions.Add(new EntitySortItem(SortType.IdDecending));
+            SortOptions.Add(new EntitySortItem(SortType.IdAccending));
+            ActiveSort = SortOptions[0];
             CurrentProcessesType = CurrentTab.Type;
             switch (CurrentTab.Type)
             {
@@ -97,6 +113,7 @@ namespace Producion_Line_Manager.ViewModels
                     Description = "Customers";
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     FilterOptions.Add(new EntityFilterItem(FilterType.Retail));
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Wholesale));
                     break;
                 case Models.Production.ProcessesType.Orders:
                     Title = "Orders";
@@ -172,6 +189,7 @@ namespace Producion_Line_Manager.ViewModels
         public async Task RefreshItems()
         {
             Page = 1;
+            TotalPages = 1;
             Items.Clear();
             UrgentItems.Clear();
             await LoadMoreItems();
@@ -199,7 +217,12 @@ namespace Producion_Line_Manager.ViewModels
             ItemNumber = result.TotalCount;
             foreach (var item in result.Items)
             {
-                Items.Add(new ListItem(item));
+                if(item is Customers customers) { Items.Add(new ListItem(customers)); }
+                if (item is Orders orders) { Items.Add(new ListItem(orders)); }
+                if (item is Products products) { Items.Add(new ListItem(products)); }
+                if (item is Models.Attributes.Models models) { Items.Add(new ListItem(models)); }
+                if (item is ProductCategories categories) { Items.Add(new ListItem(categories)); }
+                if (item is Tasks task) { Items.Add(new ListItem(task)); }
             }
             Page++;
         }
@@ -278,6 +301,52 @@ namespace Producion_Line_Manager.ViewModels
                 ProcessesType.Calendar => throw new NotImplementedException(),
                 _ => throw new NotImplementedException(),
             };
+        }
+
+        [RelayCommand]
+        public async Task ActivateFilter(EntityFilterItem filter)
+        {
+            FilterOptions.Remove(filter);
+            ActiveFilters.Add(filter);
+            List<EntityFilterItem> incompatible = new();
+            foreach (FilterType inc in filter.Incompatible)
+            {
+                foreach(var active in ActiveFilters)
+                {
+                    if(active.Type == inc)
+                    {
+                        incompatible.Add(active);
+                    }
+                }
+            }
+            foreach (var item in incompatible)
+            {
+                FilterOptions.Add(item);
+                ActiveFilters.Remove(item);
+            }
+            await RefreshItems();
+        }
+
+        [RelayCommand]
+        public async Task DeactivateFilter(EntityFilterItem filter)
+        {
+            FilterOptions.Add(filter);
+            ActiveFilters.Remove(filter);
+            await RefreshItems();
+        }
+
+        [RelayCommand]
+        public async Task SetSortOption(EntitySortItem sort)
+        {
+            ActiveSort = sort;
+            OpenSortMenu = false;
+            await RefreshItems();
+        }
+
+        [RelayCommand]
+        public void OpenSortOptionsMenu(EntitySortItem sort)
+        {
+            OpenSortMenu = true;
         }
 
     }

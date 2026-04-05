@@ -34,13 +34,16 @@ namespace Producion_Line_Manager.Helpers
             IsSelected = false;
         }
 
+        
         public ListItem(IEntity entity)
         {
             Id = entity.Id;
             Name = $"#{entity.Id}";
+            Description = "Entity";
             Entity = entity;
             IsSelected = false;
         }
+        
 
         public ListItem(Customers entity)
         {
@@ -99,7 +102,7 @@ namespace Producion_Line_Manager.Helpers
         public ListItem(ProductCategories entity)
         {
             Id = entity.Id;
-            Name = $"#{entity.Id}";
+            Name = $"{entity.CategoryName}";
 
             Entity = entity;
             IsSelected = false;

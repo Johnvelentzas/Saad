@@ -14,7 +14,7 @@ namespace Producion_Line_Manager.Helpers
 
         public bool HasFilters => Filters.Count > 0;
         public bool HasSearch => !string.IsNullOrEmpty(SearchValue) && SearchType != null;
-        public bool IsSearchType => HasFilters && HasSearch;
+        public bool IsSearchType => HasFilters || HasSearch;
 
         public RequestParameters(
             List<FilterType>? filters = null,
