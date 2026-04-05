@@ -6,6 +6,14 @@ public static class ServiceHelper
 
     public static void Initialize(IServiceProvider serviceProvider) =>
         Services = serviceProvider;
-
-    public static T GetService<T>() => Services.GetService<T>();
+    
+    public static T GetService<T>()
+    {
+        if (Services == null)
+        {
+            throw new InvalidOperationException("Service provider not initialized. Call ServiceHelper.Initialize() with a valid service provider before using this method.");
+        }
+        return Services.GetService<T>();
+    }
+        
 }

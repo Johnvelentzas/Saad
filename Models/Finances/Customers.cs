@@ -11,8 +11,14 @@ namespace Models.Finances
         public string? Email { get; set; }
         public string? Telephone { get; set; }
         public string? TaxNumber { get; set; }
-        //TODO public required enum('Retail','Whoesale') CustomerType {  get; set; }
+        public CustomerType? Type { get; set; }
         [DataType(DataType.Date)]
         public required DateTime CreatedDate { get; set; }
+    }
+
+    public enum CustomerType
+    {
+        Retail,
+        Wholesale
     }
 }

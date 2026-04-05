@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Models;
 using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Producion_Line_Manager.ViewModels
 {
@@ -16,6 +18,10 @@ namespace Producion_Line_Manager.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Users> _users;
+
+        private int page = 1;
+        private int pageSize = 50;
+        private SortType sortType = SortType.IdAccending;
 
         public UserSelectionViewModel()
         {
@@ -33,11 +39,23 @@ namespace Producion_Line_Manager.ViewModels
             {
                 IsBusy = true;
                 Users.Clear();
-                var data = await restService.GetUsers();
-                Users = new ObservableCollection<Users>(data);
+                var result = await restService.Get<Users>(new RequestParameters(
+                    null, 
+                    null,
+                    null, 
+                    page, 
+                    pageSize, 
+                    sortType));
+                if (result == null || result.Items == null)
+                {
+                    // Handle the case where no users are returned
+                    return;
+                }
+                Users = new ObservableCollection<Users>(result.Items);
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 // Handle exceptions (e.g., show an error message)
             }
             finally

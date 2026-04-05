@@ -10,7 +10,16 @@ namespace Models.Production
         [ForeignKey("Customers")]
         public required int CustomerId { get; set; }
         public required bool IsCompleted { get; set; }
-        public string? SaleChannel { get; set; }
+        public SaleChannel? SaleChannel { get; set; }
         public string? Comments { get; set; }
+    }
+
+    public enum SaleChannel
+    {
+        InStore,
+        Phone,
+        Online,
+        Email,
+        SocialMedia
     }
 }

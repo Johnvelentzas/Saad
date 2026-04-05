@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Models;
+using Models.Finances;
+using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using Producion_Line_Manager.ViewModels;

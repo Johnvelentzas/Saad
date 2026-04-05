@@ -23,21 +23,25 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="120"/>
                 <RowDefinition Height="1"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid>
+            <Grid Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <VerticalStackLayout Padding="10, 0, 10, 5"
-                                     VerticalOptions="End">
+                <VerticalStackLayout VerticalOptions="End">
                     <Label Text="{Binding Title}"
                            FontSize="32"
                            FontFamily="SFProDisplayMedium"/>
-                    <Label Text="{Binding ItemNumber}"/>
+                    <HorizontalStackLayout Spacing="5">
+                        <Label Text="{Binding ItemNumber}"
+                               TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
+                        <Label Text="{Binding Description}"
+                               TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
                 <Border Grid.Column="1"
                         VerticalOptions="Center"
@@ -121,6 +125,10 @@
 
                 </HorizontalStackLayout>
             </ScrollView>
+            <ContentView Grid.Row="1"
+                         Content="{Binding ActiveDetailView}">
+                
+            </ContentView>
         </Grid>
     </Grid>
 </ContentView>

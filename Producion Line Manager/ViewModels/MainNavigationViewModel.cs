@@ -60,7 +60,7 @@ namespace Producion_Line_Manager.ViewModels
                 IsBusy = false;
                 return;
             }
-            var foundUser = await restService.GetUser(int.Parse(savedUserId));
+            var foundUser = await restService.Get<Users>(int.Parse(savedUserId));
             if (foundUser != null)
             {
                 User = foundUser;
@@ -71,12 +71,21 @@ namespace Producion_Line_Manager.ViewModels
             try
             {
                 IsBusy = true;
+                if (User == null)
+                {
+                    return;
+                }
 
-                var data = await restService.GetUserProcesses(User);
+                var results = await restService.Get<Users, Processes>(User.Id);
+                if (results == null || results.Items.Count() < 1)
+                {
+                    Debug.WriteLine("No processes found for the user.");
+                    return;
+                }
 
                 Processes.Clear();
                 DisplayTabs.Clear();
-                foreach (var process in data)
+                foreach (var process in results.Items)
                 {
                     Processes.Add(process);
                 }
@@ -125,7 +134,7 @@ namespace Producion_Line_Manager.ViewModels
                         }
                         if (Calendar == null)
                         {
-                            Calendar = new TabItem(101, "Calendar", null, null);
+                            Calendar = new TabItem(101, "Calendar", null, ProcessesType.Calendar);
                             DisplayTabs.Add(Calendar);
                         }
                         var tab = TabItem.FromProcess(process);
@@ -147,7 +156,7 @@ namespace Producion_Line_Manager.ViewModels
                         }
                         if (Tasks == null)
                         {
-                            Tasks = new TabItem(100, "Tasks", null, null);
+                            Tasks = new TabItem(100, "Tasks", null, ProcessesType.Tasks);
                             DisplayTabs.Add(Tasks);
                         }
                         var tab = TabItem.FromProcess(process);
@@ -164,12 +173,12 @@ namespace Producion_Line_Manager.ViewModels
                     {
                         if (Tasks == null)
                         {
-                            Tasks = new TabItem(100, "Tasks", null, null);
+                            Tasks = new TabItem(100, "Tasks", null, ProcessesType.Tasks);
                             DisplayTabs.Add(Tasks);
                         }
                         if (Foam == null)
                         {
-                            Foam = new TabItem(102, "Foam", null, null);
+                            Foam = new TabItem(102, "Foam", null, ProcessesType.Foam);
                             Foam.IsSubTab = true;
                             Tasks.AddChild(Foam);
                         }

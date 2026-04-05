@@ -3,6 +3,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
 using Models.Finances;
+using Models.Production;
+using Models.Attributes;
 
 namespace Producion_Line_Manager.Helpers
 {
@@ -32,22 +34,85 @@ namespace Producion_Line_Manager.Helpers
             IsSelected = false;
         }
 
-        public ListItem(Customers customer)
+        public ListItem(IEntity entity)
         {
-            Id = customer.Id;
-            Name = $"{customer.FirstName} {customer.LastName}";
-            if(customer.TaxNumber != null)
-            {
-                Description = customer.TaxNumber.ToString();
-            }else if(customer.Telephone != null)
-            {
-                Description = customer.Telephone.ToString();
-            }else if(customer.Email != null)
-            {
-                Description = customer.Email.ToString();
-            }
-            Entity = customer;
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+            Entity = entity;
             IsSelected = false;
         }
+
+        public ListItem(Customers entity)
+        {
+            Id = entity.Id;
+            Name = $"{entity.FirstName} {entity.LastName}";
+            if(entity.TaxNumber != null)
+            {
+                Description = entity.TaxNumber.ToString();
+            }else if(entity.Telephone != null)
+            {
+                Description = entity.Telephone.ToString();
+            }else if(entity.Email != null)
+            {
+                Description = entity.Email.ToString();
+            }
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Orders entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Products entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Models.Attributes.Models entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Patterns entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(ProductCategories entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Tasks entity)
+        {
+            Id = entity.Id;
+            Name = $"#{entity.Id}";
+
+            Entity = entity;
+            IsSelected = false;
+        }
+
     }
 }

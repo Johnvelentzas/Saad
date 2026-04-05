@@ -1,99 +1,122 @@
 ﻿
-using Models.Attributes;
-using Models.Finances;
-using Models.Production;
-using System.Diagnostics;
+using Models;
+using Producion_Line_Manager.Helpers;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace Producion_Line_Manager.Services
 {
     public class RestService
     {
         HttpClient _client;
-        JsonSerializerOptions _serializerOptions;
-        string _rootURI = "http://localhost:5167/api";
 
         public RestService()
         {
             _client = new HttpClient();
-            _serializerOptions = new JsonSerializerOptions
+        }
+
+
+        /// <summary>
+        /// Retrieves all items of the specified type that match the given or default request parameters.
+        /// </summary>
+        /// <typeparam name="T">The type of entity to retrieve. Must implement the IEntity interface.</typeparam>
+        /// <param name="parameters">The parameters used to filter or modify the request. If null, default parameters are used.</param>
+        /// <returns>A RequestResult&lt;T&gt; with the matching items, or null if no items are found.</returns>
+        public async Task<RequestResult<T>?> Get<T>(RequestParameters? parameters = null)
+            where T : class, IEntity
+        {
+            parameters ??= new();
+            return await Get<RequestResult<T>>(parameters.BuildURI(URI.GetURI<T>()));
+        }
+
+        // returns the T item with the specified id
+        public async Task<T?> Get<T>(int id)
+            where T : class, IEntity
+        {
+            return await Get<T>(URI.GetURI<T>(id));
+        }
+
+
+        // returns all A items that belong to the T item with the specified id
+        public async Task<RequestResult<A>?> Get<T, A>(int id, RequestParameters? parameters = null)
+            where T : class, IEntity
+            where A : class, IEntity
+        {
+            parameters ??= new();
+            return await Get<RequestResult<A>>(parameters.BuildURI(URI.GetURI<T, A>(id)));
+        }
+
+
+
+        // returns the result of a GET request to the specified URI, deserialized as an object of type T
+        private async Task<T?> Get<T>(string uri)
+            where T : class
+        {
+            var response = await _client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
+                return await response.Content.ReadFromJsonAsync<T>();
+            }
+            throw new Exception($"Failed to retrieve data from {uri}. Status code: {response.StatusCode}");
+
+        }
+    }
+
+    public static class URI
+    {
+        public const string RootURI = "http://localhost:5167/api";
+
+        public const string Areas = $"/areas";
+        public const string AtributeValues = $"/atributevalues";
+        public const string Categories = $"/categories";
+        public const string Customers = $"/customers";
+        public const string Models = $"/models";
+        public const string Orders = $"/orders";
+        public const string Patterns = $"/patterns";
+        public const string Processes = $"/processes";
+        public const string Products = $"/products";
+        public const string TaskAtributes = $"/taskatributes";
+        public const string TaskDependencies = $"/taskdependencies";
+        public const string Tasks = $"/tasks";
+        public const string UserProcesses = $"/userprocesses";
+        public const string Users = $"/users";
+
+        private static string GetURI(string typeName)
+        {
+            return typeName.ToLower() switch
+            {
+                "patternareas" => Areas,
+                "atributevalues" => AtributeValues,
+                "productcategories" => Categories,
+                "customers" => Customers,
+                "models" => Models,
+                "orders" => Orders,
+                "patterns" => Patterns,
+                "processes" => Processes,
+                "products" => Products,
+                "taskatributes" => TaskAtributes,
+                "taskdependencies" => TaskDependencies,
+                "tasks" => Tasks,
+                "userprocesses" => UserProcesses,
+                "users" => Users,
+                _ => $"/{typeName.ToLower()}"
             };
         }
 
-        List<AttributeValues> AttributeValues = new();
-        List<Models.Attributes.Models> Models = new();
-        List<PatternAreas> PatternAreas = new();
-        List<Patterns> Patterns = new();
-        List<ProductCategories> ProductCategories = new();
-        List<TaskAtributes> TaskAtributes = new();
-        List<Customers> Customers = new();
-        List<Orders> Orders = new();
-        List<Processes> Processes = new();
-        List<Products> Products = new();
-        List<TaskDependencies> TaskDependencies = new();
-        List<Tasks> Tasks = new();
-        List<UserProcesses> UserProcesses = new();
-        List<Users> Users = new();
-
-        public async Task<List<AttributeValues>> GetAttributeValues()
+        public static string GetURI<T>() where T : class, IEntity
         {
-            var uri = $"{_rootURI}/attributevalues";
-            var response = await _client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
-            {
-                AttributeValues = await response.Content.ReadFromJsonAsync<List<AttributeValues>>() ?? new();
-            }
-            return AttributeValues;
+            return $"{RootURI}{GetURI(typeof(T).Name)}";
         }
 
-        public async Task<List<Users>> GetUsers()
+        public static string GetURI<T>(int id) where T : class, IEntity
         {
-            var uri = $"{_rootURI}/users";
-            var response = await _client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
-            {
-                Users = await response.Content.ReadFromJsonAsync<List<Users>>() ?? new();
-            }
-            return Users;
+            return GetURI<T>() + $"/{id}";
         }
 
-        public async Task<List<Customers>> GetCustomers()
+        public static string GetURI<T, A>(int id)
+            where T : class, IEntity
+            where A : class, IEntity
         {
-            var uri = $"{_rootURI}/customers";
-            var response = await _client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
-            {
-                Customers = await response.Content.ReadFromJsonAsync<List<Customers>>() ?? new();
-            }
-            return Customers;
+            return GetURI<T>(id) + GetURI(typeof(A).Name);
         }
-
-        public async Task<Users?> GetUser(int id)
-        {
-            var uri = $"{_rootURI}/users/{id}";
-            var response = await _client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<Users>();
-            }
-            return null;
-        }
-
-        public async Task<List<Processes>> GetUserProcesses(Users user)
-        {
-            var uri = $"{_rootURI}/users/{user.Id}/processes";
-            var response = await _client.GetAsync(uri);
-            Debug.WriteLine($"Fetching processes for user {user.Name} (ID: {user.Id}) - Status Code: {response.StatusCode} and cpntent: {response.Content.ToString}");
-            if (response.IsSuccessStatusCode)
-            {
-                Processes = await response.Content.ReadFromJsonAsync<List<Processes>>() ?? new();
-            }
-            return Processes;
-        }
-
     }
 }

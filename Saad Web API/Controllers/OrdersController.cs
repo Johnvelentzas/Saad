@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models;
+using Models.Finances;
 using Models.Production;
 using Saad_Web_API.Data;
 
@@ -14,36 +16,56 @@ namespace Saad_Web_API.Controllers
         {
         }
 
-        // GET api/orders/search?{iscompleted}&{saleschannel}
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Orders>>> SearchOrders(
-        [FromQuery] bool? isCompleted,
-        [FromQuery] string? salesChannel)
+        protected override async Task<IQueryable<Orders>> FilterEntities(IQueryable<Orders> orders, FilterType filter)
         {
-            var querry = _context.Orders.AsQueryable();
-            if (isCompleted != null)
+            return filter switch
             {
-                querry = querry.Where(c => c.IsCompleted == isCompleted);
-            }
-            if (!string.IsNullOrEmpty(salesChannel))
-            {
-                querry = querry.Where(c => c.SaleChannel != null && c.SaleChannel.Contains(salesChannel));
-            }
-            return Ok(await querry.ToListAsync());
+                FilterType.Complete => orders.Where(c => c.IsCompleted),
+                FilterType.Incomplete => orders.Where(c => !c.IsCompleted),
+                FilterType.InStore => orders.Where(c => c.SaleChannel == SaleChannel.InStore),
+                FilterType.Phone => orders.Where(c => c.SaleChannel == SaleChannel.Phone),
+                FilterType.Online => orders.Where(c => c.SaleChannel == SaleChannel.Online),
+                FilterType.SocialMedia => orders.Where(c => c.SaleChannel == SaleChannel.SocialMedia),
+                FilterType.Email => orders.Where(c => c.SaleChannel == SaleChannel.Email),
+                _ => orders,
+            };
         }
 
-        //GET api/orders/{id}/products
+
+        protected override async Task<IQueryable<Orders>> SearchEntities(IQueryable<Orders> orders, SearchType type, string value)
+        {
+            orders = await base.SearchEntities(orders, type, value);
+            switch (type)
+            {
+                case SearchType.General:
+                    orders = orders.Where(c =>
+                    (c.Id.ToString().Contains(value)));
+                    break;
+                default:
+                    break;
+            }
+            return orders;
+        }
+
+
+        //GET api/orders/{id}/products?{page}&{pagesize}&{sort}
         [HttpGet("{id}/products")]
-        public async Task<ActionResult<IEnumerable<Products>>> GetOrderProducts(
-            [FromRoute] int id)
+        public async Task<ActionResult<RequestResult<Products>>> GetOrderProducts(
+            [FromRoute] int id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.IdAccending)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
-            var products = await _context.Products.Where(o => o.OrderId == id).ToListAsync();
-            return Ok(products);
+            IQueryable<Products> query = await GetQuery<Products>();
+            query = await OrderQuery(query);
+            query = query.Where(o => o.OrderId == id);
+            var pageResult = await Paginate(query, page, pageSize);
+            return Ok(pageResult);
         }
     }
 }

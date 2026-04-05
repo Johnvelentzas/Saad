@@ -102,4 +102,9 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ViewModels\DetailsViewModels\" />
+	  <Folder Include="Views\DetailsViews\" />
+	</ItemGroup>
+
 </Project>

@@ -23,7 +23,7 @@ namespace Producion_Line_Manager.Helpers
         private ObservableCollection<TabItem> _children = new();
 
         [ObservableProperty]
-        private ProcessesType? _type;
+        private ProcessesType _type;
 
         public bool HasDetails => !string.IsNullOrEmpty(Details);
 
@@ -41,7 +41,7 @@ namespace Producion_Line_Manager.Helpers
         [ObservableProperty]
         private bool _isActive = false;
 
-        public TabItem(int id, string name, string? details, ProcessesType? type)
+        public TabItem(int id, string name, string? details, ProcessesType type)
         {
             Id = id;
             Name = name;
@@ -104,6 +104,10 @@ namespace Producion_Line_Manager.Helpers
                     return new TabItem(process.Id, "Inspect", null, process.Type);
                 case ProcessesType.DeliverApt:
                     return new TabItem(process.Id, "Deliver", null, process.Type);
+                case ProcessesType.Tasks:
+                    return new TabItem(process.Id, "Tasks", null, process.Type);
+                case ProcessesType.Foam:
+                    return new TabItem(process.Id, "Foam", null, process.Type);
                 default:
                     return new TabItem(process.Id, "Unknown", null, process.Type);
             }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Models;
 using Models.Finances;
 using Models.Production;
 using Saad_Web_API.Data;
@@ -14,46 +14,70 @@ namespace Saad_Web_API.Controllers
         public CustomersController(ApplicationDbContext context) : base(context)
         {
         }
-        // GET api/customers/search?{name}&{tn}&{email}&{telephone}
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Customers>>> SearchCustomers(
-            [FromQuery] string? name,
-            [FromQuery] string? TN,
-            [FromQuery] string? email,
-            [FromQuery] string? telephone)
+
+
+        protected override async Task<IQueryable<Customers>> FilterEntities(IQueryable<Customers> customers, FilterType filter)
         {
-            var querry = _context.Customers.AsQueryable();
-            if (!string.IsNullOrEmpty(name))
+            return filter switch
             {
-                querry = querry.Where(c => (c.FirstName != null && c.FirstName.Contains(name)) || c.LastName.Contains(name));
-            }
-            if (!string.IsNullOrEmpty(TN))
-            {
-                querry = querry.Where(c => c.TaxNumber != null && c.TaxNumber.Contains(TN));
-            }
-            if (!string.IsNullOrEmpty(email))
-            {
-                querry = querry.Where(c => c.Email != null && c.Email.Contains(email.ToLower()));
-            }
-            if (!string.IsNullOrEmpty(telephone))
-            {
-                querry = querry.Where(c => c.Telephone != null && c.Telephone.Contains(telephone));
-            }
-            return Ok(await querry.ToListAsync());
+                FilterType.Retail => customers.Where(c => c.Type == CustomerType.Retail),
+                FilterType.Wholesale => customers.Where(c => c.Type == CustomerType.Wholesale),
+                _ => customers,
+            };
         }
 
-        //GET api/customers/{id}/orders
+
+        protected override async Task<IQueryable<Customers>> SearchEntities(IQueryable<Customers> customers, SearchType type, string value)
+        {
+            customers = await base.SearchEntities(customers, type, value);
+            switch (type)
+            {
+                case SearchType.General:
+                    customers = customers.Where(c =>
+                    (c.Id.ToString().Contains(value)) ||
+                    (c.FirstName != null && c.FirstName.Contains(value))||
+                    (c.LastName.Contains(value)) ||
+                    (c.Email != null && c.Email.Contains(value.ToLower()))||
+                    (c.TaxNumber != null && c.TaxNumber.Contains(value))||
+                    (c.Telephone != null && c.Telephone.Contains(value)));
+                    break;
+                case SearchType.Name:
+                    customers = customers.Where(c => (c.FirstName != null && c.FirstName.Contains(value)) || c.LastName.Contains(value));
+                    break;
+                case SearchType.Email:
+                    customers = customers.Where(c => c.Email != null && c.Email.Contains(value.ToLower()));
+                    break;
+                case SearchType.TaxNumber:
+                    customers = customers.Where(c => c.TaxNumber != null && c.TaxNumber.Contains(value));
+                    break;
+                case SearchType.PhoneNumber:
+                    customers = customers.Where(c => c.Telephone != null && c.Telephone.Contains(value));
+                    break;
+                default:
+                    break;
+            }
+            return customers;
+        }
+
+
+        //GET api/customers/{id}/orders?{page}&{pagesize}&{sort}
         [HttpGet("{id}/orders")]
-        public async Task<ActionResult<IEnumerable<Orders>>> GetCustomerOrders(
-            [FromRoute] int id)
+        public async Task<ActionResult<RequestResult<Orders>>> GetCustomerOrders(
+            [FromRoute] int id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.IdDecending)
         {
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
             }
-            var orders = await _context.Orders.Where(o => o.CustomerId == id).ToListAsync();
-            return Ok(orders);
+            IQueryable<Orders> query = await GetQuery<Orders>();
+            query = await OrderQuery(query);
+            query = query.Where(o => o.CustomerId == id);
+            var pageResult = await Paginate(query, page, pageSize);
+            return Ok(pageResult);
         }
     }
 }

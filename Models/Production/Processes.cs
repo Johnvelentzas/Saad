@@ -31,6 +31,9 @@ namespace Models.Production
         Embroider,
         Bolt,
         Inspect,
-        DeliverApt
+        DeliverApt,
+        Tasks,
+        Foam,
+        Calendar
     }
 }
