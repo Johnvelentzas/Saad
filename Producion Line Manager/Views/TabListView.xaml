@@ -23,17 +23,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="120"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="1"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Padding="10, 10, 10, 5">
+            <Grid Padding="10, 20, 10, 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <VerticalStackLayout VerticalOptions="End">
+                <VerticalStackLayout Grid.Column="0">
                     <Label Text="{Binding Title}"
                            FontSize="32"
                            FontFamily="SFProDisplayMedium"/>
@@ -49,15 +50,25 @@
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
-                <Border Grid.Column="1"
+                <Border Grid.Column="2"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        Margin="10"
-                        Background="{StaticResource Gray100}">
+                        Padding="10, 0, 10, 0"
+                        HeightRequest="30"
+                        Background="{AppThemeBinding Dark={StaticResource Gray900 }, Light={StaticResource Gray100}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=OpenSortOptionsMenuCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="{Binding ActiveSort.Name}"
+                           VerticalOptions="Center"/>
                 </Border>
             </Grid>
             <ScrollView Padding="5"
-                        Grid.Row="1">
+                        Grid.Row="1"
+                        Orientation="Horizontal">
                 <HorizontalStackLayout Spacing="5">
                     <HorizontalStackLayout BindableLayout.ItemsSource="{Binding ActiveFilters}"
                                            Spacing="5">
@@ -106,57 +117,94 @@
             </ScrollView>
             <BoxView Grid.Row="2"
                      BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
-                
+
             </BoxView>
-            <ScrollView Grid.Row="3">
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="helpers:ListItem">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="70"/>
-                                    <RowDefinition Height="1"/>
-                                </Grid.RowDefinitions>
-                                <SwipeView>
-                                    <SwipeView.LeftItems>
-                                        <SwipeItems>
-                                            <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
-                                                           CommandParameter="{Binding .}">
-                                                <Border BackgroundColor="Red">
-                                                    <Label Text="Delete"/>
-                                                </Border>
-                                            </SwipeItemView>
-                                        </SwipeItems>
-                                    </SwipeView.LeftItems>
-                                    <Border Padding="10"
-                                            HeightRequest="70">
-                                        <Border.Triggers>
-                                            <DataTrigger TargetType="Border"
-                                                         Binding="{Binding IsSelected}"
-                                                         Value="true">
-                                                <Setter Property="BackgroundColor"
-                                                        Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
-                                            </DataTrigger>
-                                        </Border.Triggers>
-                                        <VerticalStackLayout VerticalOptions="Center">
-                                            <Label Text="{Binding Name}"
-                                                   VerticalOptions="Start"
-                                                   FontSize="18"/>
-                                            <Label Text="{Binding Description}"
-                                                   VerticalOptions="Start"
-                                                   FontSize="12"/>
-                                        </VerticalStackLayout>
-                                    </Border>
-                                </SwipeView>
-                                <Border Grid.Row="1"
-                                        BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+            <CollectionView ItemsSource="{Binding Items}"
+                            Grid.Row="3"
+                            RemainingItemsThreshold="1"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreItemsCommand}"
+                            ItemsUpdatingScrollMode="KeepScrollOffset">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="helpers:ListItem">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="70"/>
+                                <RowDefinition Height="1"/>
+                            </Grid.RowDefinitions>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
+                                                       CommandParameter="{Binding .}">
+                                            <Border BackgroundColor="Red">
+                                                <Label Text="Delete"/>
+                                            </Border>
+                                        </SwipeItemView>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <Border Padding="10"
+                                        HeightRequest="70">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border"
+                                                     Binding="{Binding IsSelected}"
+                                                     Value="true">
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <VerticalStackLayout VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"
+                                               VerticalOptions="Start"
+                                               FontSize="18"/>
+                                        <Label Text="{Binding Description}"
+                                               VerticalOptions="Start"
+                                               FontSize="12"/>
+                                    </VerticalStackLayout>
                                 </Border>
-                            </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </VerticalStackLayout>
-            </ScrollView>
+                            </SwipeView>
+                            <Border Grid.Row="1"
+                                    BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </Grid>
+        <Border Grid.Column="0"
+                Margin="20"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start"
+                Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                IsVisible="{Binding OpenSortMenu}">
+            <Border.Shadow>
+                <Shadow Brush="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
+                        Opacity="0.5"
+                        Offset="0, 0"
+                        Radius="3"/>
+            </Border.Shadow>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding SortOptions}"
+                                 Spacing="0">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="helpers:EntitySortItem">
+                        <VerticalStackLayout>
+                            <HorizontalStackLayout Padding="10, 5, 10, 5">
+                                <HorizontalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=SetSortOptionCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </HorizontalStackLayout.GestureRecognizers>
+                                <Label Text="{Binding Name}"
+                                       FontSize="18"/>
+                            </HorizontalStackLayout>
+                            <Border HorizontalOptions="Fill"
+                                    HeightRequest="1"
+                                    BackgroundColor="DarkGrey">
+                                
+                            </Border>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </Border>
         <BoxView Grid.Column="1"
                  Color="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
         </BoxView>
@@ -166,16 +214,48 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <ScrollView Grid.Row="0"
                         HorizontalOptions="End"
                         Padding="0, 10, 0, 10"
-                        Background="{StaticResource White}"
-                        Opacity="0.5">
-                <HorizontalStackLayout Spacing="10">
-
+                        Opacity="0.5"
+                        Orientation="Horizontal">
+                <HorizontalStackLayout Spacing="10"
+                                       Padding="10, 0, 10, 0">
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="0"
+                            WidthRequest="250"
+                            HeightRequest="44"
+                            IsVisible="{Binding HasSearchBar}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <SearchBar Placeholder="Search"
+                                   Text="{Binding SearchQuerry}"
+                                   SearchCommand="{Binding RefreshItemsCommand}">
+                            
+                        </SearchBar>
+                    </Border>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="20, 0, 20, 0"
+                            HeightRequest="44"
+                            IsVisible="{Binding HasEditButton}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding EditCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Edit"
+                               VerticalOptions="Center"
+                               FontSize="16"/>
+                    </Border>
                 </HorizontalStackLayout>
             </ScrollView>
             <ContentView Grid.Row="1"

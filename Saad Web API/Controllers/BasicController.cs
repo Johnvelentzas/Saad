@@ -50,7 +50,7 @@ namespace Saad_Web_API.Controllers
             switch (type)
             {
                 case SearchType.Id:
-                    entities = entities.Where(e => e.Id.ToString().Contains(value));
+                    entities = entities.Where(e => e.Id.ToString().ToLower().Contains(value));
                     break;
             }
 
@@ -84,8 +84,8 @@ namespace Saad_Web_API.Controllers
             int pageSize = 100) 
             where A : class, IEntity
         {
-            query = query.Skip((page - 1) * pageSize).Take(pageSize);
             int totalCount = await query.CountAsync();
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
             int currentPage = page;
             RequestResult<A> result = new RequestResult<A>(await query.ToListAsync(), totalCount, totalPages, currentPage);
@@ -122,7 +122,7 @@ namespace Saad_Web_API.Controllers
             IQueryable<T> query = await GetQuery<T>();
             query = await OrderQuery(query, sort);
             query = await FilterEntities(query, filters);
-            query = await SearchEntities(query, searchType, searchValue);
+            query = await SearchEntities(query, searchType, searchValue.ToLower());
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }

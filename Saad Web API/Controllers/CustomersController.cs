@@ -34,24 +34,24 @@ namespace Saad_Web_API.Controllers
             {
                 case SearchType.General:
                     customers = customers.Where(c =>
-                    (c.Id.ToString().Contains(value)) ||
-                    (c.FirstName != null && c.FirstName.Contains(value))||
-                    (c.LastName.Contains(value)) ||
-                    (c.Email != null && c.Email.Contains(value.ToLower()))||
-                    (c.TaxNumber != null && c.TaxNumber.Contains(value))||
-                    (c.Telephone != null && c.Telephone.Contains(value)));
+                    (c.Id.ToString().ToLower().Contains(value)) ||
+                    (c.FirstName != null && c.FirstName.ToLower().Contains(value))||
+                    (c.LastName.ToLower().Contains(value)) ||
+                    (c.Email != null && c.Email.ToLower().ToLower().Contains(value.ToLower()))||
+                    (c.TaxNumber != null && c.TaxNumber.ToLower().Contains(value))||
+                    (c.Telephone != null && c.Telephone.ToLower().Contains(value)));
                     break;
                 case SearchType.Name:
-                    customers = customers.Where(c => (c.FirstName != null && c.FirstName.Contains(value)) || c.LastName.Contains(value));
+                    customers = customers.Where(c => (c.FirstName != null && c.FirstName.ToLower().Contains(value)) || c.LastName.ToLower().Contains(value));
                     break;
                 case SearchType.Email:
-                    customers = customers.Where(c => c.Email != null && c.Email.Contains(value.ToLower()));
+                    customers = customers.Where(c => c.Email != null && c.Email.ToLower().Contains(value.ToLower()));
                     break;
                 case SearchType.TaxNumber:
-                    customers = customers.Where(c => c.TaxNumber != null && c.TaxNumber.Contains(value));
+                    customers = customers.Where(c => c.TaxNumber != null && c.TaxNumber.ToLower().Contains(value));
                     break;
                 case SearchType.PhoneNumber:
-                    customers = customers.Where(c => c.Telephone != null && c.Telephone.Contains(value));
+                    customers = customers.Where(c => c.Telephone != null && c.Telephone.ToLower().Contains(value));
                     break;
                 default:
                     break;

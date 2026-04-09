@@ -19,7 +19,7 @@ namespace Producion_Line_Manager.ViewModels
 
         private int Page = 1;
         private int TotalPages = 1;
-        private int PageSize = 100;
+        private int PageSize = 20;
 
         [ObservableProperty]
         private TabItem? _currentTab;
@@ -69,6 +69,9 @@ namespace Producion_Line_Manager.ViewModels
 
         [ObservableProperty]
         private bool _hasEditButton = true;
+
+        [ObservableProperty]
+        private bool _hasDeleteButton = false;
 
         [ObservableProperty]
         private SearchType _searchType = SearchType.General;
@@ -198,33 +201,47 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task LoadMoreItems()
         {
+            if (IsBusy) { return; }
             if (Page > TotalPages) { return; }
-            List<FilterType> filters = new List<FilterType>();
-            foreach(var filter in ActiveFilters)
+            IsBusy = true;
+            try
             {
-                filters.Add(filter.Type);
+                List<FilterType> filters = new List<FilterType>();
+                foreach (var filter in ActiveFilters)
+                {
+                    filters.Add(filter.Type);
+                }
+                var parameters = new RequestParameters(
+                    filters,
+                    SearchType,
+                    SearchQuerry,
+                    Page,
+                    PageSize,
+                    ActiveSort.Type);
+                IRequestResult? result = await ItemGetMethod(parameters);
+                if (result == null)
+                {
+                    IsBusy = false;
+                    return;
+                }
+                TotalPages = result.TotalPages;
+                ItemNumber = result.TotalCount;
+                foreach (var item in result.Items)
+                {
+                    if (item is Customers customers) { Items.Add(new ListItem(customers)); }
+                    if (item is Orders orders) { Items.Add(new ListItem(orders)); }
+                    if (item is Products products) { Items.Add(new ListItem(products)); }
+                    if (item is Models.Attributes.Models models) { Items.Add(new ListItem(models)); }
+                    if (item is ProductCategories categories) { Items.Add(new ListItem(categories)); }
+                    if (item is Tasks task) { Items.Add(new ListItem(task)); }
+                }
+                Page++;
             }
-            var parameters = new RequestParameters(
-                filters,
-                SearchType,
-                SearchQuerry,
-                Page,
-                PageSize,
-                ActiveSort.Type);
-            IRequestResult? result = await ItemGetMethod(parameters);
-            if (result == null) { return; }
-            TotalPages = result.TotalPages;
-            ItemNumber = result.TotalCount;
-            foreach (var item in result.Items)
+            finally
             {
-                if(item is Customers customers) { Items.Add(new ListItem(customers)); }
-                if (item is Orders orders) { Items.Add(new ListItem(orders)); }
-                if (item is Products products) { Items.Add(new ListItem(products)); }
-                if (item is Models.Attributes.Models models) { Items.Add(new ListItem(models)); }
-                if (item is ProductCategories categories) { Items.Add(new ListItem(categories)); }
-                if (item is Tasks task) { Items.Add(new ListItem(task)); }
+                IsBusy = false;
             }
-            Page++;
+            
         }
 
         [RelayCommand]
@@ -236,6 +253,7 @@ namespace Producion_Line_Manager.ViewModels
             }
             SelectedItem = item;
             SelectedItem.IsSelected = true;
+            
 
             await AttachDetailsView();
         }
@@ -270,7 +288,13 @@ namespace Producion_Line_Manager.ViewModels
             //await ItemDeleteMethod();
         }
 
-        
+        [RelayCommand]
+        public async Task Edit()
+        {
+            if (SelectedItem == null) { return; }
+            //await ItemEditMethod();
+        }
+
         private async Task<IRequestResult?> ItemGetMethod(RequestParameters parameters)
         {
             if (restService == null) { return null; }
