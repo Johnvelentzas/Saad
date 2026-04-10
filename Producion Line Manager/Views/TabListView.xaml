@@ -126,46 +126,63 @@
                             ItemsUpdatingScrollMode="KeepScrollOffset">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="helpers:ListItem">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="70"/>
-                                <RowDefinition Height="1"/>
-                            </Grid.RowDefinitions>
-                            <SwipeView>
-                                <SwipeView.LeftItems>
-                                    <SwipeItems>
-                                        <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
+                        <Border>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                         Binding="{Binding IsSelected}"
+                                         Value="true">
+                                    <Setter Property="BackgroundColor"
+                                        Value="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray300}}"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="1"/>
+                                </Grid.RowDefinitions>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=SelectItemCommand}"
+                                                      CommandParameter="{Binding .}"/>
+                                </Grid.GestureRecognizers>
+                                <SwipeView>
+                                    <SwipeView.LeftItems>
+                                        <SwipeItems>
+                                            <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
                                                        CommandParameter="{Binding .}">
-                                            <Border BackgroundColor="Red">
-                                                <Label Text="Delete"/>
-                                            </Border>
-                                        </SwipeItemView>
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <Border Padding="10"
+                                                <Border BackgroundColor="Red">
+                                                    <Label Text="Delete"/>
+                                                </Border>
+                                            </SwipeItemView>
+                                        </SwipeItems>
+                                    </SwipeView.LeftItems>
+                                    <Border Padding="10"
                                         HeightRequest="70">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border"
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border"
                                                      Binding="{Binding IsSelected}"
                                                      Value="true">
-                                            <Setter Property="BackgroundColor"
+                                                <Setter Property="BackgroundColor"
                                                     Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <VerticalStackLayout VerticalOptions="Center">
-                                        <Label Text="{Binding Name}"
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label Text="{Binding Name}"
                                                VerticalOptions="Start"
                                                FontSize="18"/>
-                                        <Label Text="{Binding Description}"
+                                            <Label Text="{Binding Description}"
                                                VerticalOptions="Start"
                                                FontSize="12"/>
-                                    </VerticalStackLayout>
-                                </Border>
-                            </SwipeView>
-                            <Border Grid.Row="1"
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </SwipeView>
+                                <Border Grid.Row="1"
                                     BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
-                            </Border>
-                        </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -253,6 +270,22 @@
                             <TapGestureRecognizer Command="{Binding EditCommand}"/>
                         </Border.GestureRecognizers>
                         <Label Text="Edit"
+                               VerticalOptions="Center"
+                               FontSize="16"/>
+                    </Border>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="20, 0, 20, 0"
+                            HeightRequest="44"
+                            IsVisible="{Binding HasDeleteButton}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding DeleteCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Delete"
                                VerticalOptions="Center"
                                FontSize="16"/>
                     </Border>

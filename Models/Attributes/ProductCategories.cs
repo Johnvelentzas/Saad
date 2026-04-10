@@ -8,6 +8,7 @@ namespace Models.Attributes
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         public required string CategoryName { get; set; }
     }
 }

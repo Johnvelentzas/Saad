@@ -59,6 +59,26 @@ namespace Producion_Line_Manager.Services
             throw new Exception($"Failed to retrieve data from {uri}. Status code: {response.StatusCode}");
 
         }
+
+        public async Task Put<T>(T item)
+            where T : class, IEntity
+        {
+            var response = await _client.PutAsJsonAsync(URI.GetURI<T>(item.Id), item);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update item with id {item.Id}. Status code: {response.StatusCode}");
+            }
+        }
+
+        public async Task Post<T>(T item)
+            where T : class, IEntity
+        {
+            var response = await _client.PostAsJsonAsync(URI.GetURI<T>(), item);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to create item. Status code: {response.StatusCode}");
+            }
+        }
     }
 
     public static class URI

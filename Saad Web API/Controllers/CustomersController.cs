@@ -18,6 +18,7 @@ namespace Saad_Web_API.Controllers
 
         protected override async Task<IQueryable<Customers>> FilterEntities(IQueryable<Customers> customers, FilterType filter)
         {
+            customers = await base.FilterEntities(customers, filter);
             return filter switch
             {
                 FilterType.Retail => customers.Where(c => c.Type == CustomerType.Retail),

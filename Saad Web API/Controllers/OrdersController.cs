@@ -18,6 +18,7 @@ namespace Saad_Web_API.Controllers
 
         protected override async Task<IQueryable<Orders>> FilterEntities(IQueryable<Orders> orders, FilterType filter)
         {
+            orders = await base.FilterEntities(orders, filter);
             return filter switch
             {
                 FilterType.Complete => orders.Where(c => c.IsCompleted),

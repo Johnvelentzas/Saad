@@ -7,6 +7,7 @@ namespace Models.Production
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         [ForeignKey("Orders")]
         public required int OrderId { get; set; }
         [ForeignKey("ProductCategories")]

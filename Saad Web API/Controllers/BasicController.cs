@@ -17,9 +17,12 @@ namespace Saad_Web_API.Controllers
             _context = context;
         }
 
-        internal async Task<IQueryable<T>> FilterEntities(IQueryable<T> entities, List<FilterType> filters)
+        internal async Task<IQueryable<T>> FilterEntities(
+            IQueryable<T> entities, 
+            List<FilterType> filters)
         {
-            if (filters == null || filters.Count == 0) { return entities; }
+            if (filters == null) { return entities; }
+            if (!filters.Contains(FilterType.Draft)) { entities = entities.Where(e => !e.IsDraft); }
             foreach (var filter in filters)
             {
                 entities = await FilterEntities(entities, filter);
@@ -28,9 +31,15 @@ namespace Saad_Web_API.Controllers
         }
 
         
-        protected virtual async Task<IQueryable<T>> FilterEntities(IQueryable<T> entities, FilterType filter)
+        protected virtual async Task<IQueryable<T>> FilterEntities(
+            IQueryable<T> entities, 
+            FilterType filter)
         {
-            return entities;
+            return filter switch
+            {
+                FilterType.Draft => entities.Where(e => e.IsDraft),
+                _ => entities
+            };
         }
 
         /*
@@ -45,31 +54,29 @@ namespace Saad_Web_API.Controllers
         }
         */
 
-        protected virtual async Task<IQueryable<T>> SearchEntities(IQueryable<T> entities, SearchType type, string value)
+        protected virtual async Task<IQueryable<T>> SearchEntities(
+            IQueryable<T> query, 
+            SearchType type, 
+            string value)
         {
-            switch (type)
+            return type switch
             {
-                case SearchType.Id:
-                    entities = entities.Where(e => e.Id.ToString().ToLower().Contains(value));
-                    break;
-            }
-
-            return entities;
+                SearchType.Id => query.Where(e => e.Id.ToString().ToLower().Contains(value)),
+                _ => query
+            };
         }
 
 
         internal async Task<IOrderedQueryable<A>> OrderQuery<A>(
             IQueryable<A> query,
-            SortType sort = SortType.IdDecending) 
+            SortType type = SortType.IdDecending) 
             where A : class, IEntity
         {
-            switch (sort)
+            return type switch
             {
-                case SortType.IdDecending:
-                    return query.OrderByDescending(r => r.Id);
-                default:
-                    return query.OrderBy(r => r.Id);
-            }
+                SortType.IdDecending => query.OrderByDescending(r => r.Id),
+                _ => query.OrderBy(r => r.Id)
+            };
         }
 
         internal async Task<IQueryable<A>> GetQuery<A>() 
@@ -105,6 +112,7 @@ namespace Saad_Web_API.Controllers
         {
             IQueryable<T> query = await GetQuery<T>();
             query = await OrderQuery(query, sort);
+            query = await FilterEntities(query, new List<FilterType>());
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }

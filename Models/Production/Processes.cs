@@ -6,6 +6,7 @@ namespace Models.Production
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         public required ProcessesType Type { get; set; }
 
     }

@@ -9,6 +9,7 @@ namespace Models.Production
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         [ForeignKey("Users")]
         public required int UserId { get; set; }
         [ForeignKey("Processes")]

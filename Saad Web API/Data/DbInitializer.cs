@@ -71,7 +71,8 @@ namespace Saad_Web_API.Data
                     LastName = "Velentzas",
                     TaxNumber = "418256581723",
                     CreatedDate = DateTime.Now,
-                    Type = CustomerType.Wholesale
+                    Type = CustomerType.Wholesale,
+                    IsDraft = true
                 });
 
                 customers.Add(new Customers
@@ -80,7 +81,8 @@ namespace Saad_Web_API.Data
                     LastName = "Schmidt",
                     TaxNumber = "576882734",
                     CreatedDate = DateTime.Now,
-                    Type = CustomerType.Retail
+                    Type = CustomerType.Retail,
+                    IsDraft = true
                 });
                 customers.Add(new Customers
                 {

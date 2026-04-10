@@ -7,6 +7,7 @@ using Models.Finances;
 using Models;
 using Models.Production;
 using Models.Attributes;
+using Producion_Line_Manager.Views.DetailsViews;
 
 namespace Producion_Line_Manager.ViewModels
 {
@@ -51,10 +52,6 @@ namespace Producion_Line_Manager.ViewModels
         [ObservableProperty]
         private ObservableCollection<EntityFilterItem> _filterOptions = new ObservableCollection<EntityFilterItem>();
 
-
-        [ObservableProperty]
-        private ObservableCollection<EntityFilterItem> _hiddenFilters = new ObservableCollection<EntityFilterItem>();
-
         [ObservableProperty]
         private ObservableCollection<ListItem> _urgentItems = new ObservableCollection<ListItem>();
 
@@ -68,10 +65,13 @@ namespace Producion_Line_Manager.ViewModels
         private bool _hasSearchBar = true;
 
         [ObservableProperty]
-        private bool _hasEditButton = true;
+        private bool _hasEditButton = false;
 
         [ObservableProperty]
         private bool _hasDeleteButton = false;
+
+        [ObservableProperty]
+        private bool _hasCreateButton = true;
 
         [ObservableProperty]
         private SearchType _searchType = SearchType.General;
@@ -80,7 +80,7 @@ namespace Producion_Line_Manager.ViewModels
         private string _searchQuerry = String.Empty;
 
         [ObservableProperty]
-        private ContentView? _activeDetailView;
+        private BaseEntityViewModel? _activeDetailView;
 
         public TabListViewModel()
         {
@@ -195,6 +195,7 @@ namespace Producion_Line_Manager.ViewModels
             TotalPages = 1;
             Items.Clear();
             UrgentItems.Clear();
+            await DeselectItem();
             await LoadMoreItems();
         }
 
@@ -253,9 +254,28 @@ namespace Producion_Line_Manager.ViewModels
             }
             SelectedItem = item;
             SelectedItem.IsSelected = true;
-            
-
+            HasDeleteButton = true;
+            if (!item.Entity.IsDraft)
+            {
+                HasEditButton = true;
+            } else
+            {
+                HasEditButton = false;
+            }
             await AttachDetailsView();
+        }
+
+        [RelayCommand]
+        public async Task DeselectItem()
+        {
+            if (SelectedItem != null)
+            {
+                SelectedItem.IsSelected = false;
+            }
+            SelectedItem = null;
+            HasDeleteButton = false;
+            HasEditButton = false;
+            ActiveDetailView = null;
         }
 
         [RelayCommand]
@@ -267,9 +287,10 @@ namespace Producion_Line_Manager.ViewModels
             ActiveDetailView = entity switch
             {
                 //TODO Add the content views for every entity
-                Customers => new ContentView(),
+                Customers => new BaseEntityViewModel(),
                 _ => throw new NotImplementedException(),
             };
+            await ActiveDetailView.LoadEntity(entity);
         }
 
         [RelayCommand]
@@ -285,14 +306,36 @@ namespace Producion_Line_Manager.ViewModels
         {
             if (item == null) { return; }
             await SelectItem(item);
+            await Delete();
+        }
+
+        [RelayCommand]
+        public async Task Delete()
+        {
+            if (SelectedItem == null) { return; }
             //await ItemDeleteMethod();
+            SelectedItem = null;
+            await RefreshItems();
+        }
+
+        [RelayCommand]
+        public async Task EditItem(ListItem item)
+        {
+            if (item == null) { return; }
+            await SelectItem(item);
+            await Edit();
         }
 
         [RelayCommand]
         public async Task Edit()
         {
-            if (SelectedItem == null) { return; }
-            //await ItemEditMethod();
+            if (SelectedItem == null || SelectedItem.Entity == null || ActiveDetailView == null) { return; }
+            SelectedItem.Entity.IsDraft = true;
+            await restService.Put((dynamic)SelectedItem.Entity);
+            await ActiveDetailView.LoadEntity(SelectedItem.Entity);
+            var draftFilter = FilterOptions.FirstOrDefault(f => f.Type == FilterType.Draft);
+            if (draftFilter == null) { return; }
+            await ActivateFilter(draftFilter);
         }
 
         private async Task<IRequestResult?> ItemGetMethod(RequestParameters parameters)

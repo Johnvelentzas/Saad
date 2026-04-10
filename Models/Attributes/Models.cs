@@ -7,6 +7,7 @@ namespace Models.Attributes
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         [ForeignKey("ProductCategories")]
         public int CategoryId { get; set; }
         public required string ModelName { get; set; }

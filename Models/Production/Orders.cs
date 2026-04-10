@@ -7,6 +7,7 @@ namespace Models.Production
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         [ForeignKey("Customers")]
         public required int CustomerId { get; set; }
         public required bool IsCompleted { get; set; }

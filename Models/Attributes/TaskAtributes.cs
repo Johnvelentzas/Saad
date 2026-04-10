@@ -7,6 +7,7 @@ namespace Models.Attributes
     {
         [Key]
         public int Id { get; set; }
+        public bool IsDraft { get; set; } = false;
         [ForeignKey("Tasks")]
         public required int TaskId { get; set; }
         [ForeignKey("AttributeValues")]
