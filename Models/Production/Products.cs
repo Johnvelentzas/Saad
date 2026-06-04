@@ -8,6 +8,7 @@ namespace Models.Production
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
+        public int FromId { get; set; } = 0;
         [ForeignKey("Orders")]
         public required int OrderId { get; set; }
         [ForeignKey("ProductCategories")]
@@ -16,7 +17,7 @@ namespace Models.Production
         public int ModelId { get; set; }
         public required bool IsCompleted { get; set; }
         [DataType(DataType.Date)]
-        public required DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         [DataType(DataType.Date)]
         public required DateTime? ExpectedStartDate { get; set; }
         [DataType(DataType.Date)]

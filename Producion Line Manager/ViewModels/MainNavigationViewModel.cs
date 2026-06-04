@@ -51,20 +51,32 @@ namespace Producion_Line_Manager.ViewModels
         {
             if (IsBusy) return;
 
-            IsBusy = true;
+            try
+            {
+                IsBusy = true;
 
-            var savedUserId = Preferences.Default.Get("UserId", "NoUser");
-            if (savedUserId == "NoUser")
+                var savedUserId = Preferences.Default.Get("UserId", "NoUser");
+                if (savedUserId == "NoUser")
+                {
+                    await navigationService.NavigateTo<UserSelectionPage>();
+                    IsBusy = false;
+                    return;
+                }
+                var foundUser = await restService.Get<Users>(int.Parse(savedUserId));
+                if (foundUser != null)
+                {
+                    User = foundUser;
+                }
+            }
+            catch (Exception ex)
             {
-                await navigationService.NavigateTo<UserSelectionPage>();
+                Debug.WriteLine($"Error fetching processes: {ex.Message}");
+            }
+            finally
+            {
                 IsBusy = false;
-                return;
             }
-            var foundUser = await restService.Get<Users>(int.Parse(savedUserId));
-            if (foundUser != null)
-            {
-                User = foundUser;
-            }
+
 
 
 

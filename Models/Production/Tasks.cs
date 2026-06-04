@@ -8,10 +8,13 @@ namespace Models.Production
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
+        public int FromId { get; set; } = 0;
         [ForeignKey("Processes")]
         public required int ProcessId { get; set; }
         [ForeignKey("Products")]
         public required int ProductId { get; set; }
         public required bool IsCompleted { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

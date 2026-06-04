@@ -23,15 +23,17 @@ namespace Saad_Web_API.Data
             {
                 var admin = new Models.Production.Users
                 {
-                    Id = 1,
                     Name = "Admin",
                 };
 
                 var user = new Models.Production.Users
                 {
-                    Id = 2,
                     Name = "Simple User",
                 };
+
+                _context.Users.Add(admin);
+                _context.Users.Add(user);
+                _context.SaveChanges();
 
                 var adminProcesses = new List<Models.Production.UserProcesses>();
                 foreach (var process in _context.Processes)
@@ -56,9 +58,7 @@ namespace Saad_Web_API.Data
                     ProcessId = _context.Processes.First(p => p.Type == Models.Production.ProcessesType.Sew).Id
                 });
 
-                _context.Users.Add(admin);
                 _context.UserProcesses.AddRange(adminProcesses);
-                _context.Users.Add(user);
                 _context.UserProcesses.AddRange(userProcesses);
                 _context.SaveChanges();
             }

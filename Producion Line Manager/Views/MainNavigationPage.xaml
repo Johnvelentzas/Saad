@@ -58,7 +58,32 @@
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
                     </Border>
+
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}">
+                        <BindableLayout.EmptyView>
+                            <VerticalStackLayout VerticalOptions="Center" 
+                                                 HorizontalOptions="Center" 
+                                                 Spacing="15" 
+                                                 Margin="0, 50, 0, 0">
+
+                                <Label Text="No tabs available" 
+                                       TextColor="Gray" 
+                                       HorizontalOptions="Center" />
+
+                                <Border BackgroundColor="Transparent"
+                                        Padding="10"
+                                        HorizontalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding FetchDataCommand}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label FontFamily="Icons" 
+                                           Text="&#xe5d5;" 
+                                           FontSize="40"
+                                           TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                </Border>
+
+                            </VerticalStackLayout>
+                        </BindableLayout.EmptyView>
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="helpers:TabItem">
                                 <Border StrokeThickness="0"
@@ -100,11 +125,25 @@
                                                x:Name="TabName"/>
                                         <Border x:Name="ExpandButton"
                                                 Grid.Column="2"
-                                                HeightRequest="20"
-                                                WidthRequest="20"
-                                                Background="LightGrey"
+                                                HeightRequest="24"
+                                                WidthRequest="24"
                                                 StrokeThickness="0"
                                                 IsVisible="False">
+                                            <Label Text="&#xe313;" 
+                                                   FontFamily="Icons"
+                                                   FontSize="24"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label"
+                                                                 Binding="{Binding IsExpanded}"
+                                                                 Value="True">
+                                                        <Setter Property="Text"
+                                                                Value="&#xe316;"/>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="8"/>
                                             </Border.StrokeShape>

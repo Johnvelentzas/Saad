@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Models;
-using Models.Finances;
-using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using Producion_Line_Manager.ViewModels;
+using Producion_Line_Manager.ViewModels.DetailsViewModels;
 using Producion_Line_Manager.Views;
+using Producion_Line_Manager.Views.DetailsViews;
 
 namespace Producion_Line_Manager
 {
@@ -18,6 +17,7 @@ namespace Producion_Line_Manager
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
+                    fonts.AddFont("MaterialSymbolsOutlined-Regular.ttf", "Icons");
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("SFPRODISPLAYBLACKITALIC.OTF", "SFProDisplayBlackItalic");
@@ -62,6 +62,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddTransient<TabListViewModel>();
             mauiAppBuilder.Services.AddTransient<OverviewViewModel>();
 
+            mauiAppBuilder.Services.AddTransient<CustomersViewModel>();
+
             return mauiAppBuilder;
         }
 
@@ -72,6 +74,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddSingleton<UserSelectionPage>();
             mauiAppBuilder.Services.AddTransient<TabListView>();
             mauiAppBuilder.Services.AddTransient<OverviewView>();
+
+            mauiAppBuilder.Services.AddTransient<CustomersView>();
 
             return mauiAppBuilder;
         }

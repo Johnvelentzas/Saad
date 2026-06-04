@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.CustomersView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             x:DataType="vm:CustomersViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10"
+                IsVisible="{Binding IsNotDraft}">
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="10"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="{Binding CustomerLastName}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                    <Label
+                        Text="{Binding CustomerName}"
+                        FontSize="24"/>
+                </HorizontalStackLayout>
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout
+                        Padding="18, 0, 18, 0">
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Email"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding Email}"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8"/>
+                        </Grid>
+                        <Border
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Telephone"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding Telephone}"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8"/>
+                        </Grid>
+                        <Border
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Tax Number"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding TaxNumber}"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8"/>
+                        </Grid>
+                        <Border
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Type"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding CustomerType}"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <VerticalStackLayout Margin="0, 15, 0, 0"
+                                     Spacing="10">
+                    <Grid ColumnDefinitions="*, *, *"
+                          Padding="15, 0, 15, 0">
+                        <HorizontalStackLayout Spacing="5"
+                                               Grid.Column="0"
+                                               HorizontalOptions="Start">
+                            <Label Text="{Binding NumberOfOrders}"/>
+                            <Label Text="Orders"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="5"
+                                               Grid.Column="1"
+                                               HorizontalOptions="Center">
+                            <Label Text="{Binding NumberOfActiveOrders}"/>
+                            <Label Text="Active"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="5"
+                                               Grid.Column="2"
+                                               HorizontalOptions="End">
+                            <Label Text="{Binding NumberOfCompletedOrders}"/>
+                            <Label Text="Completed"/>
+                        </HorizontalStackLayout>
+                    </Grid>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <RefreshView IsRefreshing="{Binding IsBusy}"
+                                     Command="{Binding RefreshOrdersCommand}">
+                            <CollectionView ItemsSource="{Binding Orders}">
+                                <CollectionView.EmptyView>
+                                    <Grid HorizontalOptions="Center"
+                                                         VerticalOptions="Center">
+                                        <Label Text="No Orders Found"/>
+                                    </Grid>
+                                </CollectionView.EmptyView>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Orders">
+
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </RefreshView>
+                    </Border>
+                    <Grid ColumnDefinitions="*, auto"
+                          Padding="15, 0, 15, 0">
+                        <Border Grid.Column="1"
+                                Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                                Padding="10">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CreateNewOrderCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Create New Order"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
+
+                <Label Text="Edit Customer" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="First Name" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding CustomerName}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Last Name" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding CustomerLastName}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Email" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding Email}" Keyboard="Email" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Telephone" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding Telephone}" Keyboard="Telephone" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Tax Number" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding TaxNumber}" Keyboard="Numeric" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Type" FontSize="14" TextColor="Gray" />
+                    <Border StrokeShape="RoundRectangle 10" Background="{AppThemeBinding Dark={StaticResource Gray900}, Light={StaticResource Gray100}}">
+                        <Picker ItemsSource="{Binding CustomerTypes}" SelectedItem="{Binding CustomerType}" />
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>

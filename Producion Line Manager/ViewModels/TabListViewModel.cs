@@ -1,13 +1,15 @@
-﻿using Producion_Line_Manager.Services;
-using Producion_Line_Manager.Helpers;
-using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Models.Finances;
+using CommunityToolkit.Mvvm.Messaging;
 using Models;
-using Models.Production;
 using Models.Attributes;
+using Models.Finances;
+using Models.Production;
+using Producion_Line_Manager.Helpers;
+using Producion_Line_Manager.Messages;
+using Producion_Line_Manager.Services;
 using Producion_Line_Manager.Views.DetailsViews;
+using System.Collections.ObjectModel;
 
 namespace Producion_Line_Manager.ViewModels
 {
@@ -30,9 +32,6 @@ namespace Producion_Line_Manager.ViewModels
 
         [ObservableProperty]
         private EntitySortItem _activeSort = new EntitySortItem();
-
-        [ObservableProperty]
-        private bool _openSortMenu = false;
 
         [ObservableProperty]
         private int _itemNumber = 0;
@@ -58,17 +57,16 @@ namespace Producion_Line_Manager.ViewModels
         [ObservableProperty]
         private ObservableCollection<ListItem> _items = new ObservableCollection<ListItem>();
 
+        [NotifyPropertyChangedFor(nameof(IsDraft))]
+        [NotifyPropertyChangedFor(nameof(IsNotDraft))]
         [ObservableProperty]
         private ListItem? _selectedItem;
 
+        public bool IsDraft => TopEntity?.IsDraft ?? false;
+        public bool IsNotDraft => !IsDraft;
+
         [ObservableProperty]
         private bool _hasSearchBar = true;
-
-        [ObservableProperty]
-        private bool _hasEditButton = false;
-
-        [ObservableProperty]
-        private bool _hasDeleteButton = false;
 
         [ObservableProperty]
         private bool _hasCreateButton = true;
@@ -79,13 +77,88 @@ namespace Producion_Line_Manager.ViewModels
         [ObservableProperty]
         private string _searchQuerry = String.Empty;
 
+        private CancellationTokenSource? _searchCancellationTokenSource;
+
+        private PeriodicTimer? _autoRefreshTimer;
+        private CancellationTokenSource? _autoRefreshCts;
+
         [ObservableProperty]
-        private BaseEntityViewModel? _activeDetailView;
+        private string _previousPageTitle = String.Empty;
+
+        public bool HasBackButton => _entityStack.Count > 0;
+
+        [ObservableProperty]
+        private Stack<IEntity> _entityStack = new Stack<IEntity>();
+
+        [ObservableProperty]
+        private IEntity? _topEntity;
+
+        [ObservableProperty]
+        private BaseEntityView? _activeDetailView;
 
         public TabListViewModel()
         {
             Title = "List View";
             restService = ServiceHelper.GetService<RestService>();
+            StartAutoRefresh();
+            WeakReferenceMessenger.Default.Register<TabListViewModel, OpenNewEntityMessage>(this, (recipient, message) =>
+            {
+                recipient.PushToStack(message.Value);
+            });
+        }
+
+
+        public void StartAutoRefresh()
+        {
+            StopAutoRefresh();
+
+            _autoRefreshCts = new CancellationTokenSource();
+
+            _autoRefreshTimer = new PeriodicTimer(TimeSpan.FromMinutes(15));
+
+            _ = RunRefreshLoopAsync(_autoRefreshCts.Token);
+        }
+
+        public void StopAutoRefresh()
+        {
+            _autoRefreshCts?.Cancel();
+            _autoRefreshTimer?.Dispose();
+        }
+
+        private async Task RunRefreshLoopAsync(CancellationToken token)
+        {
+            try
+            {
+                while (await _autoRefreshTimer!.WaitForNextTickAsync(token))
+                {
+                    await RefreshItems();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // The loop was safely cancelled
+            }
+        }
+
+        async partial void OnSearchQuerryChanged(string value)
+        {
+            if (value.Length < 4 && value.Length > 0) { return; }
+            _searchCancellationTokenSource?.Cancel();
+            _searchCancellationTokenSource = new CancellationTokenSource();
+            try
+            {
+                await Task.Delay(1000, _searchCancellationTokenSource.Token);
+                await RefreshItems();
+            }
+            catch (TaskCanceledException)
+            {
+
+            }
+        }
+
+        async partial void OnActiveSortChanged(EntitySortItem value)
+        {
+            await RefreshItems();
         }
 
         [RelayCommand]
@@ -105,10 +178,10 @@ namespace Producion_Line_Manager.ViewModels
         public async Task SetItemSource()
         {
             if (CurrentTab == null) { return; }
+            CurrentProcessesType = CurrentTab.Type;
             SortOptions.Add(new EntitySortItem(SortType.IdDecending));
             SortOptions.Add(new EntitySortItem(SortType.IdAccending));
             ActiveSort = SortOptions[0];
-            CurrentProcessesType = CurrentTab.Type;
             switch (CurrentTab.Type)
             {
                 case Models.Production.ProcessesType.Customers:
@@ -191,11 +264,11 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task RefreshItems()
         {
+
             Page = 1;
             TotalPages = 1;
             Items.Clear();
             UrgentItems.Clear();
-            await DeselectItem();
             await LoadMoreItems();
         }
 
@@ -254,15 +327,8 @@ namespace Producion_Line_Manager.ViewModels
             }
             SelectedItem = item;
             SelectedItem.IsSelected = true;
-            HasDeleteButton = true;
-            if (!item.Entity.IsDraft)
-            {
-                HasEditButton = true;
-            } else
-            {
-                HasEditButton = false;
-            }
-            await AttachDetailsView();
+            await ClearStack();
+            PushToStack(SelectedItem.Entity);
         }
 
         [RelayCommand]
@@ -273,24 +339,92 @@ namespace Producion_Line_Manager.ViewModels
                 SelectedItem.IsSelected = false;
             }
             SelectedItem = null;
-            HasDeleteButton = false;
-            HasEditButton = false;
             ActiveDetailView = null;
+            await ClearStack();
+        }
+
+        private async Task ClearStack()
+        {
+            EntityStack.Clear();
+            TopEntity = null;
+            PreviousPageTitle = String.Empty;
+            OnPropertyChanged(nameof(HasBackButton));
+        }
+
+        private void PushToStack(IEntity entity)
+        {
+            if (entity == null) { return; }
+            if (TopEntity != null)
+            {
+                EntityStack.Push(TopEntity);
+            }
+            UpdatePreviousPageTitle();
+            TopEntity = entity;
+            OnPropertyChanged(nameof(HasBackButton));
+            UpdateDetailsView();
         }
 
         [RelayCommand]
-        public async Task AttachDetailsView()
+        public async Task GoBack()
         {
-            if (SelectedItem == null) { return; }
-            var entity = SelectedItem.Entity;
-
-            ActiveDetailView = entity switch
+            if (EntityStack.Count > 0)
             {
-                //TODO Add the content views for every entity
-                Customers => new BaseEntityViewModel(),
+                TopEntity = EntityStack.Pop();
+            }
+            else
+            {
+                TopEntity = null;
+            }
+            UpdatePreviousPageTitle();
+            UpdateDetailsView();
+        }
+
+        private void UpdatePreviousPageTitle()
+        {
+            OnPropertyChanged(nameof(HasBackButton));
+            if (EntityStack.Count == 0)
+            {
+                PreviousPageTitle = String.Empty;
+            }
+            else
+            {
+                IEntity previous = EntityStack.Peek();
+                if (previous == null) { return; }
+
+                PreviousPageTitle = previous switch
+                {
+                    Customers c => c.LastName ?? "No Last Name Customer",
+                    Orders o => $"Order #{o.Id}",
+                    Products p => $"Product #{p.Id}",
+                    Models.Attributes.Models m => m.ModelName ?? "Unknown Model",
+                    ProductCategories pc => pc.CategoryName ?? "Unknown Category",
+                    Tasks t => $"Task #{t.Id}",
+                    _ => String.Empty,
+                };
+            }
+        }
+
+
+        private void UpdateDetailsView()
+        {
+            if (TopEntity == null)
+            {
+                ActiveDetailView = null;
+            }
+            if(TopEntity == null) { return; }
+            ActiveDetailView = (dynamic)TopEntity switch
+            {
+                Customers => ServiceHelper.GetService<CustomersView>(),
                 _ => throw new NotImplementedException(),
             };
-            await ActiveDetailView.LoadEntity(entity);
+            switch ((dynamic)ActiveDetailView)
+            {
+                case CustomersView customersView:
+                    customersView.LoadEntity((Customers)TopEntity);
+                    break;
+            }
+            OnPropertyChanged(nameof(IsDraft));
+            OnPropertyChanged(nameof(IsNotDraft));
         }
 
         [RelayCommand]
@@ -301,42 +435,118 @@ namespace Producion_Line_Manager.ViewModels
 
         }
 
+
+
         [RelayCommand]
         public async Task DeleteItem(ListItem item)
         {
             if (item == null) { return; }
-            await SelectItem(item);
-            await Delete();
+            await restService.DeleteEntity(item.Entity);
+            await RefreshItems();
         }
 
         [RelayCommand]
         public async Task Delete()
         {
-            if (SelectedItem == null) { return; }
-            //await ItemDeleteMethod();
-            SelectedItem = null;
+            if (TopEntity == null) { return; }
+            await restService.DeleteEntity(TopEntity);
+            await GoBack();
             await RefreshItems();
         }
 
-        [RelayCommand]
-        public async Task EditItem(ListItem item)
-        {
-            if (item == null) { return; }
-            await SelectItem(item);
-            await Edit();
-        }
 
         [RelayCommand]
         public async Task Edit()
         {
-            if (SelectedItem == null || SelectedItem.Entity == null || ActiveDetailView == null) { return; }
-            SelectedItem.Entity.IsDraft = true;
-            await restService.Put((dynamic)SelectedItem.Entity);
-            await ActiveDetailView.LoadEntity(SelectedItem.Entity);
-            var draftFilter = FilterOptions.FirstOrDefault(f => f.Type == FilterType.Draft);
-            if (draftFilter == null) { return; }
-            await ActivateFilter(draftFilter);
+            if (TopEntity == null || TopEntity.FromId < 0) { return; }
+            TopEntity.IsDraft = true;
+            TopEntity.FromId = TopEntity.Id;
+            var newEntity = await restService.Post((dynamic)TopEntity);
+            TopEntity = newEntity;
+            UpdateDetailsView();
         }
+
+        [RelayCommand]
+        public async Task Cancel()
+        {
+            if (TopEntity == null || TopEntity.FromId < 0) { return; }
+            await restService.DeleteEntity(TopEntity);
+            if (TopEntity.FromId == 0)
+            {
+                await GoBack();
+                return;
+            }
+            TopEntity = TopEntity switch
+            {
+                Customers => await restService.Get<Customers>(TopEntity.FromId),
+                Orders => await restService.Get<Orders>(TopEntity.FromId),
+                Products => await restService.Get<Products>(TopEntity.FromId),
+                Models.Attributes.Models => await restService.Get<Models.Attributes.Models>(TopEntity.FromId),
+                ProductCategories => await restService.Get<ProductCategories>(TopEntity.FromId),
+                Tasks => await restService.Get<Tasks>(TopEntity.FromId),
+                _ => throw new NotImplementedException(),
+            };
+            await RefreshItems();
+            UpdateDetailsView();
+        }
+
+        [RelayCommand]
+        public async Task Save()
+        {
+            if (TopEntity == null) { return; }
+            ActiveDetailView?.SaveEntity();
+            if (TopEntity.Id > 0)
+            {
+                await restService.DeleteEntity(TopEntity);
+            }
+            TopEntity.IsDraft = false;
+            TopEntity.Id = TopEntity.FromId;
+            if (TopEntity.Id == 0)
+            {
+                restService.Post((dynamic)TopEntity);
+            }
+            else
+            {
+                restService.Put((dynamic)TopEntity);
+            }
+            await RefreshItems();
+            UpdateDetailsView();
+        }
+
+        [RelayCommand]
+        public async Task Create()
+        {
+            await DeselectItem();
+            await ClearStack();
+            IEntity entity;
+            switch (CurrentProcessesType)
+            {
+                case ProcessesType.Customers:
+                    entity = new Customers() { IsDraft = true, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.Orders:
+                    entity = new Orders() { IsDraft = true, CustomerId = 0, IsCompleted = false, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.Products:
+                    entity = new Products() { IsDraft = true, CategoryId = 0, OrderId = 0, ExpectedFinishDate = DateTime.Now, ExpectedStartDate = DateTime.Now, IsCompleted = false, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.Models:
+                    entity = new Models.Attributes.Models() { IsDraft = true, ModelName = string.Empty, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.ProductCategories:
+                    entity = new ProductCategories() { IsDraft = true, CategoryName = string.Empty, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.Tasks:
+                    entity = new Tasks() { IsDraft = true, ProcessId = 0, ProductId = 0, IsCompleted = false, CreatedDate = DateTime.Now };
+                    break;
+                default:
+                    throw new NotImplementedException($"Creation not supported for type {CurrentProcessesType}");
+            }
+            restService.Post((dynamic)entity);
+            PushToStack(entity);
+            await RefreshItems();
+        }
+
 
         private async Task<IRequestResult?> ItemGetMethod(RequestParameters parameters)
         {
@@ -400,20 +610,6 @@ namespace Producion_Line_Manager.ViewModels
             FilterOptions.Add(filter);
             ActiveFilters.Remove(filter);
             await RefreshItems();
-        }
-
-        [RelayCommand]
-        public async Task SetSortOption(EntitySortItem sort)
-        {
-            ActiveSort = sort;
-            OpenSortMenu = false;
-            await RefreshItems();
-        }
-
-        [RelayCommand]
-        public void OpenSortOptionsMenu(EntitySortItem sort)
-        {
-            OpenSortMenu = true;
         }
 
     }

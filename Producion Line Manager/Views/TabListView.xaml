@@ -32,7 +32,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <VerticalStackLayout Grid.Column="0">
                     <Label Text="{Binding Title}"
@@ -53,17 +53,17 @@
                 <Border Grid.Column="2"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        Padding="10, 0, 10, 0"
-                        HeightRequest="30"
-                        Background="{AppThemeBinding Dark={StaticResource Gray900 }, Light={StaticResource Gray100}}">
+                        Background="{AppThemeBinding Dark={StaticResource Gray900}, Light={StaticResource White}}">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=OpenSortOptionsMenuCommand}"/>
-                    </Border.GestureRecognizers>
-                    <Label Text="{Binding ActiveSort.Name}"
-                           VerticalOptions="Center"/>
+
+                    <Picker VerticalOptions="Center"
+                            Margin="10,0,10,0"
+                            BackgroundColor="Transparent"
+                            ItemsSource="{Binding SortOptions}"
+                            SelectedItem="{Binding ActiveSort}"
+                            ItemDisplayBinding="{Binding Name}" />
                 </Border>
             </Grid>
             <ScrollView Padding="5"
@@ -85,7 +85,7 @@
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="15" />
                                     </Border.StrokeShape>
-                                    
+
                                     <Label Text="{Binding Name}"
                                            VerticalOptions="Center"/>
                                 </Border>
@@ -186,42 +186,43 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <ActivityIndicator Grid.Row="3"
+                   IsRunning="{Binding IsBusy}"
+                   IsVisible="{Binding IsBusy}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   WidthRequest="50"
+                   HeightRequest="50"
+                   Color="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}" />
+            <Border Grid.Row="3"
+                    WidthRequest="60"
+                    HeightRequest="60"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="0, 0, 20, 20"
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    StrokeThickness="0">
+                <Border.Shadow>
+                    <Shadow Brush="Black"
+                            Opacity="0.4"
+                            Offset="0, 0"
+                            Radius="5"/>
+                </Border.Shadow>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CreateCommand}"/>
+                </Border.GestureRecognizers>
+
+                <Label Text="&#xe145;" 
+                       FontFamily="Icons"
+                       FontSize="32"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Border>
         </Grid>
-        <Border Grid.Column="0"
-                Margin="20"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start"
-                Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
-                IsVisible="{Binding OpenSortMenu}">
-            <Border.Shadow>
-                <Shadow Brush="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
-                        Opacity="0.5"
-                        Offset="0, 0"
-                        Radius="3"/>
-            </Border.Shadow>
-            <VerticalStackLayout BindableLayout.ItemsSource="{Binding SortOptions}"
-                                 Spacing="0">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="helpers:EntitySortItem">
-                        <VerticalStackLayout>
-                            <HorizontalStackLayout Padding="10, 5, 10, 5">
-                                <HorizontalStackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=SetSortOptionCommand}"
-                                                          CommandParameter="{Binding .}"/>
-                                </HorizontalStackLayout.GestureRecognizers>
-                                <Label Text="{Binding Name}"
-                                       FontSize="18"/>
-                            </HorizontalStackLayout>
-                            <Border HorizontalOptions="Fill"
-                                    HeightRequest="1"
-                                    BackgroundColor="DarkGrey">
-                                
-                            </Border>
-                        </VerticalStackLayout>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </VerticalStackLayout>
-        </Border>
         <BoxView Grid.Column="1"
                  Color="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
         </BoxView>
@@ -231,6 +232,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -249,7 +251,7 @@
                             HeightRequest="44"
                             IsVisible="{Binding HasSearchBar}">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="25"/>
+                            <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
                         <SearchBar Placeholder="Search"
                                    Text="{Binding SearchQuerry}"
@@ -262,9 +264,9 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding HasEditButton}">
+                            IsVisible="{Binding IsNotDraft}">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="25"/>
+                            <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding EditCommand}"/>
@@ -278,9 +280,9 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding HasDeleteButton}">
+                            IsVisible="{Binding IsNotDraft}">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="25"/>
+                            <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding DeleteCommand}"/>
@@ -289,9 +291,65 @@
                                VerticalOptions="Center"
                                FontSize="16"/>
                     </Border>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="20, 0, 20, 0"
+                            HeightRequest="44"
+                            IsVisible="{Binding IsDraft}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Cancel"
+                               VerticalOptions="Center"
+                               FontSize="16"/>
+                    </Border>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="20, 0, 20, 0"
+                            HeightRequest="44"
+                            IsVisible="{Binding IsDraft}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SaveCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Save"
+                               VerticalOptions="Center"
+                               FontSize="16"/>
+                    </Border>
                 </HorizontalStackLayout>
             </ScrollView>
-            <ContentView Grid.Row="1"
+            <HorizontalStackLayout Grid.Row="1"
+                                   Padding="20, 5, 20, 5">
+                <Border WidthRequest="30"
+                        HeightRequest="30"
+                        StrokeThickness="0"
+                        Background="Transparent"
+                        IsVisible="{Binding HasBackButton}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="5" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Border.GestureRecognizers>
+
+                    <Label Text="&#xe5e0;" 
+                           FontFamily="Icons"
+                           FontSize="20"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+                <Label Text="{Binding PreviousPageTitle}"
+                       IsVisible="{Binding HasBackButton}"/>
+            </HorizontalStackLayout>
+            <ContentView Grid.Row="2"
                          Content="{Binding ActiveDetailView}">
                 
             </ContentView>

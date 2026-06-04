@@ -1,5 +1,8 @@
 ﻿
 using Models;
+using Models.Attributes;
+using Models.Finances;
+using Models.Production;
 using Producion_Line_Manager.Helpers;
 using System.Net.Http.Json;
 
@@ -25,6 +28,10 @@ namespace Producion_Line_Manager.Services
             where T : class, IEntity
         {
             parameters ??= new();
+            if (parameters.Filters.Any(o => o == FilterType.Draft))
+            {
+
+            }
             return await Get<RequestResult<T>>(parameters.BuildURI(URI.GetURI<T>()));
         }
 
@@ -42,6 +49,10 @@ namespace Producion_Line_Manager.Services
             where A : class, IEntity
         {
             parameters ??= new();
+            if (parameters.Filters.Any(o => o == FilterType.Draft))
+            {
+
+            }
             return await Get<RequestResult<A>>(parameters.BuildURI(URI.GetURI<T, A>(id)));
         }
 
@@ -56,8 +67,8 @@ namespace Producion_Line_Manager.Services
             {
                 return await response.Content.ReadFromJsonAsync<T>();
             }
-            throw new Exception($"Failed to retrieve data from {uri}. Status code: {response.StatusCode}");
-
+            //throw new Exception($"Failed to retrieve data from {uri}. Status code: {response.StatusCode}");
+            return null;
         }
 
         public async Task Put<T>(T item)
@@ -66,24 +77,67 @@ namespace Producion_Line_Manager.Services
             var response = await _client.PutAsJsonAsync(URI.GetURI<T>(item.Id), item);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Failed to update item with id {item.Id}. Status code: {response.StatusCode}");
+                //throw new Exception($"Failed to update item with id {item.Id}. Status code: {response.StatusCode}");
             }
         }
 
-        public async Task Post<T>(T item)
+        public async Task<T?> Post<T>(T item)
             where T : class, IEntity
         {
+            item.Id = 0;
             var response = await _client.PostAsJsonAsync(URI.GetURI<T>(), item);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<T>();
+            }
+
+            //throw new Exception($"Failed to create item. Status code: {response.StatusCode}");
+            return null;
+        }
+
+        public async Task Delete<T>(int id)
+            where T : class, IEntity
+        {
+            var response = await _client.DeleteAsync(URI.GetURI<T>(id));
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Failed to create item. Status code: {response.StatusCode}");
+                //throw new Exception($"Failed to delete item with id {id}. Status code: {response.StatusCode}");
+            }
+        }
+
+        public async Task DeleteEntity(IEntity entity)
+        {
+            switch (entity)
+            {
+                case Customers c:
+                    await Delete<Customers>(entity.Id);
+                    break;
+                case Orders o:
+                    await Delete<Orders>(entity.Id);
+                    break;
+                case Products p:
+                    await Delete<Products>(entity.Id);
+                    break;
+                case Models.Attributes.Models m:
+                    await Delete<Models.Attributes.Models>(entity.Id);
+                    break;
+                case ProductCategories pc:
+                    await Delete<ProductCategories>(entity.Id);
+                    break;
+                case Tasks t:
+                    await Delete<Tasks>(entity.Id);
+                    break;
+                default:
+                    throw new NotImplementedException($"Delete not supported for type {entity.GetType().Name}");
             }
         }
     }
 
     public static class URI
     {
-        public const string RootURI = "http://localhost:5167/api";
+        //public const string RootURI = "http://localhost:5167/api";
+        public const string RootURI = "https://saadwebapitest-csacgsbjfqhfhyht.centralus-01.azurewebsites.net/api";
 
         public const string Areas = $"/areas";
         public const string AtributeValues = $"/atributevalues";

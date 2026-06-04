@@ -9,8 +9,11 @@ namespace Models.Attributes
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
+        public int FromId { get; set; } = 0;
         [ForeignKey("Pattern")]
         public required int PatternId { get; set; }
         public required string Name { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }
