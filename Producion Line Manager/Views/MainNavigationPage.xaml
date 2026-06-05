@@ -58,31 +58,52 @@
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
                     </Border>
-
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayTabs}">
                         <BindableLayout.EmptyView>
-                            <VerticalStackLayout VerticalOptions="Center" 
-                                                 HorizontalOptions="Center" 
-                                                 Spacing="15" 
-                                                 Margin="0, 50, 0, 0">
+                            <Grid Margin="0, 50, 0, 0">
+                                <VerticalStackLayout HorizontalOptions="Center" 
+                                                     VerticalOptions="Center" 
+                                                     Spacing="15"
+                                                     IsVisible="{Binding IsBusy}">
 
-                                <Label Text="No tabs available" 
-                                       TextColor="Gray" 
-                                       HorizontalOptions="Center" />
+                                    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                                                       Color="{AppThemeBinding Light=Black, Dark=White}" 
+                                                       HorizontalOptions="Center" />
 
-                                <Border BackgroundColor="Transparent"
-                                        Padding="10"
-                                        HorizontalOptions="Center">
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding FetchDataCommand}"/>
-                                    </Border.GestureRecognizers>
-                                    <Label FontFamily="Icons" 
-                                           Text="&#xe5d5;" 
-                                           FontSize="40"
-                                           TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                </Border>
+                                    <Label Text="Loading data..." 
+                                           TextColor="Gray" 
+                                           HorizontalOptions="Center" />
+                                </VerticalStackLayout>
 
-                            </VerticalStackLayout>
+                                <VerticalStackLayout HorizontalOptions="Center" 
+                                                     VerticalOptions="Center" 
+                                                     Spacing="15">
+                                    <VerticalStackLayout.Triggers>
+                                        <DataTrigger TargetType="VerticalStackLayout" 
+                                                     Binding="{Binding IsBusy}" 
+                                                     Value="True">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </VerticalStackLayout.Triggers>
+
+                                    <Label Text="No tabs available" 
+                                           TextColor="Gray" 
+                                           HorizontalOptions="Center" />
+
+                                    <Border BackgroundColor="Transparent"
+                                            Padding="10"
+                                            HorizontalOptions="Center">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding FetchDataCommand}"/>
+                                        </Border.GestureRecognizers>
+                                        <Label FontFamily="Icons" 
+                                               Text="&#xe5d5;" 
+                                               FontSize="40"
+                                               TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                            </Grid>
                         </BindableLayout.EmptyView>
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="helpers:TabItem">

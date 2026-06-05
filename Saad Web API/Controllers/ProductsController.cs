@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using Models.Production;
 using Saad_Web_API.Data;
 
@@ -63,6 +64,28 @@ namespace Saad_Web_API.Controllers
 
             return Ok(await querry.ToListAsync());
         }
+
+        [HttpGet("~/api/orders/{id}/products")]
+        public async Task<ActionResult<RequestResult<Products>>> GetOrderProducts(
+            [FromRoute] int id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.IdAccending)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<Products> query = await GetQuery<Products>();
+            query = await OrderQuery(query, sort);
+            query = query.Where(o => o.OrderId == id);
+
+            var pageResult = await Paginate(query, page, pageSize);
+            return Ok(pageResult);
+        }
+
 
         //GET api/products/{id}/tasks
         [HttpGet("{id}/tasks")]

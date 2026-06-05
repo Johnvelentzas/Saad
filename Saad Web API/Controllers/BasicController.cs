@@ -42,17 +42,6 @@ namespace Saad_Web_API.Controllers
             };
         }
 
-        /*
-        internal async Task<IQueryable<T>> SearchEntities(IQueryable<T> entities, List<SearchTerm> terms)
-        {
-            if (terms == null || terms.Count == 0) { return entities; }
-            foreach (var term in terms)
-            {
-                entities = await SearchEntities(entities, term);
-            }
-            return entities;
-        }
-        */
 
         protected virtual async Task<IQueryable<T>> SearchEntities(
             IQueryable<T> query, 
@@ -106,13 +95,14 @@ namespace Saad_Web_API.Controllers
         // GET api/[controller]?{page}&{pagesize}&{sort}
         [HttpGet]
         public async Task<ActionResult<RequestResult<T>>> GetPage(
+            [FromQuery] List<FilterType> filters,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
             [FromQuery] SortType sort = SortType.IdDecending)
         {
             IQueryable<T> query = await GetQuery<T>();
             query = await OrderQuery(query, sort);
-            query = await FilterEntities(query, new List<FilterType>());
+            query = await FilterEntities(query, filters);
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }

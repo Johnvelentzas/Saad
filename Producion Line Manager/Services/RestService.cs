@@ -28,10 +28,6 @@ namespace Producion_Line_Manager.Services
             where T : class, IEntity
         {
             parameters ??= new();
-            if (parameters.Filters.Any(o => o == FilterType.Draft))
-            {
-
-            }
             return await Get<RequestResult<T>>(parameters.BuildURI(URI.GetURI<T>()));
         }
 
@@ -49,10 +45,6 @@ namespace Producion_Line_Manager.Services
             where A : class, IEntity
         {
             parameters ??= new();
-            if (parameters.Filters.Any(o => o == FilterType.Draft))
-            {
-
-            }
             return await Get<RequestResult<A>>(parameters.BuildURI(URI.GetURI<T, A>(id)));
         }
 

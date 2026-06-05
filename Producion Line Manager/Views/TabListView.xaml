@@ -327,6 +327,9 @@
             </ScrollView>
             <HorizontalStackLayout Grid.Row="1"
                                    Padding="20, 5, 20, 5">
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </HorizontalStackLayout.GestureRecognizers>
                 <Border WidthRequest="30"
                         HeightRequest="30"
                         StrokeThickness="0"
@@ -335,9 +338,6 @@
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="5" />
                     </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Border.GestureRecognizers>
 
                     <Label Text="&#xe5e0;" 
                            FontFamily="Icons"
@@ -347,7 +347,9 @@
                            VerticalOptions="Center"/>
                 </Border>
                 <Label Text="{Binding PreviousPageTitle}"
-                       IsVisible="{Binding HasBackButton}"/>
+                       IsVisible="{Binding HasBackButton}"
+                       VerticalOptions="Center"
+                       FontSize="22"/>
             </HorizontalStackLayout>
             <ContentView Grid.Row="2"
                          Content="{Binding ActiveDetailView}">

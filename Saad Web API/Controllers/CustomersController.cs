@@ -61,6 +61,7 @@ namespace Saad_Web_API.Controllers
         }
 
 
+        /**
         //GET api/customers/{id}/orders?{page}&{pagesize}&{sort}
         [HttpGet("{id}/orders")]
         public async Task<ActionResult<RequestResult<Orders>>> GetCustomerOrders(
@@ -75,10 +76,11 @@ namespace Saad_Web_API.Controllers
                 return NotFound();
             }
             IQueryable<Orders> query = await GetQuery<Orders>();
-            query = await OrderQuery(query);
+            query = await OrderQuery(query, sort);
             query = query.Where(o => o.CustomerId == id);
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }
+        **/
     }
 }

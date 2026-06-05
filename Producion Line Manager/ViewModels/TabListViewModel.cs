@@ -101,7 +101,7 @@ namespace Producion_Line_Manager.ViewModels
             Title = "List View";
             restService = ServiceHelper.GetService<RestService>();
             StartAutoRefresh();
-            WeakReferenceMessenger.Default.Register<TabListViewModel, OpenNewEntityMessage>(this, (recipient, message) =>
+            WeakReferenceMessenger.Default.Register<TabListViewModel, OpenEntityMessage>(this, (recipient, message) =>
             {
                 recipient.PushToStack(message.Value);
             });
@@ -415,6 +415,7 @@ namespace Producion_Line_Manager.ViewModels
             ActiveDetailView = (dynamic)TopEntity switch
             {
                 Customers => ServiceHelper.GetService<CustomersView>(),
+                Orders => ServiceHelper.GetService<OrdersView>(),
                 _ => throw new NotImplementedException(),
             };
             switch ((dynamic)ActiveDetailView)
@@ -495,13 +496,17 @@ namespace Producion_Line_Manager.ViewModels
         {
             if (TopEntity == null) { return; }
             ActiveDetailView?.SaveEntity();
-            if (TopEntity.Id > 0)
-            {
-                await restService.DeleteEntity(TopEntity);
-            }
             TopEntity.IsDraft = false;
-            TopEntity.Id = TopEntity.FromId;
-            if (TopEntity.Id == 0)
+            if (TopEntity.FromId > 0)
+            {
+                if(TopEntity.Id > 0)
+                {
+                    await restService.DeleteEntity(TopEntity);
+                }
+                TopEntity.Id = TopEntity.FromId;
+                restService.Put((dynamic)TopEntity);
+            }
+            else if (TopEntity.Id == 0)
             {
                 restService.Post((dynamic)TopEntity);
             }
@@ -509,6 +514,7 @@ namespace Producion_Line_Manager.ViewModels
             {
                 restService.Put((dynamic)TopEntity);
             }
+
             await RefreshItems();
             UpdateDetailsView();
         }

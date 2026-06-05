@@ -48,7 +48,29 @@ namespace Saad_Web_API.Controllers
             return orders;
         }
 
+        [HttpGet("~/api/customers/{id}/orders")]
+        public async Task<ActionResult<RequestResult<Orders>>> GetCustomerOrders(
+            [FromRoute] int id,
+            [FromQuery] List<FilterType> filters,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.IdDecending)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
 
+            IQueryable<Orders> query = await GetQuery<Orders>();
+            query = await OrderQuery(query, sort);
+            query = await FilterEntities(query, filters);
+            query = query.Where(o => o.CustomerId == id);
+            var pageResult = await Paginate(query, page, pageSize);
+            return Ok(pageResult);
+        }
+
+        /**
         //GET api/orders/{id}/products?{page}&{pagesize}&{sort}
         [HttpGet("{id}/products")]
         public async Task<ActionResult<RequestResult<Products>>> GetOrderProducts(
@@ -68,5 +90,6 @@ namespace Saad_Web_API.Controllers
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }
+        **/
     }
 }

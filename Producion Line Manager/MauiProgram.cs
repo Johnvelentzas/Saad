@@ -63,6 +63,7 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddTransient<OverviewViewModel>();
 
             mauiAppBuilder.Services.AddTransient<CustomersViewModel>();
+            mauiAppBuilder.Services.AddTransient<OrdersViewModel>();
 
             return mauiAppBuilder;
         }

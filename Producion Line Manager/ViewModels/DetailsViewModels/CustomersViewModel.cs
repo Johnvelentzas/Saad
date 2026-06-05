@@ -22,6 +22,10 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         private int TotalPages = 1;
         private int PageSize = 20;
 
+        private int DraftPage = 1;
+        private int DraftTotalPages = 1;
+        private int DraftPageSize = 20;
+
 
         [ObservableProperty]
         private string _customerName = string.Empty;
@@ -37,6 +41,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         private CustomerType _customerType = CustomerType.Retail;
 
         [ObservableProperty]
+        private int _numberOfDraftOrders = 0;
+        [ObservableProperty]
         private int _numberOfOrders = 0;
         [ObservableProperty]
         private int _numberOfActiveOrders = 0;
@@ -44,6 +50,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         private int _numberOfCompletedOrders = 0;
         [ObservableProperty]
         private ObservableCollection<Orders> _orders = new ObservableCollection<Orders>();
+        [ObservableProperty]
+        private ObservableCollection<Orders> _draftOrders = new ObservableCollection<Orders>();
         [ObservableProperty]
         private ObservableCollection<CustomerType> _customerTypes = new ObservableCollection<CustomerType>();
         public CustomersViewModel()
@@ -65,7 +73,15 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                 CreatedDate = DateTime.Now,
             };
             await restService.Post(newOrder);
-            WeakReferenceMessenger.Default.Send(new OpenNewEntityMessage(newOrder));
+            WeakReferenceMessenger.Default.Send(new OpenEntityMessage(newOrder));
+        }
+
+        [RelayCommand]
+        public async Task OpenOrder(Orders order)
+        {
+            if (order == null) { return; }
+
+            WeakReferenceMessenger.Default.Send(new OpenEntityMessage(order));
         }
 
 
@@ -97,12 +113,19 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             }
         }
 
+
         [RelayCommand]
         public async Task RefreshOrders()
         {
             Page = 1;
             PageSize = 20;
+            TotalPages = 1;
 
+            DraftPage = 1;
+            DraftPageSize = 20;
+            DraftTotalPages = 1;
+
+            await LoadDrafts();
             await LoadMoreItems();
         }
 
@@ -115,7 +138,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             try
             {
                 var parameters = new RequestParameters(
-                    null,
+                    new List<FilterType>(),
                     null,
                     null,
                     Page,
@@ -128,11 +151,20 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                     return;
                 }
                 TotalPages = result.TotalPages;
-                NumberOfActiveOrders = result.TotalCount;
+                NumberOfOrders = result.TotalCount;
                 foreach(Orders order in result.Items)
                 {
                     Orders.Add(order);
                 }
+                parameters.PageSize = 1;
+                parameters.Filters.Clear();
+                parameters.Filters.Add(FilterType.Active);
+                IRequestResult? activeResult = await restService.Get<Customers, Orders>(Id, parameters);
+                NumberOfActiveOrders = activeResult?.TotalCount ?? 0;
+                parameters.Filters.Clear();
+                parameters.Filters.Add(FilterType.Complete);
+                IRequestResult? completeResult = await restService.Get<Customers, Orders>(Id, parameters);
+                NumberOfCompletedOrders = completeResult?.TotalCount ?? 0;
                 Page++;
             }
             finally
@@ -140,6 +172,41 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                 IsBusy = false;
             }
 
+        }
+
+        public async Task LoadDrafts()
+        {
+            if (IsBusy) { return; }
+            if (DraftPage > DraftTotalPages) { return; }
+            IsBusy = true;
+            try
+            {
+                var parameters = new RequestParameters(
+                    new List<FilterType>(),
+                    null,
+                    null,
+                    DraftPage,
+                    DraftPageSize,
+                    SortType.IdDecending);
+                parameters.Filters.Add(FilterType.Draft);
+                IRequestResult? result = await restService.Get<Customers, Orders>(Id, parameters);
+                if (result == null)
+                {
+                    IsBusy = false;
+                    return;
+                }
+                DraftTotalPages = result.TotalPages;
+                NumberOfDraftOrders = result.TotalCount;
+                foreach (Orders order in result.Items)
+                {
+                    DraftOrders.Add(order);
+                }
+                DraftPage++;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

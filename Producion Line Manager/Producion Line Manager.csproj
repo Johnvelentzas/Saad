@@ -76,6 +76,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DetailsViews\OrdersView.xaml.cs">
+	    <DependentUpon>OrdersView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\OverviewView.xaml.cs">
 	    <DependentUpon>OverviewView.xaml</DependentUpon>
 	  </Compile>
@@ -85,6 +88,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\DetailsViews\OrdersView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailsViews\CustomersView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
