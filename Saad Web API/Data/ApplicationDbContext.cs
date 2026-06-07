@@ -14,6 +14,7 @@ namespace Saad_Web_API.Data
         public DbSet<Models.Attributes.Models> Models { get; set; }
         public DbSet<Patterns> Patterns { get; set; }
         public DbSet<ProductCategories> ProductCategories { get; set; }
+        public DbSet<Brands> Brands { get; set; }
         public DbSet<Customers> Customers { get; set; }
         public DbSet<Orders> Orders { get; set; }
         public DbSet<Processes> Processes { get; set; }

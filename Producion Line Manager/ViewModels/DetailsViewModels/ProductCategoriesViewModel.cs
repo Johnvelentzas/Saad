@@ -26,8 +26,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         public async void LoadEntity(ProductCategories category)
         {
-            base.LoadEntity(category);
             CategoryName = category.CategoryName;
+            base.LoadEntity(category);
         }
 
         public override void SaveEntity()

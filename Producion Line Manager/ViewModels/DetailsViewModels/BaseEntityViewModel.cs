@@ -85,6 +85,7 @@ namespace Producion_Line_Manager.Views.DetailsViews
             IsDraft = entity.IsDraft;
             Id = entity.Id;
             Comments = entity.Comments ?? String.Empty;
+            _debounceTokenSource?.Cancel();
         }
 
         public virtual void SaveEntity()

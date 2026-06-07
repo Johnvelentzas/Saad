@@ -25,6 +25,7 @@ namespace Models.Management
         Users,
         //Attributes
         ProductCategories,
+        Brands,
         Models,
         Patterns,
         StitchTypes,

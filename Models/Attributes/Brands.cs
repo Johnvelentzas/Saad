@@ -1,19 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
+
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Attributes
 {
-    public class Models : IEntity
+    public class Brands : IEntity
     {
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
         public int FromId { get; set; } = 0;
-        [ForeignKey("ProductCategories")]
-        public int CategoryId { get; set; }
-        [ForeignKey("Brands")]
-        public int BrandId { get; set; }
-        public required string ModelName { get; set; }
+        public required string BrandName { get; set; }
         public string? ImageUrl { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

@@ -86,9 +86,9 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         public async void LoadEntity(Fabrics fabric)
         {
-            base.LoadEntity(fabric);
             FabricName = fabric.FabricName;
             ImageUrl = fabric.ImageUrl ?? String.Empty;
+            base.LoadEntity(fabric);
         }
 
         public override void SaveEntity()

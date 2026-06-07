@@ -472,6 +472,7 @@ namespace Producion_Line_Manager.ViewModels
                     YarnColors => ServiceHelper.GetService<YarnColorsView>(),
                     Fabrics => ServiceHelper.GetService<FabricsView>(),
                     Patterns => ServiceHelper.GetService<PatternsView>(),
+                    ProductCategories => ServiceHelper.GetService<ProductCategoriesView>(),
                     _ => throw new NotImplementedException(),
                 };
             }
@@ -500,6 +501,9 @@ namespace Producion_Line_Manager.ViewModels
                     break;
                 case PatternsView patternsView:
                     patternsView.LoadEntity((Patterns)TopEntity);
+                    break;
+                case ProductCategoriesView productCategoriesView:
+                    productCategoriesView.LoadEntity((ProductCategories)TopEntity);
                     break;
             }
             OnPropertyChanged(nameof(IsDraft));
