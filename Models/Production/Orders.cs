@@ -13,9 +13,13 @@ namespace Models.Production
         public required int CustomerId { get; set; }
         public required bool IsCompleted { get; set; }
         public SaleChannel? SaleChannel { get; set; }
-        public string? Comments { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
+        //[DataType(DataType.Date)]
+        //public required DateTime? ExpectedStartDate { get; set; }
+        //[DataType(DataType.Date)]
+        //public required DateTime? ExpectedFinishDate { get; set; }
     }
 
     public enum SaleChannel

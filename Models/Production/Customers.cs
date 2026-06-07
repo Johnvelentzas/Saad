@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Models.Finances
+namespace Models.Production
 {
     public class Customers : IEntity
     {
@@ -16,6 +16,7 @@ namespace Models.Finances
         public CustomerType? Type { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 
     public enum CustomerType

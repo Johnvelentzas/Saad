@@ -15,5 +15,6 @@ namespace Models.Production
         public required int DependsOnTaskId { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 }

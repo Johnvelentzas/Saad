@@ -35,6 +35,13 @@ namespace Producion_Line_Manager.Helpers
             SortType = sortType;
         }
 
+        public static RequestParameters GetOne()
+        {
+            RequestParameters par = new();
+            par.PageSize = 1;
+            return par;
+        }
+
         public string BuildURI(string uri = "")
         {
             if (IsSearchType)

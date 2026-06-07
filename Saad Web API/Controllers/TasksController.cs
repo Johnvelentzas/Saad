@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.Attributes;
+using Models.Management;
 using Models.Production;
 using Saad_Web_API.Data;
 
@@ -47,21 +48,6 @@ namespace Saad_Web_API.Controllers
             }
             var tasks = await query.ToListAsync();
             return Ok(tasks);
-        }
-
-        //GET api/tasks/{id}/attributes
-        [HttpGet("{id}/attributes")]
-        public async Task<ActionResult<IEnumerable<AttributeValues>>> GetTaskAttributes(
-            [FromRoute] int id)
-        {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-            var attributes = await _context.TaskAtributes.Where(a => a.TaskId == id).ToListAsync();
-            var attributeValues = await _context.AttributeValues.Where(a => attributes.Where(o => o.AttributeId == a.Id).Any()).ToListAsync();
-            return Ok(attributeValues);
         }
 
         public static async Task<IEnumerable<Tasks>> GetActiveTasks(ApplicationDbContext _context)

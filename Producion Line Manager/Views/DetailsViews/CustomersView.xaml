@@ -95,7 +95,35 @@
                                    HorizontalOptions="End"
                                    Padding="8"/>
                         </Grid>
+                        <Border
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Created"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding CreatedDate}"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8"/>
+                        </Grid>
                     </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Comments}"/>
                 </Border>
                 <VerticalStackLayout Margin="0, 15, 0, 0"
                                      Spacing="20">
@@ -168,7 +196,7 @@
                                             </Border>
                                             <HorizontalStackLayout VerticalOptions="Center"
                                                                    Spacing="2">
-                                                <Label Text="Order #"
+                                                <Label Text="Order #O-"
                                                        FontSize="18"/>
                                                 <Label Text="{Binding Id}"
                                                        FontSize="18"/>
@@ -204,13 +232,13 @@
                            Grid.Column="1"
                            HorizontalOptions="Center">
                             <Label Text="{Binding NumberOfActiveOrders}"/>
-                            <Label Text="Active"/>
+                            <Label Text="Incomplete"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Spacing="5"
                            Grid.Column="2"
                            HorizontalOptions="End">
                             <Label Text="{Binding NumberOfCompletedOrders}"/>
-                            <Label Text="Completed"/>
+                            <Label Text="Complete"/>
                         </HorizontalStackLayout>
                     </Grid>
                     <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
@@ -242,7 +270,7 @@
                                             </Border>
                                             <HorizontalStackLayout VerticalOptions="Center"
                                                Spacing="2">
-                                                <Label Text="Order #"
+                                                <Label Text="Order #O-"
                                    FontSize="18"/>
                                                 <Label Text="{Binding Id}"
                                    FontSize="18"/>
@@ -310,6 +338,11 @@
                     <Border StrokeShape="RoundRectangle 10" Background="{AppThemeBinding Dark={StaticResource Gray900}, Light={StaticResource Gray100}}">
                         <Picker ItemsSource="{Binding CustomerTypes}" SelectedItem="{Binding CustomerType}" />
                     </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

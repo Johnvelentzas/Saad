@@ -12,7 +12,9 @@ namespace Models.Attributes
         [ForeignKey("Models")]
         public required int ModelId { get; set; }
         public required string Name { get; set; }
+        public string? ImageUrl { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 }

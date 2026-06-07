@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.PatternsView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             xmlns:cust="clr-namespace:Models.Attributes;assembly=Models"
+             x:DataType="vm:PatternsViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10"
+                IsVisible="{Binding IsNotDraft}">
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="Pattern #PAT-"
+                        FontSize="24"/>
+                    <Label
+                        Text="{Binding Id}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <Label Text="{Binding PatternName}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       Margin="0, 20, 0, 0"/>
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Comments}"/>
+                </Border>
+            </VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
+
+                <Label Text="Edit Pattern" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Pattern Name" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding PatternName}"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>

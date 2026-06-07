@@ -1,4 +1,4 @@
-using Models.Finances;
+using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.ViewModels.DetailsViewModels;
 

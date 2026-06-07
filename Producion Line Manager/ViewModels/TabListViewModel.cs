@@ -3,7 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Models;
 using Models.Attributes;
-using Models.Finances;
+using Models.Management;
+using Models.Messages;
 using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Messages;
@@ -18,7 +19,7 @@ namespace Producion_Line_Manager.ViewModels
 
         private readonly RestService restService;
 
-        private Models.Production.ProcessesType CurrentProcessesType;
+        private ProcessesType CurrentProcessesType;
 
         private int Page = 1;
         private int TotalPages = 1;
@@ -46,6 +47,9 @@ namespace Producion_Line_Manager.ViewModels
         private string _urgentDescription = "Urgent";
 
         [ObservableProperty]
+        private bool _hasUrgent = false;
+
+        [ObservableProperty]
         private ObservableCollection<EntityFilterItem> _activeFilters = new ObservableCollection<EntityFilterItem>();
 
         [ObservableProperty]
@@ -53,6 +57,9 @@ namespace Producion_Line_Manager.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<ListItem> _urgentItems = new ObservableCollection<ListItem>();
+
+        [ObservableProperty]
+        private bool _showUrgent = false;
 
         [ObservableProperty]
         private ObservableCollection<ListItem> _items = new ObservableCollection<ListItem>();
@@ -104,6 +111,10 @@ namespace Producion_Line_Manager.ViewModels
             WeakReferenceMessenger.Default.Register<TabListViewModel, OpenEntityMessage>(this, (recipient, message) =>
             {
                 recipient.PushToStack(message.Value);
+            });
+            WeakReferenceMessenger.Default.Register<SaveDraftMessage>(this, async (recipient, message) =>
+            {
+                await SaveDraft();
             });
         }
 
@@ -184,26 +195,37 @@ namespace Producion_Line_Manager.ViewModels
             ActiveSort = SortOptions[0];
             switch (CurrentTab.Type)
             {
-                case Models.Production.ProcessesType.Customers:
+                case ProcessesType.Customers:
                     Title = "Customers";
                     Description = "Customers";
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     FilterOptions.Add(new EntityFilterItem(FilterType.Retail));
                     FilterOptions.Add(new EntityFilterItem(FilterType.Wholesale));
                     break;
-                case Models.Production.ProcessesType.Orders:
+                case ProcessesType.Orders:
                     Title = "Orders";
                     Description = "Orders";
+                    HasUrgent = true;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Complete));
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Incomplete));
+                    FilterOptions.Add(new EntityFilterItem(FilterType.InStore));
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Online));
                     break;
-                case Models.Production.ProcessesType.Products:
+                case ProcessesType.Products:
                     Title = "Products";
                     Description = "Products";
+                    HasUrgent = true;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.Users:
                     Title = "Users";
                     Description = "Users";
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
+                case ProcessesType.ProductCategories:
+                    Title = "Categories";
+                    Description = "Categories";
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.Models:
@@ -216,12 +238,38 @@ namespace Producion_Line_Manager.ViewModels
                     Description = "Patterns";
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
-                case ProcessesType.ProductCategories:
-                    Title = "Categories";
-                    Description = "Categories";
+                case ProcessesType.StitchTypes:
+                    Title = "Stitch Types";
+                    Description = "Stitch Types";
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
+                case ProcessesType.YarnColors:
+                    Title = "Yarn Colors";
+                    Description = "Yarn Colors";
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
+                case ProcessesType.Fabrics:
+                    Title = "Fabrics";
+                    Description = "Fabrics";
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
+                case ProcessesType.DropOffApt:
+                    Title = "Drop Off Appointments";
+                    Description = "Appointments";
+                    HasUrgent = true;
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
+                case ProcessesType.TestTryApt:
+                    Title = "Test Try Appointments";
+                    Description = "Appointments";
+                    HasUrgent = true;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.PickUpApt:
+                    Title = "Pick Up Appointments";
+                    Description = "Appointments";
+                    HasUrgent = true;
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.FoamFix:
                     break;
@@ -245,11 +293,10 @@ namespace Producion_Line_Manager.ViewModels
                     break;
                 case ProcessesType.Inspect:
                     break;
-                case ProcessesType.DeliverApt:
-                    break;
                 case ProcessesType.Tasks:
                     Title = "Tasks";
                     Description = "Tasks";
+                    HasUrgent = true;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.Foam:
@@ -302,12 +349,8 @@ namespace Producion_Line_Manager.ViewModels
                 ItemNumber = result.TotalCount;
                 foreach (var item in result.Items)
                 {
-                    if (item is Customers customers) { Items.Add(new ListItem(customers)); }
-                    if (item is Orders orders) { Items.Add(new ListItem(orders)); }
-                    if (item is Products products) { Items.Add(new ListItem(products)); }
-                    if (item is Models.Attributes.Models models) { Items.Add(new ListItem(models)); }
-                    if (item is ProductCategories categories) { Items.Add(new ListItem(categories)); }
-                    if (item is Tasks task) { Items.Add(new ListItem(task)); }
+                    Items.Add(new ListItem((dynamic)item));
+
                 }
                 Page++;
             }
@@ -351,7 +394,7 @@ namespace Producion_Line_Manager.ViewModels
             OnPropertyChanged(nameof(HasBackButton));
         }
 
-        private void PushToStack(IEntity entity)
+        private async void PushToStack(IEntity entity)
         {
             if (entity == null) { return; }
             if (TopEntity != null)
@@ -361,7 +404,7 @@ namespace Producion_Line_Manager.ViewModels
             UpdatePreviousPageTitle();
             TopEntity = entity;
             OnPropertyChanged(nameof(HasBackButton));
-            UpdateDetailsView();
+            await UpdateDetailsView();
         }
 
         [RelayCommand]
@@ -376,7 +419,13 @@ namespace Producion_Line_Manager.ViewModels
                 TopEntity = null;
             }
             UpdatePreviousPageTitle();
-            UpdateDetailsView();
+            await UpdateDetailsView();
+        }
+
+        private async Task UpdateTopEntity()
+        {
+            if (TopEntity == null) { return; }
+            TopEntity = await restService.Sync(TopEntity);
         }
 
         private void UpdatePreviousPageTitle()
@@ -394,34 +443,63 @@ namespace Producion_Line_Manager.ViewModels
                 PreviousPageTitle = previous switch
                 {
                     Customers c => c.LastName ?? "No Last Name Customer",
-                    Orders o => $"Order #{o.Id}",
-                    Products p => $"Product #{p.Id}",
+                    Orders o => $"Order #O-{o.Id}",
+                    Products p => $"Product #P-{p.Id}",
                     Models.Attributes.Models m => m.ModelName ?? "Unknown Model",
                     ProductCategories pc => pc.CategoryName ?? "Unknown Category",
-                    Tasks t => $"Task #{t.Id}",
+                    Tasks t => $"Task #T-{t.Id}",
                     _ => String.Empty,
                 };
             }
         }
 
 
-        private void UpdateDetailsView()
+        private async Task UpdateDetailsView()
         {
             if (TopEntity == null)
             {
                 ActiveDetailView = null;
+                return;
             }
-            if(TopEntity == null) { return; }
-            ActiveDetailView = (dynamic)TopEntity switch
+            await UpdateTopEntity();
+            try
             {
-                Customers => ServiceHelper.GetService<CustomersView>(),
-                Orders => ServiceHelper.GetService<OrdersView>(),
-                _ => throw new NotImplementedException(),
-            };
+                ActiveDetailView = (dynamic)TopEntity switch
+                {
+                    Customers => ServiceHelper.GetService<CustomersView>(),
+                    Orders => ServiceHelper.GetService<OrdersView>(),
+                    StitchTypes => ServiceHelper.GetService<StitchTypesView>(),
+                    YarnColors => ServiceHelper.GetService<YarnColorsView>(),
+                    Fabrics => ServiceHelper.GetService<FabricsView>(),
+                    Patterns => ServiceHelper.GetService<PatternsView>(),
+                    _ => throw new NotImplementedException(),
+                };
+            }
+            catch
+            {
+                await RefreshItems();
+                return;
+            }
+            
             switch ((dynamic)ActiveDetailView)
             {
                 case CustomersView customersView:
                     customersView.LoadEntity((Customers)TopEntity);
+                    break;
+                case OrdersView ordersView:
+                    ordersView.LoadEntity((Orders)TopEntity);
+                    break;
+                case StitchTypesView stitchTypesView:
+                    stitchTypesView.LoadEntity((StitchTypes)TopEntity);
+                    break;
+                case YarnColorsView yarnColorsView:
+                    yarnColorsView.LoadEntity((YarnColors)TopEntity);
+                    break;
+                case FabricsView fabricsView:
+                    fabricsView.LoadEntity((Fabrics)TopEntity);
+                    break;
+                case PatternsView patternsView:
+                    patternsView.LoadEntity((Patterns)TopEntity);
                     break;
             }
             OnPropertyChanged(nameof(IsDraft));
@@ -464,7 +542,19 @@ namespace Producion_Line_Manager.ViewModels
             TopEntity.FromId = TopEntity.Id;
             var newEntity = await restService.Post((dynamic)TopEntity);
             TopEntity = newEntity;
-            UpdateDetailsView();
+            await RefreshItems();
+            await UpdateDetailsView();
+        }
+
+        [RelayCommand]
+        public async Task Duplicate()
+        {
+            if (TopEntity == null || TopEntity.FromId < 0) { return; }
+            TopEntity.IsDraft = true;
+            TopEntity.FromId = 0;
+            var newEntity = await restService.Post((dynamic)TopEntity);
+            TopEntity = newEntity;
+            await UpdateDetailsView();
         }
 
         [RelayCommand]
@@ -472,6 +562,7 @@ namespace Producion_Line_Manager.ViewModels
         {
             if (TopEntity == null || TopEntity.FromId < 0) { return; }
             await restService.DeleteEntity(TopEntity);
+            await RefreshItems();
             if (TopEntity.FromId == 0)
             {
                 await GoBack();
@@ -482,13 +573,18 @@ namespace Producion_Line_Manager.ViewModels
                 Customers => await restService.Get<Customers>(TopEntity.FromId),
                 Orders => await restService.Get<Orders>(TopEntity.FromId),
                 Products => await restService.Get<Products>(TopEntity.FromId),
+                Users => await restService.Get<Users>(TopEntity.FromId),
                 Models.Attributes.Models => await restService.Get<Models.Attributes.Models>(TopEntity.FromId),
                 ProductCategories => await restService.Get<ProductCategories>(TopEntity.FromId),
+                Fabrics => await restService.Get<Fabrics>(TopEntity.FromId),
+                Patterns => await restService.Get<Patterns>(TopEntity.FromId),
+                StitchTypes => await restService.Get<StitchTypes>(TopEntity.FromId),
+                YarnColors => await restService.Get<YarnColors>(TopEntity.FromId),
                 Tasks => await restService.Get<Tasks>(TopEntity.FromId),
                 _ => throw new NotImplementedException(),
             };
-            await RefreshItems();
-            UpdateDetailsView();
+            
+            await UpdateDetailsView();
         }
 
         [RelayCommand]
@@ -508,15 +604,30 @@ namespace Producion_Line_Manager.ViewModels
             }
             else if (TopEntity.Id == 0)
             {
+                await restService.Post((dynamic)TopEntity);
+            }
+            else
+            {
+                await restService.Put((dynamic)TopEntity);
+            }
+
+            await RefreshItems();
+            await UpdateDetailsView();
+        }
+
+        public async Task SaveDraft()
+        {
+            if (TopEntity == null || !TopEntity.IsDraft) { return; }
+            ActiveDetailView?.SaveEntity();
+
+            if (TopEntity.Id == 0)
+            {
                 restService.Post((dynamic)TopEntity);
             }
             else
             {
                 restService.Put((dynamic)TopEntity);
             }
-
-            await RefreshItems();
-            UpdateDetailsView();
         }
 
         [RelayCommand]
@@ -524,7 +635,7 @@ namespace Producion_Line_Manager.ViewModels
         {
             await DeselectItem();
             await ClearStack();
-            IEntity entity;
+            IEntity? entity;
             switch (CurrentProcessesType)
             {
                 case ProcessesType.Customers:
@@ -536,19 +647,36 @@ namespace Producion_Line_Manager.ViewModels
                 case ProcessesType.Products:
                     entity = new Products() { IsDraft = true, CategoryId = 0, OrderId = 0, ExpectedFinishDate = DateTime.Now, ExpectedStartDate = DateTime.Now, IsCompleted = false, CreatedDate = DateTime.Now };
                     break;
+                case ProcessesType.Users:
+                    entity = new Users() { IsDraft = true, Name = string.Empty, CreatedDate = DateTime.Now };
+                    break;
                 case ProcessesType.Models:
                     entity = new Models.Attributes.Models() { IsDraft = true, ModelName = string.Empty, CreatedDate = DateTime.Now };
                     break;
                 case ProcessesType.ProductCategories:
                     entity = new ProductCategories() { IsDraft = true, CategoryName = string.Empty, CreatedDate = DateTime.Now };
                     break;
+                case ProcessesType.Patterns:
+                    entity = new Patterns() { IsDraft = true, Name = string.Empty, ModelId = 0, CreatedDate = DateTime.Now };
+                    break;
                 case ProcessesType.Tasks:
-                    entity = new Tasks() { IsDraft = true, ProcessId = 0, ProductId = 0, IsCompleted = false, CreatedDate = DateTime.Now };
+                    entity = null;
+                    break;
+                case ProcessesType.StitchTypes:
+                    entity = new StitchTypes() { IsDraft = true, StitchTypeName = string.Empty, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.YarnColors:
+                    entity = new YarnColors() { IsDraft = true, YarnColorName = string.Empty, CreatedDate = DateTime.Now };
+                    break;
+                case ProcessesType.Fabrics:
+                    entity = new Fabrics() { IsDraft = true, FabricName = string.Empty, CreatedDate = DateTime.Now };
                     break;
                 default:
                     throw new NotImplementedException($"Creation not supported for type {CurrentProcessesType}");
             }
-            restService.Post((dynamic)entity);
+            if (entity == null) { return; }
+            var response = await restService.Post((dynamic)entity);
+            entity.Id = response.Id;
             PushToStack(entity);
             await RefreshItems();
         }
@@ -563,25 +691,29 @@ namespace Producion_Line_Manager.ViewModels
                 ProcessesType.Orders => await restService.Get<Orders>(parameters),
                 ProcessesType.Products => await restService.Get<Products>(parameters),
                 ProcessesType.Users => await restService.Get<Users>(parameters),
-                ProcessesType.Models => await restService.Get<Models.Attributes.Models>(parameters),
-                ProcessesType.Patterns => throw new NotImplementedException(),
                 ProcessesType.ProductCategories => await restService.Get<ProductCategories>(parameters),
-                ProcessesType.PickUpApt => throw new NotImplementedException(),
-                ProcessesType.FoamFix => throw new NotImplementedException(),
-                ProcessesType.FoamAdapt => throw new NotImplementedException(),
-                ProcessesType.FoamGel => throw new NotImplementedException(),
-                ProcessesType.FoamAnatomical => throw new NotImplementedException(),
-                ProcessesType.CoverRemove => throw new NotImplementedException(),
-                ProcessesType.CustomPattern => throw new NotImplementedException(),
-                ProcessesType.Cut => throw new NotImplementedException(),
-                ProcessesType.Sew => throw new NotImplementedException(),
-                ProcessesType.Embroider => throw new NotImplementedException(),
-                ProcessesType.Bolt => throw new NotImplementedException(),
-                ProcessesType.Inspect => throw new NotImplementedException(),
-                ProcessesType.DeliverApt => throw new NotImplementedException(),
+                ProcessesType.Models => await restService.Get<Models.Attributes.Models>(parameters),
+                ProcessesType.Patterns => await restService.Get<Patterns>(parameters),
+                ProcessesType.StitchTypes => await restService.Get<StitchTypes>(parameters),
+                ProcessesType.YarnColors => await restService.Get<YarnColors>(parameters),
+                ProcessesType.Fabrics => await restService.Get<Fabrics>(parameters),
+                ProcessesType.DropOffApt => await restService.Get<Tasks>(parameters),
+                ProcessesType.TestTryApt => await restService.Get<Tasks>(parameters),
+                ProcessesType.PickUpApt => await restService.Get<Tasks>(parameters),
+                ProcessesType.FoamFix => await restService.Get<Tasks>(parameters),
+                ProcessesType.FoamAdapt => await restService.Get<Tasks>(parameters),
+                ProcessesType.FoamGel => await restService.Get<Tasks>(parameters),
+                ProcessesType.FoamAnatomical => await restService.Get<Tasks>(parameters),
+                ProcessesType.CoverRemove => await restService.Get<Tasks>(parameters),
+                ProcessesType.CustomPattern => await restService.Get<Tasks>(parameters),
+                ProcessesType.Cut => await restService.Get<Tasks>(parameters),
+                ProcessesType.Sew => await restService.Get<Tasks>(parameters),
+                ProcessesType.Embroider => await restService.Get<Tasks>(parameters),
+                ProcessesType.Bolt => await restService.Get<Tasks>(parameters),
+                ProcessesType.Inspect => await restService.Get<Tasks>(parameters),
                 ProcessesType.Tasks => await restService.Get<Tasks>(parameters),
-                ProcessesType.Foam => throw new NotImplementedException(),
-                ProcessesType.Calendar => throw new NotImplementedException(),
+                ProcessesType.Foam => await restService.Get<Tasks>(parameters),
+                ProcessesType.Calendar => await restService.Get<Tasks>(parameters),
                 _ => throw new NotImplementedException(),
             };
         }

@@ -2,7 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Models.Production;
+using Models.Management;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using Producion_Line_Manager.Views;
@@ -215,20 +215,25 @@ namespace Producion_Line_Manager.ViewModels
         {
             ProcessesType.Customers,
             ProcessesType.Orders,
-            ProcessesType.Products
+            ProcessesType.Products,
+            ProcessesType.Users
         };
 
         private readonly List<ProcessesType> ProductionTabs = new List<ProcessesType>
         {
+            ProcessesType.ProductCategories,
             ProcessesType.Models,
             ProcessesType.Patterns,
-            ProcessesType.ProductCategories
+            ProcessesType.YarnColors,
+            ProcessesType.Fabrics,
+            ProcessesType.StitchTypes,
         };
 
         private readonly List<ProcessesType> CalendarTabs = new List<ProcessesType>
         {
             ProcessesType.PickUpApt,
-            ProcessesType.DeliverApt
+            ProcessesType.TestTryApt,
+            ProcessesType.DropOffApt
         };
 
         private readonly List<ProcessesType> FoamTabs = new List<ProcessesType>

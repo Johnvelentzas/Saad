@@ -5,6 +5,7 @@
              x:Class="Producion_Line_Manager.Views.DetailsViews.OrdersView"
              xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
              xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             xmlns:cust="clr-namespace:Models.Production;assembly=Models"
              x:DataType="vm:OrdersViewModel">
     <ScrollView>
         <VerticalStackLayout>
@@ -14,16 +15,51 @@
                 IsVisible="{Binding IsNotDraft}">
                 <HorizontalStackLayout 
                     HorizontalOptions="Start"
-                    Spacing="10"
+                    Spacing="0"
                     Padding="5, 0, 0, 0">
                     <Label
-                        Text="Order #"
-                        FontSize="24"
-                        FontAttributes="Bold"/>
+                        Text="Order #O-"
+                        FontSize="24"/>
                     <Label
                         Text="{Binding Id}"
-                        FontSize="24"/>
+                        FontSize="24"
+                        FontAttributes="Bold"/>
                 </HorizontalStackLayout>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        Padding="20, 0, 20, 0"
+                        Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenCostumerCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="auto, *, auto">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding CustomerName}"
+                                   FontSize="18"/>
+                                <Label Text="{Binding CustomerLastName}"
+                                   FontSize="18"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding CustomerOrders}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                                <Label Text="Orders"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+
+                        <Border Grid.Column="4"
+                                Padding="20">
+                            <Label Text="&#xe5cc;"
+                                   FontFamily="Icons"
+                                   FontSize="28"/>
+                        </Border>
+                    </Grid>
+                </Border>
                 <Border
                     Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
                     <Border.StrokeShape>
@@ -36,9 +72,35 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Text="Email"
+                            <Label Text="Progress"
                                    VerticalOptions="Center"/>
-                            <Label Text="{Binding Email}"
+                            <Label Text="Not Complete"
+                                   Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   Padding="8">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" 
+                                                 Binding="{Binding IsComplete}" 
+                                                 Value="True">
+                                        <Setter Property="Text" 
+                                                Value="Complete"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Grid>
+                        <Border
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid Padding="0, 5, 0, 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Sales Channel"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding SaleChannelValue}"
                                    Grid.Column="1"
                                    VerticalOptions="Center"
                                    HorizontalOptions="End"
@@ -53,43 +115,9 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Text="Telephone"
+                            <Label Text="Created"
                                    VerticalOptions="Center"/>
-                            <Label Text="{Binding Telephone}"
-                                   Grid.Column="1"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End"
-                                   Padding="8"/>
-                        </Grid>
-                        <Border
-                            HeightRequest="1"
-                            BackgroundColor="DarkGrey">
-                        </Border>
-                        <Grid Padding="0, 5, 0, 5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Text="Tax Number"
-                                   VerticalOptions="Center"/>
-                            <Label Text="{Binding TaxNumber}"
-                                   Grid.Column="1"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End"
-                                   Padding="8"/>
-                        </Grid>
-                        <Border
-                            HeightRequest="1"
-                            BackgroundColor="DarkGrey">
-                        </Border>
-                        <Grid Padding="0, 5, 0, 5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Text="Type"
-                                   VerticalOptions="Center"/>
-                            <Label Text="{Binding CustomerType}"
+                            <Label Text="{Binding CreatedDate}"
                                    Grid.Column="1"
                                    VerticalOptions="Center"
                                    HorizontalOptions="End"
@@ -97,27 +125,130 @@
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
-                <VerticalStackLayout Margin="0, 15, 0, 0"
-                                     Spacing="10">
-                    <Grid ColumnDefinitions="*, *, *"
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Comments}"/>
+                </Border>
+                <VerticalStackLayout Margin="0, 20, 0, 0"
+                                     Spacing="20">
+                    <Grid ColumnDefinitions="auto, *, auto"
                           Padding="15, 0, 15, 0">
+                        <Border VerticalOptions="End">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                             Binding="{Binding NumberOfDraftProducts}"
+                                             Value="0">
+                                    <Setter Property="IsVisible"
+                                            Value="False"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding NumberOfDraftProducts}"
+                                       FontSize="18"/>
+                                <Label Text="Drafts"
+                                       FontSize="18"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Grid.Column="2"
+                                Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                                Padding="10">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CreateNewProductCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Add New Product"/>
+                        </Border>
+                    </Grid>
+
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            IsVisible="True">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border"
+                                         Binding="{Binding NumberOfDraftProducts}"
+                                         Value="0">
+                                <Setter Property="IsVisible"
+                                        Value="False"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <RefreshView IsRefreshing="{Binding IsBusy}"
+                                     Command="{Binding RefreshOrdersCommand}">
+                            <CollectionView ItemsSource="{Binding DraftProducts}">
+                                <CollectionView.EmptyView>
+                                    <Grid HorizontalOptions="Center"
+                                                         VerticalOptions="Center">
+                                        <Label Text="No Draft Products Found"/>
+                                    </Grid>
+                                </CollectionView.EmptyView>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Products">
+                                        <Grid ColumnDefinitions="auto, *, auto, *, auto"
+                                              RowDefinitions="auto, 1"
+                                              Padding="20, 0, 20, 0">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=OpenOrderCommand}"
+                                                                      CommandParameter="{Binding .}"/>
+                                            </Grid.GestureRecognizers>
+                                            <Border Grid.Row="1"
+                                                    Grid.ColumnSpan="5"
+                                                    BackgroundColor="DarkGray">
+
+                                            </Border>
+                                            <HorizontalStackLayout VerticalOptions="Center"
+                                                                   Spacing="2">
+                                                <Label Text="Product #P-"
+                                                       FontSize="18"/>
+                                                <Label Text="{Binding Id}"
+                                                       FontSize="18"/>
+                                            </HorizontalStackLayout>
+                                            <HorizontalStackLayout Grid.Column="2"
+                                                                   VerticalOptions="Center">
+                                                <Label Text="Draft"
+                                                       IsVisible="True"
+                                                       FontSize="18">
+                                                </Label>
+                                            </HorizontalStackLayout>
+                                            <Border Grid.Column="4"
+                                                    Padding="20">
+                                                <Label Text="&#xe5cc;"
+                                                       FontFamily="Icons"
+                                                       FontSize="28"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </RefreshView>
+                    </Border>
+                    <Grid ColumnDefinitions="*, *, *"
+      Padding="15, 0, 15, 0">
                         <HorizontalStackLayout Spacing="5"
-                                               Grid.Column="0"
-                                               HorizontalOptions="Start">
-                            <Label Text="{Binding NumberOfOrders}"/>
+                           Grid.Column="0"
+                           HorizontalOptions="Start">
+                            <Label Text="{Binding NumberOfDraftProducts}"/>
                             <Label Text="Orders"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Spacing="5"
-                                               Grid.Column="1"
-                                               HorizontalOptions="Center">
-                            <Label Text="{Binding NumberOfActiveOrders}"/>
-                            <Label Text="Active"/>
+                           Grid.Column="1"
+                           HorizontalOptions="Center">
+                            <Label Text="{Binding NumberOfIncompleteProducts}"/>
+                            <Label Text="Incomplete"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Spacing="5"
-                                               Grid.Column="2"
-                                               HorizontalOptions="End">
-                            <Label Text="{Binding NumberOfCompletedOrders}"/>
-                            <Label Text="Completed"/>
+                           Grid.Column="2"
+                           HorizontalOptions="End">
+                            <Label Text="{Binding NumberOfFinishedProducts}"/>
+                            <Label Text="Finished"/>
                         </HorizontalStackLayout>
                     </Grid>
                     <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
@@ -125,72 +256,195 @@
                             <RoundRectangle CornerRadius="25"/>
                         </Border.StrokeShape>
                         <RefreshView IsRefreshing="{Binding IsBusy}"
-                                     Command="{Binding RefreshOrdersCommand}">
-                            <CollectionView ItemsSource="{Binding Orders}">
+                 Command="{Binding RefreshOrdersCommand}">
+                            <CollectionView ItemsSource="{Binding Products}">
                                 <CollectionView.EmptyView>
                                     <Grid HorizontalOptions="Center"
-                                                         VerticalOptions="Center">
-                                        <Label Text="No Orders Found"/>
+                                     VerticalOptions="Center">
+                                        <Label Text="No Products Found"/>
                                     </Grid>
                                 </CollectionView.EmptyView>
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:Orders">
+                                    <DataTemplate x:DataType="models:Products">
+                                        <Grid ColumnDefinitions="auto, *, auto, *, auto"
+                          RowDefinitions="auto, 1"
+                          Padding="20, 0, 20, 0">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=OpenProductCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                                            </Grid.GestureRecognizers>
+                                            <Border Grid.Row="1"
+                                Grid.ColumnSpan="5"
+                                BackgroundColor="DarkGray">
 
+                                            </Border>
+                                            <HorizontalStackLayout VerticalOptions="Center"
+                                               Spacing="2">
+                                                <Label Text="Product #P-"
+                                   FontSize="18"/>
+                                                <Label Text="{Binding Id}"
+                                   FontSize="18"/>
+                                            </HorizontalStackLayout>
+                                            <HorizontalStackLayout Grid.Column="2"
+                                               VerticalOptions="Center">
+                                                <Label Text="Not Complete"
+                                   IsVisible="True"
+                                   FontSize="18">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label"
+                                                 Binding="{Binding IsCompleted}"
+                                                 Value="True">
+                                                            <Setter Property="Text"
+                                                Value="Complete"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </HorizontalStackLayout>
+                                            <Border Grid.Column="4"
+                                Padding="20">
+                                                <Label Text="&#xe5cc;"
+                                   FontFamily="Icons"
+                                   FontSize="28"/>
+                                            </Border>
+                                        </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
                         </RefreshView>
                     </Border>
-                    <Grid ColumnDefinitions="*, auto"
-                          Padding="15, 0, 15, 0">
-                        <Border Grid.Column="1"
-                                Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
-                                Padding="10">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="5"/>
-                            </Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding CreateNewOrderCommand}"/>
-                            </Border.GestureRecognizers>
-                            <Label Text="Create New Order"/>
-                        </Border>
-                    </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
 
-                <Label Text="Edit Customer" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <Label Text="Edit Order" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="First Name" FontSize="14" TextColor="Gray" />
-                    <Entry Text="{Binding CustomerName}" />
-                </VerticalStackLayout>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="auto, *, auto">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding CustomerName}"
+                                   FontSize="18"/>
+                                <Label Text="{Binding CustomerLastName}"
+                                   FontSize="18"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding CustomerOrders}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                                <Label Text="Orders"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Last Name" FontSize="14" TextColor="Gray" />
-                    <Entry Text="{Binding CustomerLastName}" />
-                </VerticalStackLayout>
+                        <Border IsVisible="{Binding CannotChangeCustomer}"
+                                Grid.Column="2"
+                                VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChangeCustomerCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="&#xf4fa;" 
+                           FontFamily="Icons"
+                           FontSize="26"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Email" FontSize="14" TextColor="Gray" />
-                    <Entry Text="{Binding Email}" Keyboard="Email" />
-                </VerticalStackLayout>
+                <Grid ColumnDefinitions="*, 200"
+                      ColumnSpacing="20"
+                      Margin="0, 0, 0, 20"
+                      IsVisible="{Binding CanChangeCustomer}">
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Telephone" FontSize="14" TextColor="Gray" />
-                    <Entry Text="{Binding Telephone}" Keyboard="Telephone" />
-                </VerticalStackLayout>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
+                        <SearchBar Placeholder="Search"
+                                   Text="{Binding SearchQuerry}"
+                                   SearchCommand="{Binding RefreshItemsCommand}">
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Tax Number" FontSize="14" TextColor="Gray" />
-                    <Entry Text="{Binding TaxNumber}" Keyboard="Numeric" />
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Type" FontSize="14" TextColor="Gray" />
-                    <Border StrokeShape="RoundRectangle 10" Background="{AppThemeBinding Dark={StaticResource Gray900}, Light={StaticResource Gray100}}">
-                        <Picker ItemsSource="{Binding CustomerTypes}" SelectedItem="{Binding CustomerType}" />
+                        </SearchBar>
                     </Border>
+                    <Picker Grid.Column="1"
+                            ItemsSource="{Binding SearchOptions}"
+                            SelectedItem="{Binding SearchType}">
+                        
+                    </Picker>
+                </Grid>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        IsVisible="{Binding CanChangeCustomer}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <RefreshView IsRefreshing="{Binding IsBusy}"
+                                 Command="{Binding RefreshItemsCommand}">
+                        <CollectionView ItemsSource="{Binding SuggestedCustomers}">
+                            <CollectionView.EmptyView>
+                                <Grid HorizontalOptions="Center"
+                                      VerticalOptions="Center">
+                                    <Label Text="No Customers Found"/>
+                                </Grid>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="cust:Customers">
+                                    <Grid ColumnDefinitions="auto, *, auto, *, auto"
+                                          RowDefinitions="auto, 1"
+                                          Padding="20, 0, 20, 0">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=SelectCustomerCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Border Grid.Row="1"
+                                                Grid.ColumnSpan="5"
+                                                BackgroundColor="DarkGray">
+
+                                        </Border>
+                                        <HorizontalStackLayout VerticalOptions="Center"
+                                                               Spacing="2">
+                                            <Label Text="{Binding LastName}"
+                                                   FontSize="18"/>
+                                            <Label Text="{Binding FirstName}"
+                                                   FontSize="18"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Grid.Column="2"
+                                                               VerticalOptions="Center">
+
+                                        </HorizontalStackLayout>
+                                        <Border Grid.Column="4"
+                                                Padding="20">
+                                            <Label Text="&#xe5cc;"
+                                                   FontFamily="Icons"
+                                                   FontSize="28"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </RefreshView>
+                </Border>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Is Complete" FontSize="14" TextColor="Gray" />
+                    <Switch IsToggled="{Binding IsComplete}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Sale Channel" FontSize="14" TextColor="Gray" />
+                    <Border StrokeShape="RoundRectangle 10" Background="{AppThemeBinding Dark={StaticResource Gray900}, Light={StaticResource Gray100}}">
+                        <Picker ItemsSource="{Binding SalesChannels}" SelectedItem="{Binding SaleChannelValue}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

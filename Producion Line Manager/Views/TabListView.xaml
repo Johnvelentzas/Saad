@@ -43,10 +43,13 @@
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                         <Label Text="{Binding Description}"
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
-                        <Label Text="-"/>
+                        <Label Text="-"
+                               IsVisible="{Binding HasUrgent}"/>
                         <Label Text="{Binding UrgentItemNumber}"
+                               IsVisible="{Binding HasUrgent}"
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                         <Label Text="{Binding UrgentDescription}"
+                               IsVisible="{Binding HasUrgent}"
                                TextColor="{AppThemeBinding Dark={StaticResource Gray200}, Light={StaticResource Gray600}}"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
@@ -158,8 +161,7 @@
                                             </SwipeItemView>
                                         </SwipeItems>
                                     </SwipeView.LeftItems>
-                                    <Border Padding="10"
-                                        HeightRequest="70">
+                                    <Border>
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border"
                                                      Binding="{Binding IsSelected}"
@@ -168,14 +170,24 @@
                                                     Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
-                                        <VerticalStackLayout VerticalOptions="Center">
-                                            <Label Text="{Binding Name}"
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Image Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Start"
+                                               IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                            <VerticalStackLayout VerticalOptions="Center"
+                                                             Padding="10">
+                                                <Label Text="{Binding Name}"
                                                VerticalOptions="Start"
-                                               FontSize="18"/>
-                                            <Label Text="{Binding Description}"
+                                               FontSize="18"
+                                                   IsVisible="{Binding Name, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                                <Label Text="{Binding Description}"
                                                VerticalOptions="Start"
-                                               FontSize="12"/>
-                                        </VerticalStackLayout>
+                                               FontSize="12"
+                                                   IsVisible="{Binding Description, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                            </VerticalStackLayout>
+                                        </HorizontalStackLayout>
                                     </Border>
                                 </SwipeView>
                                 <Border Grid.Row="1"
@@ -320,6 +332,21 @@
                             <TapGestureRecognizer Command="{Binding SaveCommand}"/>
                         </Border.GestureRecognizers>
                         <Label Text="Save"
+                               VerticalOptions="Center"
+                               FontSize="16"/>
+                    </Border>
+                    <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Padding="20, 0, 20, 0"
+                            HeightRequest="44">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding DuplicateCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Duplicate"
                                VerticalOptions="Center"
                                FontSize="16"/>
                     </Border>

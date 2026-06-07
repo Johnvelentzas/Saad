@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using Models.Finances;
 using Models.Production;
 using Saad_Web_API.Data;
 

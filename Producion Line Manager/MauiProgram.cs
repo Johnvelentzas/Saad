@@ -5,6 +5,7 @@ using Producion_Line_Manager.ViewModels;
 using Producion_Line_Manager.ViewModels.DetailsViewModels;
 using Producion_Line_Manager.Views;
 using Producion_Line_Manager.Views.DetailsViews;
+using CommunityToolkit.Maui;
 
 namespace Producion_Line_Manager
 {
@@ -15,6 +16,7 @@ namespace Producion_Line_Manager
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("MaterialSymbolsOutlined-Regular.ttf", "Icons");
@@ -64,6 +66,10 @@ namespace Producion_Line_Manager
 
             mauiAppBuilder.Services.AddTransient<CustomersViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdersViewModel>();
+            mauiAppBuilder.Services.AddTransient<StitchTypesViewModel>();
+            mauiAppBuilder.Services.AddTransient<YarnColorsViewModel>();
+            mauiAppBuilder.Services.AddTransient<PatternsViewModel>();
+            mauiAppBuilder.Services.AddTransient<FabricsViewModel>();
 
             return mauiAppBuilder;
         }
@@ -77,6 +83,11 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddTransient<OverviewView>();
 
             mauiAppBuilder.Services.AddTransient<CustomersView>();
+            mauiAppBuilder.Services.AddTransient<OrdersView>();
+            mauiAppBuilder.Services.AddTransient<StitchTypesView>();
+            mauiAppBuilder.Services.AddTransient<YarnColorsView>();
+            mauiAppBuilder.Services.AddTransient<PatternsView>();
+            mauiAppBuilder.Services.AddTransient<FabricsView>();
 
             return mauiAppBuilder;
         }

@@ -1,7 +1,7 @@
 ﻿
 using Models;
 using Models.Attributes;
-using Models.Finances;
+using Models.Management;
 using Models.Production;
 using Producion_Line_Manager.Helpers;
 using System.Net.Http.Json;
@@ -78,7 +78,14 @@ namespace Producion_Line_Manager.Services
         {
             item.Id = 0;
             var response = await _client.PostAsJsonAsync(URI.GetURI<T>(), item);
+            if (!response.IsSuccessStatusCode)
+            {
+                // THIS is the goldmine! It will contain the exact JSON error from Azure
+                string errorDetails = await response.Content.ReadAsStringAsync();
 
+                // Put a breakpoint on this line and inspect 'errorDetails'
+                Console.WriteLine(errorDetails);
+            }
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<T>();
@@ -111,11 +118,26 @@ namespace Producion_Line_Manager.Services
                 case Products p:
                     await Delete<Products>(entity.Id);
                     break;
+                case Users u:
+                    await Delete<Users>(entity.Id);
+                    break;
                 case Models.Attributes.Models m:
                     await Delete<Models.Attributes.Models>(entity.Id);
                     break;
                 case ProductCategories pc:
                     await Delete<ProductCategories>(entity.Id);
+                    break;
+                case Fabrics pc:
+                    await Delete<Fabrics>(entity.Id);
+                    break;
+                case YarnColors pc:
+                    await Delete<YarnColors>(entity.Id);
+                    break;
+                case StitchTypes pc:
+                    await Delete<StitchTypes>(entity.Id);
+                    break;
+                case Patterns pc:
+                    await Delete<Patterns>(entity.Id);
                     break;
                 case Tasks t:
                     await Delete<Tasks>(entity.Id);
@@ -124,6 +146,58 @@ namespace Producion_Line_Manager.Services
                     throw new NotImplementedException($"Delete not supported for type {entity.GetType().Name}");
             }
         }
+
+
+        public async Task<string?> UploadImage(Stream fileStream, string fileName)
+        {
+            try
+            {
+                var content = new MultipartFormDataContent();
+
+                // Convert the stream into StreamContent for the HTTP body
+                var streamContent = new StreamContent(fileStream);
+
+                // "file" MUST match the name of the IFormFile parameter in your Azure Web API controller!
+                content.Add(streamContent, "file", fileName);
+
+                // Send the multipart form data post request to your API
+                var response = await _client.PostAsync(URI.GetImagesURI(), content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read the raw plain-text Cloudinary URL directly from the response
+                    string imageUrl = await response.Content.ReadAsStringAsync();
+                    return imageUrl;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Upload failed inside RestService: {ex.Message}");
+                return null;
+            }
+        }
+
+
+        public async Task<IEntity?> Sync(IEntity item)
+        {
+            return item switch
+            {
+                Customers c => await Get<Customers>(c.Id),
+                Orders o => await Get<Orders>(o.Id),
+                Products p => await Get<Products>(p.Id),
+                Models.Attributes.Models m => await Get<Models.Attributes.Models>(m.Id),
+                ProductCategories pc => await Get<ProductCategories>(pc.Id),
+                Tasks t => await Get<Tasks>(t.Id),
+                Users u => await Get<Users>(u.Id),
+                Fabrics u => await Get<Fabrics>(u.Id),
+                YarnColors u => await Get<YarnColors>(u.Id),
+                StitchTypes u => await Get<StitchTypes>(u.Id),
+                Patterns u => await Get<Patterns>(u.Id),
+                _ => throw new NotImplementedException($"Update not supported for type {item.GetType().Name}")
+            };
+        }
     }
 
     public static class URI
@@ -131,8 +205,6 @@ namespace Producion_Line_Manager.Services
         //public const string RootURI = "http://localhost:5167/api";
         public const string RootURI = "https://saadwebapitest-csacgsbjfqhfhyht.centralus-01.azurewebsites.net/api";
 
-        public const string Areas = $"/areas";
-        public const string AtributeValues = $"/atributevalues";
         public const string Categories = $"/categories";
         public const string Customers = $"/customers";
         public const string Models = $"/models";
@@ -140,18 +212,17 @@ namespace Producion_Line_Manager.Services
         public const string Patterns = $"/patterns";
         public const string Processes = $"/processes";
         public const string Products = $"/products";
-        public const string TaskAtributes = $"/taskatributes";
         public const string TaskDependencies = $"/taskdependencies";
         public const string Tasks = $"/tasks";
         public const string UserProcesses = $"/userprocesses";
         public const string Users = $"/users";
+        public const string Fabrics = $"/fabrics";
+        public const string StitchTypes = $"/stitchtypes";
 
         private static string GetURI(string typeName)
         {
             return typeName.ToLower() switch
             {
-                "patternareas" => Areas,
-                "atributevalues" => AtributeValues,
                 "productcategories" => Categories,
                 "customers" => Customers,
                 "models" => Models,
@@ -159,11 +230,12 @@ namespace Producion_Line_Manager.Services
                 "patterns" => Patterns,
                 "processes" => Processes,
                 "products" => Products,
-                "taskatributes" => TaskAtributes,
                 "taskdependencies" => TaskDependencies,
                 "tasks" => Tasks,
                 "userprocesses" => UserProcesses,
                 "users" => Users,
+                "fabrics" => Fabrics,
+                "stitchtypes" => StitchTypes,
                 _ => $"/{typeName.ToLower()}"
             };
         }
@@ -183,6 +255,11 @@ namespace Producion_Line_Manager.Services
             where A : class, IEntity
         {
             return GetURI<T>(id) + GetURI(typeof(A).Name);
+        }
+
+        public static string GetImagesURI()
+        {
+            return $"{RootURI}/images";
         }
     }
 }

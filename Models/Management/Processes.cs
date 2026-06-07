@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Models.Production
+namespace Models.Management
 {
     public class Processes : IEntity
     {
@@ -11,23 +11,35 @@ namespace Models.Production
         public required ProcessesType Type { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
 
     }
 
     public enum ProcessesType
     {
+        //Production
         Customers,
         Orders,
         Products,
+        //Management
         Users,
+        //Attributes
+        ProductCategories,
         Models,
         Patterns,
-        ProductCategories,
+        StitchTypes,
+        YarnColors,
+        Fabrics,
+        //Appointments
+        DropOffApt,
+        TestTryApt,
         PickUpApt,
+        //Foam Tasks
         FoamFix,
         FoamAdapt,
         FoamGel,
         FoamAnatomical,
+        //Tasks
         CoverRemove,
         CustomPattern,
         Cut,
@@ -35,7 +47,7 @@ namespace Models.Production
         Embroider,
         Bolt,
         Inspect,
-        DeliverApt,
+        //Tabs
         Tasks,
         Foam,
         Calendar

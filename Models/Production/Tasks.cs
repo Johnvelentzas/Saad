@@ -13,8 +13,11 @@ namespace Models.Production
         public required int ProcessId { get; set; }
         [ForeignKey("Products")]
         public required int ProductId { get; set; }
+        [ForeignKey("Users")]
+        public required int UserId { get; set; }
         public required bool IsCompleted { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 }

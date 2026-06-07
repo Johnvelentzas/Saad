@@ -66,6 +66,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="14.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.70" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
@@ -76,6 +77,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DetailsViews\PatternsView.xaml.cs">
+	    <DependentUpon>PatternsView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\FabricsView.xaml.cs">
+	    <DependentUpon>FabricsView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\ProductCategoriesView.xaml.cs">
+	    <DependentUpon>ProductCategoriesView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\YarnColorsView.xaml.cs">
+	    <DependentUpon>YarnColorsView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\StitchTypesView.xaml.cs">
+	    <DependentUpon>StitchTypesView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\DetailsViews\OrdersView.xaml.cs">
 	    <DependentUpon>OrdersView.xaml</DependentUpon>
 	  </Compile>
@@ -88,6 +104,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Controls\ProductionTrackerView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\PatternsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\FabricsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\ProductCategoriesView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\YarnColorsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\StitchTypesView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailsViews\OrdersView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -1,0 +1,22 @@
+﻿<Image Showcase>
+
+<Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Margin="0, 20, 0, 0" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="25"/>
+    </Border.StrokeShape>
+    <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="200" WidthRequest="200"/>
+</Border>
+
+<Button>
+
+<Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10">
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="5"/>
+    </Border.StrokeShape>
+    <Border.GestureRecognizers>
+        <TapGestureRecognizer Command="{Binding Command}"/>
+    </Border.GestureRecognizers>
+    <Label Text="Button Name"/>
+</Border>
+
+<For Drafts>

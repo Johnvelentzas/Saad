@@ -1,17 +1,18 @@
 ﻿
+
 using System.ComponentModel.DataAnnotations;
 
-namespace Models.Production
+namespace Models.Attributes
 {
-    public class Users : IEntity
+    public class YarnColors : IEntity
     {
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
         public int FromId { get; set; } = 0;
-        public required string Name { get; set; }
+        public required string YarnColorName { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        //TODO : Add image
+        public string? Comments { get; set; }
     }
 }

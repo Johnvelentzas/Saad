@@ -6,9 +6,9 @@ namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AttributeValuesController : BasicController<AttributeValues>
+    public class FabricsController : BasicController<Fabrics>
     {
-        public AttributeValuesController(ApplicationDbContext context) : base(context)
+        public FabricsController(ApplicationDbContext context) : base(context)
         {
         }
     }

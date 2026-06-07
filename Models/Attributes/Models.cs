@@ -12,7 +12,9 @@ namespace Models.Attributes
         [ForeignKey("ProductCategories")]
         public int CategoryId { get; set; }
         public required string ModelName { get; set; }
+        public string? ImageUrl { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 }

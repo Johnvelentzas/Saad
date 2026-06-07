@@ -1,7 +1,7 @@
 ﻿
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Models.Production;
+using Models.Management;
 using System.Collections.ObjectModel;
 
 namespace Producion_Line_Manager.Helpers
@@ -76,10 +76,18 @@ namespace Producion_Line_Manager.Helpers
                     return new TabItem(process.Id, "Models", null, process.Type);
                 case ProcessesType.Patterns:
                     return new TabItem(process.Id, "Patterns", null, process.Type);
+                case ProcessesType.StitchTypes:
+                    return new TabItem(process.Id, "Stitch Types", null, process.Type);
+                case ProcessesType.YarnColors:
+                    return new TabItem(process.Id, "Yarn Colors", null, process.Type);
+                case ProcessesType.Fabrics:
+                    return new TabItem(process.Id, "Fabrics", null, process.Type);
                 case ProcessesType.ProductCategories:
                     return new TabItem(process.Id, "Product Categories", null, process.Type);
+                case ProcessesType.DropOffApt:
+                    return new TabItem(process.Id, "Drop Off", null, process.Type);
                 case ProcessesType.PickUpApt:
-                    return new TabItem(process.Id, "PickUp", null, process.Type);
+                    return new TabItem(process.Id, "Pick Up", null, process.Type);
                 case ProcessesType.FoamFix:
                     return new TabItem(process.Id, "Foam Fix", null, process.Type);
                 case ProcessesType.FoamAdapt:
@@ -102,12 +110,12 @@ namespace Producion_Line_Manager.Helpers
                     return new TabItem(process.Id, "Bolt", null, process.Type);
                 case ProcessesType.Inspect:
                     return new TabItem(process.Id, "Inspect", null, process.Type);
-                case ProcessesType.DeliverApt:
-                    return new TabItem(process.Id, "Deliver", null, process.Type);
                 case ProcessesType.Tasks:
                     return new TabItem(process.Id, "Tasks", null, process.Type);
                 case ProcessesType.Foam:
                     return new TabItem(process.Id, "Foam", null, process.Type);
+                case ProcessesType.Calendar:
+                    return new TabItem(process.Id, "Calendar", null, process.Type);
                 default:
                     return new TabItem(process.Id, "Unknown", null, process.Type);
             }

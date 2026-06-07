@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.FabricsView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             x:DataType="vm:FabricsViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10"
+                IsVisible="{Binding IsNotDraft}">
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="Fabric #F-"
+                        FontSize="24"/>
+                    <Label
+                        Text="{Binding Id}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <Label Text="{Binding FabricName}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       Margin="0, 20, 0, 0"/>
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Comments}"/>
+                </Border>
+                <Border
+                        Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        Margin="0, 20, 0, 0"
+                        IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
+                    HeightRequest="200"
+                    WidthRequest="200"
+                    HorizontalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Image Source="{Binding ImageUrl}" 
+                           Aspect="AspectFill" 
+                           HeightRequest="200"
+                           WidthRequest="200"/>
+                </Border>
+            </VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
+
+                <Label Text="Edit Fabric" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Fabric Name" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding FabricName}"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="20">
+                    <Border VerticalOptions="Center" HeightRequest="200" WidthRequest="200"
+                        Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <VerticalStackLayout VerticalOptions="Center"
+                                             HorizontalOptions="Center"
+                                             Spacing="10">
+                            <Image Source="{Binding ImageUrl}" 
+                           Aspect="AspectFill" 
+                           HeightRequest="200"
+                           WidthRequest="200"
+                                   IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                            <Label Text="No Image" HorizontalOptions="Center" FontSize="18"
+                               IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNullOrWhiteSpaceConverter}}"/>
+                            <Border Background="{AppThemeBinding Dark={StaticResource Gray500 }, Light={StaticResource Gray200`}}" Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="Choose Image" FontSize="18" HorizontalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    <VerticalStackLayout Spacing="20">
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10"
+                                IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding RemoveImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Remove Image"/>
+                        </Border>
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10"
+                                IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Change Image"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>

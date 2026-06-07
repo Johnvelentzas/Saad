@@ -22,7 +22,7 @@ namespace Saad_Web_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Models.Attributes.AttributeValues", b =>
+            modelBuilder.Entity("Models.Attributes.Fabrics", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,26 +30,28 @@ namespace Saad_Web_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FabricName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FromId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDraft")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("AttributeValues");
+                    b.ToTable("Fabrics");
                 });
 
             modelBuilder.Entity("Models.Attributes.Models", b =>
@@ -63,11 +65,17 @@ namespace Saad_Web_API.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FromId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDraft")
                         .HasColumnType("bit");
@@ -81,35 +89,6 @@ namespace Saad_Web_API.Migrations
                     b.ToTable("Models");
                 });
 
-            modelBuilder.Entity("Models.Attributes.PatternAreas", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FromId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PatternId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PatternAreas");
-                });
-
             modelBuilder.Entity("Models.Attributes.Patterns", b =>
                 {
                     b.Property<int>("Id")
@@ -118,11 +97,17 @@ namespace Saad_Web_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FromId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDraft")
                         .HasColumnType("bit");
@@ -151,6 +136,9 @@ namespace Saad_Web_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -165,7 +153,7 @@ namespace Saad_Web_API.Migrations
                     b.ToTable("ProductCategories");
                 });
 
-            modelBuilder.Entity("Models.Attributes.TaskAtributes", b =>
+            modelBuilder.Entity("Models.Attributes.StitchTypes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,8 +161,8 @@ namespace Saad_Web_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AttributeId")
-                        .HasColumnType("int");
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -185,21 +173,145 @@ namespace Saad_Web_API.Migrations
                     b.Property<bool>("IsDraft")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
+                    b.Property<string>("StitchTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskAtributes");
+                    b.ToTable("StitchTypes");
                 });
 
-            modelBuilder.Entity("Models.Finances.Customers", b =>
+            modelBuilder.Entity("Models.Attributes.YarnColors", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("YarnColorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("YarnColors");
+                });
+
+            modelBuilder.Entity("Models.Management.Processes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Processes");
+                });
+
+            modelBuilder.Entity("Models.Management.UserProcesses", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProcessId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserProcesses");
+                });
+
+            modelBuilder.Entity("Models.Management.Users", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Models.Production.Customers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -267,31 +379,6 @@ namespace Saad_Web_API.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Models.Production.Processes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FromId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Processes");
-                });
-
             modelBuilder.Entity("Models.Production.Products", b =>
                 {
                     b.Property<int>("Id")
@@ -299,6 +386,15 @@ namespace Saad_Web_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AFabricId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BFabricId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CFabricId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -309,14 +405,68 @@ namespace Saad_Web_API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DFabricId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DropOffApt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("ExpectedFinishDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ExpectedStartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FirstYarnColorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FoamType")
+                        .HasColumnType("int");
+
                     b.Property<int>("FromId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("HasBoltTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasCheckTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasCustomPatternTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasCutTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasDropOffApt")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasEmbroideryTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasFoamTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasGelTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasMultipleFabrics")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasPickUpApt")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasRipTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasSewTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasTestTryApt")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -330,6 +480,24 @@ namespace Saad_Web_API.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PatternId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PickUpApt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RipAction")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SecondYarnColorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StitchTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("TestTryApt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -342,6 +510,9 @@ namespace Saad_Web_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -371,6 +542,9 @@ namespace Saad_Web_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -389,63 +563,12 @@ namespace Saad_Web_API.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("Models.Production.UserProcesses", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FromId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProcessId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserProcesses");
-                });
-
-            modelBuilder.Entity("Models.Production.Users", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FromId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
+                    b.ToTable("Tasks");
                 });
 #pragma warning restore 612, 618
         }

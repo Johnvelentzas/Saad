@@ -2,13 +2,22 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Producion_Line_Manager"
+             
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             
              x:Class="Producion_Line_Manager.App">
+
     <Application.Resources>
         <ResourceDictionary>
+
+            <toolkit:IsStringNotNullOrWhiteSpaceConverter x:Key="IsStringNotNullOrWhiteSpaceConverter" />
+            <toolkit:IsStringNullOrWhiteSpaceConverter x:Key="IsStringNullOrWhiteSpaceConverter" />
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

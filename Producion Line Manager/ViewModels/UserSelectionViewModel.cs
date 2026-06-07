@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Models;
-using Models.Production;
+using Models.Management;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Services;
 using System.Collections.ObjectModel;

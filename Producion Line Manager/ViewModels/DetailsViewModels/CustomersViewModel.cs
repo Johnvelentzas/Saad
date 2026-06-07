@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Models;
 using Models.Attributes;
-using Models.Finances;
 using Models.Production;
 using Producion_Line_Manager.Helpers;
 using Producion_Line_Manager.Messages;
@@ -40,6 +39,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         [ObservableProperty]
         private CustomerType _customerType = CustomerType.Retail;
 
+
         [ObservableProperty]
         private int _numberOfDraftOrders = 0;
         [ObservableProperty]
@@ -61,6 +61,60 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             CustomerTypes.Add(CustomerType.Wholesale);
         }
 
+        partial void OnCustomerNameChanged(string value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.FirstName = value;
+                TriggerDebouncedSave();
+            }
+        }
+
+        partial void OnCustomerLastNameChanged(string value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.LastName = value;
+                TriggerDebouncedSave();
+            }
+        }
+
+        partial void OnEmailChanged(string value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.Email = value;
+                TriggerDebouncedSave();
+            }
+        }
+
+        partial void OnTelephoneChanged(string value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.Telephone = value;
+                TriggerDebouncedSave();
+            }
+        }
+
+        partial void OnTaxNumberChanged(string value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.TaxNumber = value;
+                TriggerDebouncedSave();
+            }
+        }
+
+        partial void OnCustomerTypeChanged(CustomerType value)
+        {
+            if (Item is Customers customer)
+            {
+                customer.Type = value;
+                TriggerDebouncedSave();
+            }
+        }
+
         [RelayCommand]
         public async Task CreateNewOrder()
         {
@@ -72,7 +126,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                 IsCompleted = false,
                 CreatedDate = DateTime.Now,
             };
-            await restService.Post(newOrder);
+            var result = await restService.Post(newOrder);
+            newOrder.Id = result?.Id ?? 0;
             WeakReferenceMessenger.Default.Send(new OpenEntityMessage(newOrder));
         }
 
@@ -85,7 +140,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         }
 
 
-        public void LoadEntity(Customers customer)
+        public async void LoadEntity(Customers customer)
         {
             base.LoadEntity(customer);
             CustomerName = customer.FirstName ?? string.Empty;
@@ -94,8 +149,10 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             Telephone = customer.Telephone ?? string.Empty;
             TaxNumber = customer.TaxNumber ?? string.Empty;
             CustomerType = customer.Type ?? CustomerType.Retail;
+            CreatedDate = customer.CreatedDate;
 
-            RefreshOrders();
+
+            await RefreshOrders();
         }
 
         public override void SaveEntity()
@@ -125,7 +182,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             DraftPageSize = 20;
             DraftTotalPages = 1;
 
-            await LoadDrafts();
+            await LoadMoreDrafts();
             await LoadMoreItems();
         }
 
@@ -158,7 +215,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                 }
                 parameters.PageSize = 1;
                 parameters.Filters.Clear();
-                parameters.Filters.Add(FilterType.Active);
+                parameters.Filters.Add(FilterType.Incomplete);
                 IRequestResult? activeResult = await restService.Get<Customers, Orders>(Id, parameters);
                 NumberOfActiveOrders = activeResult?.TotalCount ?? 0;
                 parameters.Filters.Clear();
@@ -174,7 +231,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         }
 
-        public async Task LoadDrafts()
+        [RelayCommand]
+        public async Task LoadMoreDrafts()
         {
             if (IsBusy) { return; }
             if (DraftPage > DraftTotalPages) { return; }

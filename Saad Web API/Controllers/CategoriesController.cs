@@ -13,18 +13,6 @@ namespace Saad_Web_API.Controllers
         {
         }
 
-        //GET api/categories/{id}/models
-        [HttpGet("{id}/models")]
-        public async Task<ActionResult<IEnumerable<Models.Attributes.Models>>> GetModelsFromCategory(
-            [FromRoute] int id)
-        {
-            var category = await _context.ProductCategories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound("Category doesn't exist");
-            }
-            var models = await _context.Models.Where(o => o.CategoryId == id).ToListAsync();
-            return Ok(models);
-        }
+
     }
 }

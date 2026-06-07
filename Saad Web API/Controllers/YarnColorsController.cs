@@ -6,9 +6,9 @@ namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AreasController : BasicController<PatternAreas>
+    public class YarnColorsController : BasicController<YarnColors>
     {
-        public AreasController(ApplicationDbContext context) : base(context)
+        public YarnColorsController(ApplicationDbContext context) : base(context)
         {
         }
     }

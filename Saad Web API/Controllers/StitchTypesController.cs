@@ -6,9 +6,9 @@ namespace Saad_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskAttributesController : BasicController<TaskAtributes>
+    public class StitchTypesController : BasicController<StitchTypes>
     {
-        public TaskAttributesController(ApplicationDbContext context) : base(context)
+        public StitchTypesController(ApplicationDbContext context) : base(context)
         {
         }
     }

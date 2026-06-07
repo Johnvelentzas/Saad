@@ -1,19 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models.Attributes
+namespace Models.Management
 {
-    public class TaskAtributes : IEntity
+    public class UserProcesses : IEntity
     {
         [Key]
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
         public int FromId { get; set; } = 0;
-        [ForeignKey("Tasks")]
-        public required int TaskId { get; set; }
-        [ForeignKey("AttributeValues")]
-        public required int AttributeId { get; set; }
+        [ForeignKey("Users")]
+        public required int UserId { get; set; }
+        [ForeignKey("Processes")]
+        public required int ProcessId { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? Comments { get; set; }
     }
 }
