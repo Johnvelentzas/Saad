@@ -25,10 +25,53 @@
                         FontSize="24"
                         FontAttributes="Bold"/>
                 </HorizontalStackLayout>
-                <Label Text="{Binding PatternName}"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       Margin="0, 20, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 24"
+                      Padding="0, 8, 0, 8"
+                      HeightRequest="42">
+                            <Label Text="Name"
+                           VerticalOptions="Center"/>
+                            <Label/>
+                            <Label Text="{Binding PatternName}"
+                           VerticalOptions="Center"
+                           Grid.Column="2"/>
+                            <Label/>
+
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+                    HeightRequest="1"
+                    BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 24"
+                      Padding="0, 8, 0, 8"
+                      HeightRequest="42">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenModelCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Model"
+                       VerticalOptions="Center"/>
+                            <Label/>
+                            <Label Text="{Binding Model.ModelName}"
+                           VerticalOptions="Center"
+                           Grid.Column="2"/>
+                            <Label/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;"
+                               VerticalOptions="Center"
+                               FontFamily="Icons"
+                               FontSize="24"
+                               IsVisible="{Binding Model, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                </Border>
                 <Border
                     Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
                     Padding="20"
@@ -39,10 +82,114 @@
                     </Border.StrokeShape>
                     <Label Text="{Binding Comments}"/>
                 </Border>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Margin="0, 20, 0, 0" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
+                        HeightRequest="200"
+                        WidthRequest="200"
+                        HorizontalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="200" WidthRequest="200"/>
+                </Border>
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
 
                 <Label Text="Edit Pattern" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+        Padding="20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="auto, *, auto">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding Model.ModelName}"
+                   FontSize="18"/>
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                        <Border IsVisible="{Binding CannotChangeModel}"
+                Grid.Column="2"
+                VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChangeModelCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="&#xf4fa;" 
+           FontFamily="Icons"
+           FontSize="26"
+           TextColor="White"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid ColumnDefinitions="*, *, *"
+                      ColumnSpacing="20"
+                      IsVisible="{Binding CanChangeModel}">
+                    <SearchBar Placeholder="Search Models"
+                               Text="{Binding SearchQuerry}"
+                               SearchCommand="{Binding RefreshItemsCommand}"/>
+                    <Picker Grid.Column="1"
+                            ItemsSource="{Binding BrandOptions}"
+                            SelectedItem="{Binding Brand}"
+                            ItemDisplayBinding="{Binding BrandName}"/>
+                    <Picker Grid.Column="2"
+                            ItemsSource="{Binding CategoryOptions}"
+                            SelectedItem="{Binding Category}"
+                            ItemDisplayBinding="{Binding CategoryName}"/>
+                </Grid>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+        IsVisible="{Binding CanChangeModel}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <RefreshView IsRefreshing="{Binding IsBusy}"
+                 Command="{Binding RefreshItemsCommand}">
+                        <CollectionView ItemsSource="{Binding SuggestedModels}">
+                            <CollectionView.EmptyView>
+                                <Grid HorizontalOptions="Center"
+                      VerticalOptions="Center">
+                                    <Label Text="No Models Found"/>
+                                </Grid>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="cust:Models">
+                                    <Grid ColumnDefinitions="auto, *, auto, *, auto"
+                          RowDefinitions="auto, 1"
+                          Padding="20, 0, 20, 0">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PatternsViewModel}}, Path=SelectModelCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Border Grid.Row="1"
+                                Grid.ColumnSpan="5"
+                                BackgroundColor="DarkGray">
+
+                                        </Border>
+                                        <HorizontalStackLayout VerticalOptions="Center"
+                                               Spacing="2">
+                                            <Label Text="{Binding ModelName}"
+                                   FontSize="18"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Grid.Column="2"
+                                               VerticalOptions="Center">
+
+                                        </HorizontalStackLayout>
+                                        <Border Grid.Column="4"
+                                Padding="20">
+                                            <Label Text="&#xe5cc;"
+                                   FontFamily="Icons"
+                                   FontSize="28"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </RefreshView>
+                </Border>
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Pattern Name" FontSize="14" TextColor="Gray" />
                     <Entry Text="{Binding PatternName}"/>
@@ -51,8 +198,50 @@
                     <Label Text="Comments" FontSize="14" TextColor="Gray" />
                     <Editor Text="{Binding Comments}"/>
                 </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="20">
+                    <Border VerticalOptions="Center" HeightRequest="200" WidthRequest="200" Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                            <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="200" WidthRequest="200" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                            <Label Text="No Image" HorizontalOptions="Center" FontSize="18" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNullOrWhiteSpaceConverter}}"/>
+                            <Border Background="{AppThemeBinding Dark={StaticResource Gray500 }, Light={StaticResource Gray200`}}" Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="Choose Image" FontSize="18" HorizontalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    <VerticalStackLayout Spacing="20">
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding RemoveImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Remove Image"/>
+                        </Border>
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10" IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Change Image"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
             </VerticalStackLayout>
+            
         </VerticalStackLayout>
+        
     </ScrollView>
 </views:BaseEntityView>

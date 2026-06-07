@@ -307,7 +307,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                     BrandOptions.Add(item);
                 }
             }
-            
+            await RefreshPatterns();
         }
 
         public override void SaveEntity()

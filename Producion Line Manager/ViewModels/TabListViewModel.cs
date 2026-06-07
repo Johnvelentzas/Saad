@@ -302,7 +302,6 @@ namespace Producion_Line_Manager.ViewModels
                     Title = "Tasks";
                     Description = "Tasks";
                     HasUrgent = true;
-                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.Foam:
                     break;
@@ -450,7 +449,13 @@ namespace Producion_Line_Manager.ViewModels
                     Customers c => c.LastName ?? "No Last Name Customer",
                     Orders o => $"Order #O-{o.Id}",
                     Products p => $"Product #P-{p.Id}",
+                    Users p => p.Name ?? "Unknown User",
                     Models.Attributes.Models m => m.ModelName ?? "Unknown Model",
+                    Fabrics p => p.FabricName ?? "Unknown Fabric",
+                    Patterns p => p.Name ?? "Unknown Pattern",
+                    StitchTypes p => p.StitchTypeName ?? "Unknown Stitch Type",
+                    YarnColors p => p.YarnColorName ?? "Unknown Yarn Color",
+                    Brands p => p.BrandName ?? "Unknown Brand",
                     ProductCategories pc => pc.CategoryName ?? "Unknown Category",
                     Tasks t => $"Task #T-{t.Id}",
                     _ => String.Empty,

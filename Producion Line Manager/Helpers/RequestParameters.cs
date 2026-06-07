@@ -14,7 +14,6 @@ namespace Producion_Line_Manager.Helpers
 
         public bool HasFilters => Filters.Count > 0;
         public bool HasSearch => !string.IsNullOrEmpty(SearchValue) && SearchType != null;
-        public bool IsSearchType => HasSearch;
 
         public RequestParameters(
             List<FilterType>? filters = null,
@@ -42,26 +41,76 @@ namespace Producion_Line_Manager.Helpers
             return par;
         }
 
-        public string BuildURI(string uri = "")
+        public virtual string BuildURI(string baseRoute = "")
         {
-            if (IsSearchType)
-            {
-                uri += $"/search?";
-            }
-            else
-            {
-                uri += $"?";
-            }
+            var segments = new List<string>();
+
+            // Handle Filters
             foreach (var filter in Filters)
             {
-                uri += $"filters={filter}&";
+                segments.Add($"filters={filter}");
             }
+
+            // Handle Search
             if (HasSearch)
             {
-                uri += $"searchtype={SearchType}&searchvalue={SearchValue}&";
+                segments.Add($"searchtype={SearchType}");
+                segments.Add($"searchvalue={Uri.EscapeDataString(SearchValue ?? "")}"); // Good practice for spaces/special characters
             }
-            uri += $"page={Page}&pagesize={PageSize}&sort={SortType}";
-            return uri;
+
+            // Handle Pagination and Sorting
+            segments.Add($"page={Page}");
+            segments.Add($"pagesize={PageSize}");
+            segments.Add($"sort={SortType}");
+
+            // Combine segments cleanly
+            string queryString = string.Join("&", segments);
+            string endpointType = HasSearch ? "/search" : "";
+
+            return $"{baseRoute}{endpointType}?{queryString}";
+        }
+    }
+
+    public class ModelsRequestParameters : RequestParameters
+    {
+        public int? BrandId;
+        public int? CategoryId;
+        public ModelsRequestParameters(
+            List<FilterType>? filters = null,
+            SearchType? searchType = null,
+            string? searchValue = null,
+            int page = 1, 
+            int pageSize = 100, 
+            SortType sortType = SortType.IdDecending,
+            int? brandId = null,
+            int? categoryId = null) : base(filters, searchType, searchValue, page, pageSize, sortType)
+        {
+            BrandId = brandId;
+            CategoryId = categoryId;
+        }
+        public override string BuildURI(string baseRoute = "")
+        {
+            string baseUri = base.BuildURI(baseRoute);
+
+            var extraSegments = new List<string>();
+
+            if (BrandId != null)
+            {
+                extraSegments.Add($"brandId={BrandId}");
+            }
+
+            if (CategoryId != null)
+            {
+                extraSegments.Add($"categoryId={CategoryId}");
+            }
+
+            if (extraSegments.Count > 0)
+            {
+                string extraQuery = string.Join("&", extraSegments);
+                return $"{baseUri}&{extraQuery}";
+            }
+
+            return baseUri;
         }
     }
 }

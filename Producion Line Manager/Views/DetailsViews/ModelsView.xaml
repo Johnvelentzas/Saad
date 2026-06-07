@@ -24,21 +24,31 @@
                         FontSize="24"
                         FontAttributes="Bold"/>
                 </HorizontalStackLayout>
-                <Label Text="{Binding ModelName}"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       Margin="0, 20, 0, 0"/>
+
                 <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
         Padding="20, 0, 20, 0"
         Margin="0, 0, 0, 20">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="25"/>
                     </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenCategoryCommand}"/>
-                    </Border.GestureRecognizers>
                     <VerticalStackLayout>
-                        <Grid ColumnDefinitions="auto, *, auto, auto"
+                        <Grid ColumnDefinitions="auto, *, auto, 24"
+                              Padding="0, 8, 0, 8"
+                              HeightRequest="42">
+                            <Label Text="Name"
+                                   VerticalOptions="Center"/>
+                            <Label/>
+                            <Label Text="{Binding ModelName}"
+                                   VerticalOptions="Center"
+                                   Grid.Column="2"/>
+                            <Label/>
+
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+                            HeightRequest="1"
+                            BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 24"
                               Padding="0, 8, 0, 8"
                               HeightRequest="42">
                             <Grid.GestureRecognizers>
@@ -63,7 +73,7 @@
                             HeightRequest="1"
                             BackgroundColor="DarkGrey">
                         </Border>
-                        <Grid ColumnDefinitions="auto, *, auto, auto"
+                        <Grid ColumnDefinitions="auto, *, auto, 24"
                               HeightRequest="42">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding OpenBrandCommand}"/>
@@ -89,7 +99,6 @@
                 <Border
                     Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
                     Padding="20"
-                    Margin="0, 20, 0, 0"
                     IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="25"/>
@@ -230,25 +239,38 @@ Padding="15, 0, 15, 0">
                                 </CollectionView.EmptyView>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="models:Patterns">
-                                        <Grid ColumnDefinitions="auto, *, auto, *, auto"
-                    RowDefinitions="auto, 1"
-                    Padding="20, 0, 20, 0">
+                                        <Grid ColumnDefinitions="auto, auto, *, auto"
+                                              RowDefinitions="auto, 1"
+                                              Padding="20, 0, 20, 0"
+                                              ColumnSpacing="20">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModelsViewModel}}, Path=OpenPatternCommand}"
                                             CommandParameter="{Binding .}"/>
                                             </Grid.GestureRecognizers>
                                             <Border Grid.Row="1"
-                          Grid.ColumnSpan="5"
-                          BackgroundColor="DarkGray">
+                                                    Grid.ColumnSpan="5"
+                                                    BackgroundColor="DarkGray">
 
                                             </Border>
-                                            <HorizontalStackLayout VerticalOptions="Center"
-                                         Spacing="2">
-                                                <Label Text="Pattern #P-"
-                             FontSize="18"/>
-                                                <Label Text="{Binding Id}"
-                             FontSize="18"/>
-                                            </HorizontalStackLayout>
+                                            <Border Grid.Column="0" WidthRequest="64" HeightRequest="64" IsVisible="{Binding ImageUrl, Converter={StaticResource IsNotNullOrWhiteSpaceConverter}}">
+                                                <Image Source="{Binding ImageUrl}"/>
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                                <HorizontalStackLayout VerticalOptions="Center"
+                                                                        Spacing="2">
+                                                    <Label Text="Pattern #P-"
+                                                            FontSize="18"/>
+                                                    <Label Text="{Binding Id}"
+                                                            FontSize="18"/>
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout VerticalOptions="Center"
+                                                                        Spacing="2">
+
+                                                    <Label Text="{Binding Name}"
+                                                            FontSize="18"/>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                            
                                             <HorizontalStackLayout Grid.Column="2"
                                          VerticalOptions="Center">
                                                

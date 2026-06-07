@@ -63,6 +63,12 @@ namespace Producion_Line_Manager.Services
             return null;
         }
 
+        public async Task<RequestResult<Models.Attributes.Models>?> GetModels(ModelsRequestParameters? parameters = null)
+        {
+            parameters ??= new();
+            return await Get<RequestResult<Models.Attributes.Models>>(parameters.BuildURI(URI.GetURI<Models.Attributes.Models>()));
+        }
+
         public async Task Put<T>(T item)
             where T : class, IEntity
         {
