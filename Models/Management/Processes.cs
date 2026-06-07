@@ -17,6 +17,7 @@ namespace Models.Management
 
     public enum ProcessesType
     {
+        //Don't add more in the beggining. Only add at the end to avoid breaking existing data
         //Production
         Customers,
         Orders,
@@ -52,5 +53,6 @@ namespace Models.Management
         Tasks,
         Foam,
         Calendar
+        //Add more ONLY at the end to avoid breaking existing data
     }
 }

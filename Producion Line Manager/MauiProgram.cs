@@ -71,6 +71,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddTransient<PatternsViewModel>();
             mauiAppBuilder.Services.AddTransient<FabricsViewModel>();
             mauiAppBuilder.Services.AddTransient<ProductCategoriesViewModel>();
+            mauiAppBuilder.Services.AddTransient<BrandsViewModel>();
+            mauiAppBuilder.Services.AddTransient<ModelsViewModel>();
 
             return mauiAppBuilder;
         }
@@ -90,6 +92,8 @@ namespace Producion_Line_Manager
             mauiAppBuilder.Services.AddTransient<PatternsView>();
             mauiAppBuilder.Services.AddTransient<FabricsView>();
             mauiAppBuilder.Services.AddTransient<ProductCategoriesView>();
+            mauiAppBuilder.Services.AddTransient<BrandsView>();
+            mauiAppBuilder.Services.AddTransient<ModelsView>();
 
             return mauiAppBuilder;
         }

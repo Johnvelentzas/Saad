@@ -18,7 +18,7 @@
                     Spacing="0"
                     Padding="5, 0, 0, 0">
                     <Label
-                        Text="Yarn Color #YC-"
+                        Text="Category #C-"
                         FontSize="24"/>
                     <Label
                         Text="{Binding Id}"
@@ -42,9 +42,9 @@
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
 
-                <Label Text="Edit Yarn Color" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <Label Text="Edit Category" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
                 <VerticalStackLayout Spacing="5">
-                    <Label Text="Yarn Color Name" FontSize="14" TextColor="Gray" />
+                    <Label Text="Category Name" FontSize="14" TextColor="Gray" />
                     <Entry Text="{Binding CategoryName}"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="5">

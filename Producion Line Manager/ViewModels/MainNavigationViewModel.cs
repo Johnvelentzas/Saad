@@ -222,6 +222,7 @@ namespace Producion_Line_Manager.ViewModels
         private readonly List<ProcessesType> ProductionTabs = new List<ProcessesType>
         {
             ProcessesType.ProductCategories,
+            ProcessesType.Brands,
             ProcessesType.Models,
             ProcessesType.Patterns,
             ProcessesType.YarnColors,

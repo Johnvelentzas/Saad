@@ -253,6 +253,11 @@ namespace Producion_Line_Manager.ViewModels
                     Description = "Fabrics";
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
+                case ProcessesType.Brands:
+                    Title = "Brands";
+                    Description = "Brands";
+                    FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
+                    break;
                 case ProcessesType.DropOffApt:
                     Title = "Drop Off Appointments";
                     Description = "Appointments";
@@ -473,6 +478,8 @@ namespace Producion_Line_Manager.ViewModels
                     Fabrics => ServiceHelper.GetService<FabricsView>(),
                     Patterns => ServiceHelper.GetService<PatternsView>(),
                     ProductCategories => ServiceHelper.GetService<ProductCategoriesView>(),
+                    Brands => ServiceHelper.GetService<BrandsView>(),
+                    Models.Attributes.Models => ServiceHelper.GetService<ModelsView>(),
                     _ => throw new NotImplementedException(),
                 };
             }
@@ -504,6 +511,12 @@ namespace Producion_Line_Manager.ViewModels
                     break;
                 case ProductCategoriesView productCategoriesView:
                     productCategoriesView.LoadEntity((ProductCategories)TopEntity);
+                    break;
+                case BrandsView brandsView:
+                    brandsView.LoadEntity((Brands)TopEntity);
+                    break;
+                case ModelsView modelsView:
+                    modelsView.LoadEntity((Models.Attributes.Models)TopEntity);
                     break;
             }
             OnPropertyChanged(nameof(IsDraft));
@@ -581,6 +594,7 @@ namespace Producion_Line_Manager.ViewModels
                 Models.Attributes.Models => await restService.Get<Models.Attributes.Models>(TopEntity.FromId),
                 ProductCategories => await restService.Get<ProductCategories>(TopEntity.FromId),
                 Fabrics => await restService.Get<Fabrics>(TopEntity.FromId),
+                Brands => await restService.Get<Brands>(TopEntity.FromId),
                 Patterns => await restService.Get<Patterns>(TopEntity.FromId),
                 StitchTypes => await restService.Get<StitchTypes>(TopEntity.FromId),
                 YarnColors => await restService.Get<YarnColors>(TopEntity.FromId),
@@ -675,6 +689,9 @@ namespace Producion_Line_Manager.ViewModels
                 case ProcessesType.Fabrics:
                     entity = new Fabrics() { IsDraft = true, FabricName = string.Empty, CreatedDate = DateTime.Now };
                     break;
+                case ProcessesType.Brands:
+                    entity = new Brands() { IsDraft = true, BrandName = string.Empty, CreatedDate = DateTime.Now };
+                    break;
                 default:
                     throw new NotImplementedException($"Creation not supported for type {CurrentProcessesType}");
             }
@@ -718,6 +735,7 @@ namespace Producion_Line_Manager.ViewModels
                 ProcessesType.Tasks => await restService.Get<Tasks>(parameters),
                 ProcessesType.Foam => await restService.Get<Tasks>(parameters),
                 ProcessesType.Calendar => await restService.Get<Tasks>(parameters),
+                ProcessesType.Brands => await restService.Get<Brands>(parameters),
                 _ => throw new NotImplementedException(),
             };
         }

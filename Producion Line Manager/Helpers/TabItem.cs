@@ -116,6 +116,8 @@ namespace Producion_Line_Manager.Helpers
                     return new TabItem(process.Id, "Foam", null, process.Type);
                 case ProcessesType.Calendar:
                     return new TabItem(process.Id, "Calendar", null, process.Type);
+                case ProcessesType.Brands:
+                    return new TabItem(process.Id, "Brands", null, process.Type);
                 default:
                     return new TabItem(process.Id, "Unknown", null, process.Type);
             }

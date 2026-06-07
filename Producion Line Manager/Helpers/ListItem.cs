@@ -88,8 +88,8 @@ namespace Producion_Line_Manager.Helpers
         public ListItem(Models.Attributes.Models entity)
         {
             Id = entity.Id;
-            Name = $"#{entity.Id}";
-
+            Name = entity.ModelName;
+            ImageUrl = entity.ImageUrl ?? String.Empty;
             Entity = entity;
             IsSelected = false;
         }
@@ -97,8 +97,8 @@ namespace Producion_Line_Manager.Helpers
         public ListItem(Patterns entity)
         {
             Id = entity.Id;
-            Name = $"#{entity.Id}";
-
+            Name = entity.Name;
+            ImageUrl = entity.ImageUrl ?? String.Empty;
             Entity = entity;
             IsSelected = false;
         }
@@ -143,6 +143,15 @@ namespace Producion_Line_Manager.Helpers
         {
             Id = entity.Id;
             Name = entity.FabricName;
+            ImageUrl = entity.ImageUrl ?? String.Empty;
+            Entity = entity;
+            IsSelected = false;
+        }
+
+        public ListItem(Brands entity)
+        {
+            Id = entity.Id;
+            Name = entity.BrandName;
             ImageUrl = entity.ImageUrl ?? String.Empty;
             Entity = entity;
             IsSelected = false;

@@ -142,7 +142,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         public async void LoadEntity(Customers customer)
         {
-            base.LoadEntity(customer);
+            
             CustomerName = customer.FirstName ?? string.Empty;
             CustomerLastName = customer.LastName ?? string.Empty;
             Email = customer.Email ?? string.Empty;
@@ -150,6 +150,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             TaxNumber = customer.TaxNumber ?? string.Empty;
             CustomerType = customer.Type ?? CustomerType.Retail;
             CreatedDate = customer.CreatedDate;
+            base.LoadEntity(customer);
 
 
             await RefreshOrders();

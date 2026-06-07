@@ -130,6 +130,9 @@ namespace Producion_Line_Manager.Services
                 case Fabrics pc:
                     await Delete<Fabrics>(entity.Id);
                     break;
+                case Brands pc:
+                    await Delete<Brands>(entity.Id);
+                    break;
                 case YarnColors pc:
                     await Delete<YarnColors>(entity.Id);
                     break;
@@ -195,6 +198,7 @@ namespace Producion_Line_Manager.Services
                 YarnColors u => await Get<YarnColors>(u.Id),
                 StitchTypes u => await Get<StitchTypes>(u.Id),
                 Patterns u => await Get<Patterns>(u.Id),
+                Brands u => await Get<Brands>(u.Id),
                 _ => throw new NotImplementedException($"Update not supported for type {item.GetType().Name}")
             };
         }
@@ -218,6 +222,7 @@ namespace Producion_Line_Manager.Services
         public const string Users = $"/users";
         public const string Fabrics = $"/fabrics";
         public const string StitchTypes = $"/stitchtypes";
+        public const string Brands = $"/brands";
 
         private static string GetURI(string typeName)
         {
@@ -236,6 +241,7 @@ namespace Producion_Line_Manager.Services
                 "users" => Users,
                 "fabrics" => Fabrics,
                 "stitchtypes" => StitchTypes,
+                "brands" => Brands,
                 _ => $"/{typeName.ToLower()}"
             };
         }

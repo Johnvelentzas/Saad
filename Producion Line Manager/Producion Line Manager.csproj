@@ -77,6 +77,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DetailsViews\BrandsView.xaml.cs">
+	    <DependentUpon>BrandsView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\ModelsView.xaml.cs">
+	    <DependentUpon>ModelsView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\DetailsViews\PatternsView.xaml.cs">
 	    <DependentUpon>PatternsView.xaml</DependentUpon>
 	  </Compile>
@@ -105,6 +111,12 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Controls\ProductionTrackerView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\BrandsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\ModelsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailsViews\PatternsView.xaml">
