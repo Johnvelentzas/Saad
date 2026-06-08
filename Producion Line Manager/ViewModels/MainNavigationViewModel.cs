@@ -49,47 +49,34 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task FetchData()
         {
+            // --- 1. FETCH USER ---
             if (IsBusy) return;
-
             try
             {
                 IsBusy = true;
-
                 var savedUserId = Preferences.Default.Get("UserId", "NoUser");
                 if (savedUserId == "NoUser")
                 {
                     await navigationService.NavigateTo<UserSelectionPage>();
-                    IsBusy = false;
                     return;
                 }
                 var foundUser = await restService.Get<Users>(int.Parse(savedUserId));
-                if (foundUser != null)
-                {
-                    User = foundUser;
-                }
+                if (foundUser != null) User = foundUser;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error fetching processes: {ex.Message}");
+                Debug.WriteLine($"Error fetching user: {ex.Message}");
             }
-            finally
-            {
-                IsBusy = false;
-            }
+            finally { IsBusy = false; }
 
-
-
-
+            // --- 2. FETCH PROCESSES & BUILD UI ---
             try
             {
                 IsBusy = true;
-                if (User == null)
-                {
-                    return;
-                }
+                if (User == null) return;
 
                 var results = await restService.Get<Users, Processes>(User.Id);
-                if (results == null || results.Items.Count() < 1)
+                if (results == null || !results.Items.Any())
                 {
                     Debug.WriteLine("No processes found for the user.");
                     return;
@@ -101,104 +88,73 @@ namespace Producion_Line_Manager.ViewModels
                 {
                     Processes.Add(process);
                 }
-                TabItem? Tasks = null;
-                TabItem? Calendar = null;
-                TabItem? Foam = null;
 
-                var hasBasic = false;
-                var hasProduction = false;
-                var hasCalendar = false;
-                var hasTasks = false;
+                // 1. Build Flat Groups
+                BuildFlatTabGroup(BasicTabs);
+                BuildFlatTabGroup(ProductionTabs);
 
-                foreach (var type in BasicTabs)
+                // 2. Build Calendar Group
+                var calendarProcesses = Processes.Where(p => CalendarTabs.Contains(p.Type)).ToList();
+                if (calendarProcesses.Any())
                 {
-                    foreach (var process in Processes.Where(p => p.Type == type))
-                    {
-                        if (!hasBasic)
-                        {
-                            hasBasic = true;
-                            DisplayTabs.Add(new TabItem());
-                        }
-                        DisplayTabs.Add(TabItem.FromProcess(process));
-                    }
-                }
-                foreach (var type in ProductionTabs)
-                {
-                    foreach (var process in Processes.Where(p => p.Type == type))
-                    {
-                        if (!hasProduction)
-                        {
-                            hasProduction = true;
-                            DisplayTabs.Add(new TabItem());
-                        }
-                        DisplayTabs.Add(TabItem.FromProcess(process));
-                    }
-                }
-                foreach (var type in CalendarTabs)
-                {
+                    DisplayTabs.Add(new TabItem()); // Visual Separator
 
-                    foreach (var process in Processes.Where(p => p.Type == type))
-                    {
-                        if (!hasCalendar)
-                        {
-                            hasCalendar = true;
-                            DisplayTabs.Add(new TabItem());
-                        }
-                        if (Calendar == null)
-                        {
-                            Calendar = new TabItem(101, "Calendar", null, ProcessesType.Calendar);
-                            DisplayTabs.Add(Calendar);
-                        }
-                        var tab = TabItem.FromProcess(process);
-                        tab.IsSubTab = true;
-                        Calendar.AddChild(tab);
+                    // Try to find the actual DB process for the icon/color, otherwise use a seamless fallback
+                    var calProcess = Processes.FirstOrDefault(p => p.Type == ProcessesType.Calendar)
+                                     ?? new Processes { Id = 101, Type = ProcessesType.Calendar, IconText = "\uebcc", Color = "#455A64" };
 
+                    var calendarParent = TabItem.FromProcess(calProcess);
+
+                    foreach (var p in calendarProcesses.OrderBy(p => CalendarTabs.IndexOf(p.Type)))
+                    {
+                        var child = TabItem.FromProcess(p);
+                        child.IsSubTab = true;
+                        calendarParent.AddChild(child);
                     }
+                    DisplayTabs.Add(calendarParent);
                 }
 
-                foreach (var type in TaskTabs)
+                // 3. Build Tasks & Foam Group (Nested Hierarchy)
+                var taskProcesses = Processes.Where(p => TaskTabs.Contains(p.Type)).ToList();
+                var foamProcesses = Processes.Where(p => FoamTabs.Contains(p.Type)).ToList();
+
+                if (taskProcesses.Any() || foamProcesses.Any())
                 {
+                    DisplayTabs.Add(new TabItem()); // Visual Separator
 
-                    foreach (var process in Processes.Where(p => p.Type == type))
+                    var tasksProcess = Processes.FirstOrDefault(p => p.Type == ProcessesType.Tasks)
+                                       ?? new Processes { Id = 100, Type = ProcessesType.Tasks, IconText = "\uf045", Color = "#455A64" };
+
+                    var tasksParent = TabItem.FromProcess(tasksProcess);
+
+                    // Add standard tasks
+                    foreach (var p in taskProcesses.OrderBy(p => TaskTabs.IndexOf(p.Type)))
                     {
-                        if (!hasTasks)
-                        {
-                            hasTasks = true;
-                            DisplayTabs.Add(new TabItem());
-                        }
-                        if (Tasks == null)
-                        {
-                            Tasks = new TabItem(100, "Tasks", null, ProcessesType.Tasks);
-                            DisplayTabs.Add(Tasks);
-                        }
-                        var tab = TabItem.FromProcess(process);
-                        tab.IsSubTab = true;
-                        Tasks.AddChild(tab);
-
+                        var child = TabItem.FromProcess(p);
+                        child.IsSubTab = true;
+                        tasksParent.AddChild(child);
                     }
-                }
 
-                foreach (var type in FoamTabs)
-                {
-
-                    foreach (var process in Processes.Where(p => p.Type == type))
+                    // Add nested Foam tasks
+                    if (foamProcesses.Any())
                     {
-                        if (Tasks == null)
-                        {
-                            Tasks = new TabItem(100, "Tasks", null, ProcessesType.Tasks);
-                            DisplayTabs.Add(Tasks);
-                        }
-                        if (Foam == null)
-                        {
-                            Foam = new TabItem(102, "Foam", null, ProcessesType.Foam);
-                            Foam.IsSubTab = true;
-                            Tasks.AddChild(Foam);
-                        }
-                        var tab = TabItem.FromProcess(process);
-                        tab.IsSubTab = true;
-                        Foam.AddChild(tab);
+                        var foamProcess = Processes.FirstOrDefault(p => p.Type == ProcessesType.Foam)
+                                          ?? new Processes { Id = 102, Type = ProcessesType.Foam, IconText = "\ue2bd", Color = "#455A64" };
 
+                        var foamParent = TabItem.FromProcess(foamProcess);
+                        foamParent.IsSubTab = true; // Foam is a sub-folder of Tasks
+
+                        foreach (var p in foamProcesses.OrderBy(p => FoamTabs.IndexOf(p.Type)))
+                        {
+                            var foamChild = TabItem.FromProcess(p);
+                            foamChild.IsSubTab = true;
+                            foamParent.AddChild(foamChild);
+                        }
+
+                        tasksParent.AddChild(foamParent);
                     }
+
+                    DisplayTabs.Add(tasksParent);
                 }
             }
             catch (Exception ex)
@@ -208,6 +164,21 @@ namespace Producion_Line_Manager.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        // Add this helper method inside your ViewModel to keep things clean
+        private void BuildFlatTabGroup(List<ProcessesType> allowedTypes)
+        {
+            var matchingProcesses = Processes.Where(p => allowedTypes.Contains(p.Type)).ToList();
+            if (!matchingProcesses.Any()) return;
+
+            DisplayTabs.Add(new TabItem()); // Visual Separator
+
+            // Order them exactly how you defined them in your hardcoded lists
+            foreach (var process in matchingProcesses.OrderBy(p => allowedTypes.IndexOf(p.Type)))
+            {
+                DisplayTabs.Add(TabItem.FromProcess(process));
             }
         }
 

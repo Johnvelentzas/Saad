@@ -15,6 +15,12 @@ namespace Producion_Line_Manager.Helpers
         private string _name = string.Empty;
 
         [ObservableProperty]
+        private string _iconText = string.Empty;
+
+        [ObservableProperty]
+        private string _iconColor = string.Empty;
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasDetails))]
         private string? _details;
 
@@ -62,65 +68,97 @@ namespace Producion_Line_Manager.Helpers
 
         public static TabItem FromProcess(Processes process)
         {
+            TabItem tabItem;
             switch (process.Type)
             {
                 case ProcessesType.Customers:
-                    return new TabItem(process.Id, "Customers", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Customers", null, process.Type);
+                    break;
                 case ProcessesType.Orders:
-                    return new TabItem(process.Id, "Orders", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Orders", null, process.Type);
+                    break;
                 case ProcessesType.Products:
-                    return new TabItem(process.Id, "Products", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Products", null, process.Type);
+                    break;
                 case ProcessesType.Users:
-                    return new TabItem(process.Id, "Users", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Users", null, process.Type);
+                    break;
                 case ProcessesType.Models:
-                    return new TabItem(process.Id, "Models", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Models", null, process.Type);
+                    break;
                 case ProcessesType.Patterns:
-                    return new TabItem(process.Id, "Patterns", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Patterns", null, process.Type);
+                    break;
                 case ProcessesType.StitchTypes:
-                    return new TabItem(process.Id, "Stitch Types", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Stitch Types", null, process.Type);
+                    break;
                 case ProcessesType.YarnColors:
-                    return new TabItem(process.Id, "Yarn Colors", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Yarn Colors", null, process.Type);
+                    break;
                 case ProcessesType.Fabrics:
-                    return new TabItem(process.Id, "Fabrics", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Fabrics", null, process.Type);
+                    break;
                 case ProcessesType.ProductCategories:
-                    return new TabItem(process.Id, "Product Categories", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Product Categories", null, process.Type);
+                    break;
                 case ProcessesType.DropOffApt:
-                    return new TabItem(process.Id, "Drop Off", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Drop Off", null, process.Type);
+                    break;
                 case ProcessesType.PickUpApt:
-                    return new TabItem(process.Id, "Pick Up", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Pick Up", null, process.Type);
+                    break;
                 case ProcessesType.FoamFix:
-                    return new TabItem(process.Id, "Foam Fix", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Foam Fix", null, process.Type);
+                    break;
                 case ProcessesType.FoamAdapt:
-                    return new TabItem(process.Id, "Foam Adapt", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Foam Adapt", null, process.Type);
+                    break;
                 case ProcessesType.FoamGel:
-                    return new TabItem(process.Id, "Foam Gel", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Foam Gel", null, process.Type);
+                    break;
                 case ProcessesType.FoamAnatomical:
-                    return new TabItem(process.Id, "Foam Anatomical", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Foam Anatomical", null, process.Type);
+                    break;
                 case ProcessesType.CoverRemove:
-                    return new TabItem(process.Id, "Remove Cover", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Remove Cover", null, process.Type);
+                    break;
                 case ProcessesType.CustomPattern:
-                    return new TabItem(process.Id, "Create Custom Pattern", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Create Custom Pattern", null, process.Type);
+                    break;
                 case ProcessesType.Cut:
-                    return new TabItem(process.Id, "Cut", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Cut", null, process.Type);
+                    break;
                 case ProcessesType.Sew:
-                    return new TabItem(process.Id, "Sew", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Sew", null, process.Type);
+                    break;
                 case ProcessesType.Embroider:
-                    return new TabItem(process.Id, "Embroider", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Embroider", null, process.Type);
+                    break;
                 case ProcessesType.Bolt:
-                    return new TabItem(process.Id, "Bolt", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Bolt", null, process.Type);
+                    break;
                 case ProcessesType.Inspect:
-                    return new TabItem(process.Id, "Inspect", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Inspect", null, process.Type);
+                    break;
                 case ProcessesType.Tasks:
-                    return new TabItem(process.Id, "Tasks", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Tasks", null, process.Type);
+                    break;
                 case ProcessesType.Foam:
-                    return new TabItem(process.Id, "Foam", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Foam", null, process.Type);
+                    break;
                 case ProcessesType.Calendar:
-                    return new TabItem(process.Id, "Calendar", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Calendar", null, process.Type);
+                    break;
                 case ProcessesType.Brands:
-                    return new TabItem(process.Id, "Brands", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Brands", null, process.Type);
+                    break;
                 default:
-                    return new TabItem(process.Id, "Unknown", null, process.Type);
+                    tabItem = new TabItem(process.Id, "Unknown", null, process.Type);
+                    break;
             }
+            tabItem.IconColor = process.Color;
+            tabItem.IconText = process.IconText;
+            return tabItem;
         }
     }
 }

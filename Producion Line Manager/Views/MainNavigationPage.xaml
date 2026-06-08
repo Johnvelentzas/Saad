@@ -42,13 +42,7 @@
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="30" />
                                 </Border.StrokeShape>
-
-                                <Label  Text="ACCOUNT" 
-                                        TextColor="Black" 
-                                        HorizontalOptions="Center" 
-                                        VerticalOptions="Center" 
-                                        FontSize="10"
-                                        FontAttributes="Bold"/>
+                                <Image Source="{Binding User.ImageUrl}"/>
                             </Border>
                             <VerticalStackLayout VerticalOptions="Center">
                                 <Label Text="{Binding User.Name}"
@@ -132,12 +126,18 @@
                                         <Border Grid.Column="0"
                                                 HeightRequest="30"
                                                 WidthRequest="30"
-                                                Background="LightGrey"
+                                                BackgroundColor="{Binding IconColor}"
                                                 StrokeThickness="0"
                                                 x:Name="TabIcon">
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="10"/>
                                             </Border.StrokeShape>
+                                            <Label Text="{Binding IconText}" 
+                                                   FontFamily="Icons"
+                                                   FontSize="24"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
                                         </Border>
                                         <Label Text="{Binding Name}"
                                                Grid.Column="1"
@@ -186,7 +186,7 @@
                                                          Value="True">
                                                 <Setter TargetName="TabButton"
                                                         Property="Padding"
-                                                        Value="30, 10, 15, 10"/>
+                                                        Value="15, 10, 15, 10"/>
                                             </DataTrigger>
                                             <DataTrigger TargetType="Grid"
                                                          Binding="{Binding IsSeparator}"

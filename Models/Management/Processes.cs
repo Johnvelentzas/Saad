@@ -8,6 +8,8 @@ namespace Models.Management
         public int Id { get; set; }
         public bool IsDraft { get; set; } = false;
         public int FromId { get; set; } = 0;
+        public string IconText { get; set; } = String.Empty;
+        public string Color { get; set; } = String.Empty;
         public required ProcessesType Type { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
