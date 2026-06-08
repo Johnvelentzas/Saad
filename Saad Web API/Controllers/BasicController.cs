@@ -180,7 +180,7 @@ namespace Saad_Web_API.Controllers
 
         // DELETE api/[controller]/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(
+        public virtual async Task<IActionResult> Delete(
             [FromRoute] int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);

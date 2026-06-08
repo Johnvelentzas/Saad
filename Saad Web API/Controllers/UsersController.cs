@@ -33,5 +33,43 @@ namespace Saad_Web_API.Controllers
             var pageResult = await Paginate(result, page, pageSize);
             return Ok(pageResult);
         }
+
+        [HttpPost("{userId}/processes/{processId}")]
+        public async Task<IActionResult> EnableProcess(
+            [FromRoute] int userId, 
+            [FromRoute] int processId)
+        {
+            var existingLink = await _context.UserProcesses.FirstOrDefaultAsync(up => up.UserId == userId && up.ProcessId == processId);
+            if(existingLink != null) { return Ok(); }
+            _context.UserProcesses.Add(new UserProcesses { UserId = userId, ProcessId = processId });
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{userId}/processes/{processId}")]
+        public async Task<IActionResult> DisableProcess(
+            [FromRoute] int userId,
+            [FromRoute] int processId)
+        {
+            if (userId == 1) { return Conflict("Cannot modify permissions for the admin user."); }
+            var existingLink = await _context.UserProcesses.FirstOrDefaultAsync(up => up.UserId == userId && up.ProcessId == processId);
+            if (existingLink == null) { return Ok(); }
+            _context.UserProcesses.Remove(existingLink);
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public override async Task<IActionResult> Delete(
+            [FromRoute] int id)
+        {
+            if (id == 1)
+            {
+                return Conflict("The admin account cannot be deleted.");
+            }
+            return await base.Delete(id);
+        }
     }
 }

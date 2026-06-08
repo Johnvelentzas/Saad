@@ -13,6 +13,5 @@ namespace Models.Management
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? Comments { get; set; }
-        //TODO : Add image
     }
 }

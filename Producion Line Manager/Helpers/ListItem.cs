@@ -161,7 +161,7 @@ namespace Producion_Line_Manager.Helpers
         {
             Id = entity.Id;
             Name = entity.Name;
-
+            ImageUrl = entity.ImageUrl ?? String.Empty;
             Entity = entity;
             IsSelected = false;
         }

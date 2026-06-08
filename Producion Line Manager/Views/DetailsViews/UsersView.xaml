@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.UsersView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Management;assembly=Models"
+             x:DataType="vm:UsersViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10"
+                IsVisible="{Binding IsNotDraft}">
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="User #U-"
+                        FontSize="24"/>
+                    <Label
+                        Text="{Binding Id}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <Label Text="{Binding Name}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       Margin="0, 20, 0, 0"/>
+                <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Comments}"/>
+                </Border>
+                <Border
+                        Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        Margin="0, 20, 0, 0"
+                        IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
+                    HeightRequest="200"
+                    WidthRequest="200"
+                    HorizontalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Image Source="{Binding ImageUrl}" 
+                           Aspect="AspectFill" 
+                           HeightRequest="200"
+                           WidthRequest="200"/>
+                </Border>
+                <Label Text="Production" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Customers" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CustomersPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Orders" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding OrdersPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Products" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding ProductsPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="Attributes" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Categories" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CategoriesPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Brands" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding BrandsPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Models" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding ModelsPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Patterns" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding PatternsPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Stitch Types" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding StitchTypesPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Yarn Colors" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding YarnColorsPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Fabrics" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FabricsPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="Appointments" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Drop Off Appointments" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding DropOffAptPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Test Try Appointments" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding TestTryAptPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Pickup Appointments" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding PickupAptPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="Foam Tasks" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Foam Fix" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamFixPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Foam Adapt" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamAdaptPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Foam Gel" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamGelPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Foam Anatomical" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamAnatomicalPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="Tasks" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Remove Cover" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding RemoveCoverPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Custom Pattern" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CustomPatternPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Cutting" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CuttingPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Sewing" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding SewingPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Embroidery" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding EmbroideryPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Bolting" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding BoltingPermission}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Inspections" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding InspectionPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="Management" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
+                            <Label Text="Users" VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding UsersPermission}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
+
+                <Label Text="Edit User" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="User Name" FontSize="14" TextColor="Gray" />
+                    <Entry Text="{Binding Name}"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="20">
+                    <Border VerticalOptions="Center" HeightRequest="200" WidthRequest="200"
+                        Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <VerticalStackLayout VerticalOptions="Center"
+                                             HorizontalOptions="Center"
+                                             Spacing="10">
+                            <Image Source="{Binding ImageUrl}" 
+                           Aspect="AspectFill" 
+                           HeightRequest="200"
+                           WidthRequest="200"
+                                   IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                            <Label Text="No Image" HorizontalOptions="Center" FontSize="18"
+                               IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNullOrWhiteSpaceConverter}}"/>
+                            <Border Background="{AppThemeBinding Dark={StaticResource Gray500 }, Light={StaticResource Gray200`}}" Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="Choose Image" FontSize="18" HorizontalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    <VerticalStackLayout Spacing="20">
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10"
+                                IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding RemoveImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Remove Image"/>
+                        </Border>
+                        <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="10"
+                                IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChooseImageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Change Image"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>

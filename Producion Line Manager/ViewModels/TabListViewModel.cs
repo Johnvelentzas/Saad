@@ -484,6 +484,7 @@ namespace Producion_Line_Manager.ViewModels
                     Patterns => ServiceHelper.GetService<PatternsView>(),
                     ProductCategories => ServiceHelper.GetService<ProductCategoriesView>(),
                     Brands => ServiceHelper.GetService<BrandsView>(),
+                    Users => ServiceHelper.GetService<UsersView>(),
                     Models.Attributes.Models => ServiceHelper.GetService<ModelsView>(),
                     _ => throw new NotImplementedException(),
                 };
@@ -519,6 +520,9 @@ namespace Producion_Line_Manager.ViewModels
                     break;
                 case BrandsView brandsView:
                     brandsView.LoadEntity((Brands)TopEntity);
+                    break;
+                case UsersView usersView:
+                    usersView.LoadEntity((Users)TopEntity);
                     break;
                 case ModelsView modelsView:
                     modelsView.LoadEntity((Models.Attributes.Models)TopEntity);

@@ -1,5 +1,4 @@
-﻿
-using Models;
+﻿using Models;
 using Models.Attributes;
 using Models.Management;
 using Models.Production;
@@ -67,6 +66,36 @@ namespace Producion_Line_Manager.Services
         {
             parameters ??= new();
             return await Get<RequestResult<Models.Attributes.Models>>(parameters.BuildURI(URI.GetURI<Models.Attributes.Models>()));
+        }
+
+        public async Task ToggleUserProcess(int userId, int processId, bool state)
+        {
+            if (state)
+            {
+                await EnableUserProcess(userId, processId);
+            }
+            else
+            {
+                await DisableUserProcess(userId, processId);
+            }
+        }
+
+        public async Task EnableUserProcess(int userId, int processId)
+        {
+            var response = await _client.PostAsync(URI.GetURI<Users, Processes>(userId, processId), null);
+            if (!response.IsSuccessStatusCode)
+            {
+                //throw new Exception($"Failed to enable process {processId} for user {userId}. Status code: {response.StatusCode}");
+            }
+        }
+
+        public async Task DisableUserProcess(int userId, int processId)
+        {
+            var response = await _client.DeleteAsync(URI.GetURI<Users, Processes>(userId, processId));
+            if (!response.IsSuccessStatusCode)
+            {
+                //throw new Exception($"Failed to enable process {processId} for user {userId}. Status code: {response.StatusCode}");
+            }
         }
 
         public async Task Put<T>(T item)
@@ -267,6 +296,13 @@ namespace Producion_Line_Manager.Services
             where A : class, IEntity
         {
             return GetURI<T>(id) + GetURI(typeof(A).Name);
+        }
+
+        public static string GetURI<T, A>(int idT, int idA)
+            where T : class, IEntity
+            where A : class, IEntity
+        {
+            return GetURI<T, A>(idT) + $"/{idA}";
         }
 
         public static string GetImagesURI()
