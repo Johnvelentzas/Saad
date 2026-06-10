@@ -28,6 +28,12 @@ namespace Producion_Line_Manager.Helpers
         [ObservableProperty]
         private bool _isSelected;
 
+        [ObservableProperty]
+        private bool _isUrgent;
+
+        [ObservableProperty]
+        private bool _isOverdue;
+
         public ListItem(int id, string name, string imageUrl, string description, IEntity entity)
         {
             Id = id;
@@ -115,7 +121,27 @@ namespace Producion_Line_Manager.Helpers
         public ListItem(Tasks entity)
         {
             Id = entity.Id;
-            Name = $"#{entity.Id}";
+            Description = $"Task #T-{entity.Id}";
+            Name = $"Product #P-{entity.ProductId}";
+
+            // 1. Grab just the calendar dates (strips out any hours/minutes)
+            DateTime today = DateTime.Today;
+            DateTime finishDate = entity.FinishBy.Date;
+
+            // 2. Overdue: Today is strictly after the deadline
+            if (today > finishDate)
+            {
+                IsOverdue = true;
+                IsUrgent = false; // Optional, just to be safe
+            }
+            // 3. Urgent: Today is on or after (Deadline - 2 days)
+            // Because of the 'else if', we already know it's NOT overdue.
+            // This covers Today, Tomorrow, and the Day After Tomorrow.
+            else if (today >= finishDate.AddDays(-2))
+            {
+                IsUrgent = true;
+                IsOverdue = false;
+            }
 
             Entity = entity;
             IsSelected = false;
@@ -162,16 +188,6 @@ namespace Producion_Line_Manager.Helpers
             Id = entity.Id;
             Name = entity.Name;
             ImageUrl = entity.ImageUrl ?? String.Empty;
-            Entity = entity;
-            IsSelected = false;
-        }
-
-        public ListItem(Tasks entity, string process)
-        {
-            Id = entity.Id;
-            Name = $"Product #P-{entity.ProductId}";
-            Description = process;
-
             Entity = entity;
             IsSelected = false;
         }

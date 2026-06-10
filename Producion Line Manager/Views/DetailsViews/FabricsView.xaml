@@ -28,31 +28,35 @@
                        FontSize="24"
                        FontAttributes="Bold"
                        Margin="0, 20, 0, 0"/>
-                <Border
-                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
-                    Padding="20"
-                    Margin="0, 20, 0, 0"
-                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="25"/>
-                    </Border.StrokeShape>
-                    <Label Text="{Binding Comments}"/>
-                </Border>
-                <Border
+                <Grid ColumnDefinitions="auto, *" ColumnSpacing="20">
+                    <Border
                         Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
                         Margin="0, 20, 0, 0"
                         IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
                     HeightRequest="200"
                     WidthRequest="200"
                     HorizontalOptions="Start">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="25"/>
-                    </Border.StrokeShape>
-                    <Image Source="{Binding ImageUrl}" 
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Image Source="{Binding ImageUrl}" 
                            Aspect="AspectFill" 
                            HeightRequest="200"
                            WidthRequest="200"/>
-                </Border>
+                    </Border>
+                    <Border Grid.Column="1"
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding Comments}"/>
+                    </Border>
+                </Grid>
+
+
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
 

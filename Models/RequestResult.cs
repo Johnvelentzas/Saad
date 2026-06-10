@@ -35,6 +35,12 @@ namespace Models
         {
             Items = new List<T> { item };
         }
+        public RequestResult(List<T> item)
+        {
+            Items = item;
+            TotalCount = item.Count;
+        }
+
 
         public RequestResult()
         {

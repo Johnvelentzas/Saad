@@ -14,6 +14,8 @@ namespace Producion_Line_Manager.Helpers
 
         public bool HasFilters => Filters.Count > 0;
         public bool HasSearch => !string.IsNullOrEmpty(SearchValue) && SearchType != null;
+        public bool IsSearchType => HasSearch || HasIdInRoute;
+        public bool HasIdInRoute = false;
 
         public RequestParameters(
             List<FilterType>? filters = null,
@@ -90,7 +92,31 @@ namespace Producion_Line_Manager.Helpers
         }
         public override string BuildURI(string baseRoute = "")
         {
-            string baseUri = base.BuildURI(baseRoute);
+            var segments = new List<string>();
+
+            // Handle Filters
+            foreach (var filter in Filters)
+            {
+                segments.Add($"filters={filter}");
+            }
+
+            // Handle Search
+            if (HasSearch)
+            {
+                segments.Add($"searchtype={SearchType}");
+                segments.Add($"searchvalue={Uri.EscapeDataString(SearchValue ?? "")}"); // Good practice for spaces/special characters
+            }
+
+            // Handle Pagination and Sorting
+            segments.Add($"page={Page}");
+            segments.Add($"pagesize={PageSize}");
+            segments.Add($"sort={SortType}");
+
+            // Combine segments cleanly
+            string queryString = string.Join("&", segments);
+            string endpointType = "/search_by_brand_and_category";
+
+            var baseUri = $"{baseRoute}{endpointType}?{queryString}";
 
             var extraSegments = new List<string>();
 

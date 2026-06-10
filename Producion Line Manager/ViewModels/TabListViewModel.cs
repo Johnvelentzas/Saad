@@ -66,17 +66,59 @@ namespace Producion_Line_Manager.ViewModels
 
         [NotifyPropertyChangedFor(nameof(IsDraft))]
         [NotifyPropertyChangedFor(nameof(IsNotDraft))]
+        [NotifyPropertyChangedFor(nameof(HasSearchBar))]
+        [NotifyPropertyChangedFor(nameof(HasCreateButton))]
+        [NotifyPropertyChangedFor(nameof(HasDuplicateButton))]
+        [NotifyPropertyChangedFor(nameof(HasEditButton))]
+        [NotifyPropertyChangedFor(nameof(HasDeleteButton))]
+        [NotifyPropertyChangedFor(nameof(HasCancelButton))]
+        [NotifyPropertyChangedFor(nameof(HasSaveButton))]
         [ObservableProperty]
         private ListItem? _selectedItem;
 
-        public bool IsDraft => TopEntity?.IsDraft ?? false;
-        public bool IsNotDraft => !IsDraft;
+        // 1. Only true if an item is actively selected AND its database record says it's a draft
+        public bool IsDraft => SelectedItem != null && (TopEntity?.IsDraft ?? false);
+
+        // 2. Only true if an item is actively selected AND it is a finalized record
+        public bool IsNotDraft => SelectedItem != null && !IsDraft;
+
+
+        public bool HasSearchBar => EnableSearchBar;
+        public bool HasCreateButton => EnableCreateButton;
+        public bool HasDuplicateButton => EnableDuplicateButton && IsNotDraft; // Optional: hides duplicate if nothing is selected
+
+        // 3. Non-Draft Buttons (Show only for finalized selections)
+        public bool HasEditButton => EnableEditButton && IsNotDraft;
+        public bool HasDeleteButton => EnableDeleteButton && IsNotDraft;
+
+        // 4. Draft Buttons (FIXED: Changed from IsNotDraft to IsDraft!)
+        public bool HasCancelButton => EnableCancelButton && IsDraft;
+        public bool HasSaveButton => EnableSaveButton && IsDraft;
 
         [ObservableProperty]
-        private bool _hasSearchBar = true;
+        private bool _enableSearchBar = true;
 
         [ObservableProperty]
-        private bool _hasCreateButton = true;
+        private bool _enableCreateButton = true;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasEditButton))]
+        private bool _enableEditButton = true;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasDeleteButton))]
+        private bool _enableDeleteButton = true;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasCancelButton))]
+        private bool _enableCancelButton = true;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasSaveButton))]
+        private bool _enableSaveButton = true;
+
+        [ObservableProperty]
+        private bool _enableDuplicateButton = true;
 
         [ObservableProperty]
         private SearchType _searchType = SearchType.General;
@@ -216,6 +258,7 @@ namespace Producion_Line_Manager.ViewModels
                     Title = "Products";
                     Description = "Products";
                     HasUrgent = true;
+                    EnableCreateButton = false;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.Users:
@@ -259,53 +302,211 @@ namespace Producion_Line_Manager.ViewModels
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.DropOffApt:
-                    Title = "Drop Off Appointments";
+                    Title = "Drop Off";
                     Description = "Appointments";
                     HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.TestTryApt:
-                    Title = "Test Try Appointments";
+                    Title = "Test Try";
                     Description = "Appointments";
                     HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.PickUpApt:
-                    Title = "Pick Up Appointments";
+                    Title = "Pick Up";
                     Description = "Appointments";
                     HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     FilterOptions.Add(new EntityFilterItem(FilterType.Draft));
                     break;
                 case ProcessesType.FoamFix:
-                    break;
-                case ProcessesType.FoamAdapt:
-                    break;
-                case ProcessesType.FoamGel:
-                    break;
-                case ProcessesType.FoamAnatomical:
-                    break;
-                case ProcessesType.CoverRemove:
-                    break;
-                case ProcessesType.CustomPattern:
-                    break;
-                case ProcessesType.Cut:
-                    break;
-                case ProcessesType.Sew:
-                    break;
-                case ProcessesType.Embroider:
-                    break;
-                case ProcessesType.Bolt:
-                    break;
-                case ProcessesType.Inspect:
-                    break;
-                case ProcessesType.Tasks:
-                    Title = "Tasks";
+                    Title = "Fix Foam";
                     Description = "Tasks";
                     HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.FoamAdapt:
+                    Title = "Adapt Foam";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.FoamGel:
+                    Title = "Gel";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.FoamAnatomical:
+                    Title = "Anatomical Foam";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.CoverRemove:
+                    Title = "Remove Cover";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.CustomPattern:
+                    Title = "Custom Patterns";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Cut:
+                    Title = "Cutting";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Sew:
+                    Title = "Sewing";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Embroider:
+                    Title = "Embroider";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Bolt:
+                    Title = "Bolt";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Inspect:
+                    Title = "Inspect";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
+                    break;
+                case ProcessesType.Tasks:
+                    Title = "All Tasks";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     break;
                 case ProcessesType.Foam:
+                    Title = "Foam Tasks";
+                    Description = "Tasks";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     break;
                 case ProcessesType.Calendar:
+                    Title = "Calendar";
+                    Description = "Appointments";
+                    HasUrgent = true;
+                    EnableCreateButton = false;
+                    EnableDeleteButton = false;
+                    EnableDuplicateButton = false;
+                    EnableCancelButton = false;
+                    EnableSaveButton = false;
+                    EnableSearchBar = false;
+                    EnableEditButton = false;
                     break;
                 default:
                     break;
@@ -486,6 +687,8 @@ namespace Producion_Line_Manager.ViewModels
                     Brands => ServiceHelper.GetService<BrandsView>(),
                     Users => ServiceHelper.GetService<UsersView>(),
                     Models.Attributes.Models => ServiceHelper.GetService<ModelsView>(),
+                    Products => ServiceHelper.GetService<ProductsView>(),
+                    Tasks => ServiceHelper.GetService<TasksView>(),
                     _ => throw new NotImplementedException(),
                 };
             }
@@ -527,9 +730,19 @@ namespace Producion_Line_Manager.ViewModels
                 case ModelsView modelsView:
                     modelsView.LoadEntity((Models.Attributes.Models)TopEntity);
                     break;
+                case ProductsView productsView:
+                    productsView.LoadEntity((Products)TopEntity);
+                    break;
+                case TasksView tasksView:
+                    tasksView.LoadEntity((Tasks)TopEntity);
+                    break;
             }
             OnPropertyChanged(nameof(IsDraft));
             OnPropertyChanged(nameof(IsNotDraft));
+            OnPropertyChanged(nameof(HasEditButton));
+            OnPropertyChanged(nameof(HasDeleteButton));
+            OnPropertyChanged(nameof(HasCancelButton));
+            OnPropertyChanged(nameof(HasSaveButton));
         }
 
         [RelayCommand]
@@ -617,29 +830,46 @@ namespace Producion_Line_Manager.ViewModels
         [RelayCommand]
         public async Task Save()
         {
-            if (TopEntity == null) { return; }
-            ActiveDetailView?.SaveEntity();
-            TopEntity.IsDraft = false;
-            if (TopEntity.FromId > 0)
+            if (IsBusy) {  return; }
+            try
             {
-                if(TopEntity.Id > 0)
+                IsBusy = true;
+                if (TopEntity == null) { return; }
+                ActiveDetailView?.SaveEntity();
+                TopEntity.IsDraft = false;
+                if (TopEntity.FromId > 0)
                 {
-                    await restService.DeleteEntity(TopEntity);
+                    if (TopEntity.Id > 0)
+                    {
+                        await restService.DeleteEntity(TopEntity);
+                    }
+                    TopEntity.Id = TopEntity.FromId;
+                    await restService.Put((dynamic)TopEntity);
                 }
-                TopEntity.Id = TopEntity.FromId;
-                restService.Put((dynamic)TopEntity);
+                else if (TopEntity.Id == 0)
+                {
+                    await restService.Post((dynamic)TopEntity);
+                }
+                else
+                {
+                    await restService.Put((dynamic)TopEntity);
+                }
+
+
             }
-            else if (TopEntity.Id == 0)
+            catch (Exception ex)
             {
-                await restService.Post((dynamic)TopEntity);
+                System.Diagnostics.Debug.WriteLine($"[SAVE COMMAND CRASHED]: {ex.Message}");
             }
-            else
+            finally
             {
-                await restService.Put((dynamic)TopEntity);
+
+                IsBusy = false;
+                await RefreshItems();
+                await UpdateDetailsView();
             }
 
-            await RefreshItems();
-            await UpdateDetailsView();
+
         }
 
         public async Task SaveDraft()
@@ -727,23 +957,23 @@ namespace Producion_Line_Manager.ViewModels
                 ProcessesType.StitchTypes => await restService.Get<StitchTypes>(parameters),
                 ProcessesType.YarnColors => await restService.Get<YarnColors>(parameters),
                 ProcessesType.Fabrics => await restService.Get<Fabrics>(parameters),
-                ProcessesType.DropOffApt => await restService.Get<Tasks>(parameters),
-                ProcessesType.TestTryApt => await restService.Get<Tasks>(parameters),
-                ProcessesType.PickUpApt => await restService.Get<Tasks>(parameters),
-                ProcessesType.FoamFix => await restService.Get<Tasks>(parameters),
-                ProcessesType.FoamAdapt => await restService.Get<Tasks>(parameters),
-                ProcessesType.FoamGel => await restService.Get<Tasks>(parameters),
-                ProcessesType.FoamAnatomical => await restService.Get<Tasks>(parameters),
-                ProcessesType.CoverRemove => await restService.Get<Tasks>(parameters),
-                ProcessesType.CustomPattern => await restService.Get<Tasks>(parameters),
-                ProcessesType.Cut => await restService.Get<Tasks>(parameters),
-                ProcessesType.Sew => await restService.Get<Tasks>(parameters),
-                ProcessesType.Embroider => await restService.Get<Tasks>(parameters),
-                ProcessesType.Bolt => await restService.Get<Tasks>(parameters),
-                ProcessesType.Inspect => await restService.Get<Tasks>(parameters),
-                ProcessesType.Tasks => await restService.Get<Tasks>(parameters),
-                ProcessesType.Foam => await restService.Get<Tasks>(parameters),
-                ProcessesType.Calendar => await restService.Get<Tasks>(parameters),
+                ProcessesType.DropOffApt => await restService.GetAvailableTasks(12),
+                ProcessesType.TestTryApt => await restService.GetAvailableTasks(13),
+                ProcessesType.PickUpApt => await restService.GetAvailableTasks(14),
+                ProcessesType.FoamFix => await restService.GetAvailableTasks(15),
+                ProcessesType.FoamAdapt => await restService.GetAvailableTasks(16),
+                ProcessesType.FoamGel => await restService.GetAvailableTasks(17),
+                ProcessesType.FoamAnatomical => await restService.GetAvailableTasks(18),
+                ProcessesType.CoverRemove => await restService.GetAvailableTasks(19),
+                ProcessesType.CustomPattern => await restService.GetAvailableTasks(20),
+                ProcessesType.Cut => await restService.GetAvailableTasks(21),
+                ProcessesType.Sew => await restService.GetAvailableTasks(22),
+                ProcessesType.Embroider => await restService.GetAvailableTasks(23),
+                ProcessesType.Bolt => await restService.GetAvailableTasks(24),
+                ProcessesType.Inspect => await restService.GetAvailableTasks(25),
+                ProcessesType.Tasks => await restService.GetAvailableTasks(12),
+                ProcessesType.Foam => await restService.GetAvailableTasks(12),
+                ProcessesType.Calendar => await restService.GetAvailableTasks(12),
                 ProcessesType.Brands => await restService.Get<Brands>(parameters),
                 _ => throw new NotImplementedException(),
             };

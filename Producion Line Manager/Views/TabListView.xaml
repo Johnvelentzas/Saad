@@ -129,18 +129,27 @@
                             ItemsUpdatingScrollMode="KeepScrollOffset">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="helpers:ListItem">
-                        <Border>
+                        <Border StrokeThickness="2" Stroke="Transparent">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="20" />
                             </Border.StrokeShape>
                             <Border.Triggers>
                                 <DataTrigger TargetType="Border"
-                                         Binding="{Binding IsSelected}"
-                                         Value="true">
+                         Binding="{Binding IsSelected}"
+                         Value="true">
                                     <Setter Property="BackgroundColor"
-                                        Value="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray300}}"/>
+                        Value="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray300}}"/>
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Border" Binding="{Binding IsUrgent}" Value="True">
+                                    <Setter Property="Stroke" Value="#FF9800" />
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Border" Binding="{Binding IsOverdue}" Value="True">
+                                    <Setter Property="Stroke" Value="#F44336" />
                                 </DataTrigger>
                             </Border.Triggers>
+
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="70"/>
@@ -148,50 +157,54 @@
                                 </Grid.RowDefinitions>
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=SelectItemCommand}"
-                                                      CommandParameter="{Binding .}"/>
+                                      CommandParameter="{Binding .}"/>
                                 </Grid.GestureRecognizers>
-                                <SwipeView>
-                                    <SwipeView.LeftItems>
-                                        <SwipeItems>
-                                            <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TabListViewModel}}, Path=DeleteItemCommand}"
-                                                       CommandParameter="{Binding .}">
-                                                <Border BackgroundColor="Red">
-                                                    <Label Text="Delete"/>
-                                                </Border>
-                                            </SwipeItemView>
-                                        </SwipeItems>
-                                    </SwipeView.LeftItems>
-                                    <Border>
-                                        <Border.Triggers>
-                                            <DataTrigger TargetType="Border"
-                                                     Binding="{Binding IsSelected}"
-                                                     Value="true">
-                                                <Setter Property="BackgroundColor"
-                                                    Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
-                                            </DataTrigger>
-                                        </Border.Triggers>
-                                        <HorizontalStackLayout Spacing="10">
+                                <Border>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border"
+                                     Binding="{Binding IsSelected}"
+                                     Value="true">
+                                            <Setter Property="BackgroundColor"
+                                    Value="{AppThemeBinding Dark={StaticResource Gray700}, Light={StaticResource Gray300}}"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Grid ColumnDefinitions="*, Auto">
+
+                                        <HorizontalStackLayout Spacing="10" Grid.Column="0">
                                             <Image Source="{Binding ImageUrl}"
-                                               Aspect="AspectFill"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="Start"
-                                               IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                   Aspect="AspectFill"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Start"
+                                   IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
                                             <VerticalStackLayout VerticalOptions="Center"
-                                                             Padding="10">
+                                                 Padding="10">
                                                 <Label Text="{Binding Name}"
-                                               VerticalOptions="Start"
-                                               FontSize="18"
-                                                   IsVisible="{Binding Name, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                       VerticalOptions="Start"
+                                       FontSize="18"
+                                       IsVisible="{Binding Name, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding IsOverdue}" Value="True">
+                                                            <Setter Property="FontAttributes" Value="Bold" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
                                                 <Label Text="{Binding Description}"
-                                               VerticalOptions="Start"
-                                               FontSize="12"
-                                                   IsVisible="{Binding Description, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
+                                       VerticalOptions="Start"
+                                       FontSize="12"
+                                       IsVisible="{Binding Description, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"/>
                                             </VerticalStackLayout>
                                         </HorizontalStackLayout>
-                                    </Border>
-                                </SwipeView>
+
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="0,0,20,0">
+                                            <Label Text="⚠️" FontSize="22" IsVisible="{Binding IsUrgent}" />
+                                            <Label Text="❗" FontSize="24" TextColor="#F44336" FontAttributes="Bold" IsVisible="{Binding IsOverdue}" />
+                                        </VerticalStackLayout>
+
+                                    </Grid>
+                                </Border>
                                 <Border Grid.Row="1"
-                                    BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
+                    BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}">
                                 </Border>
                             </Grid>
                         </Border>
@@ -213,7 +226,8 @@
                     VerticalOptions="End"
                     Margin="0, 0, 20, 20"
                     Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
-                    StrokeThickness="0">
+                    StrokeThickness="0"
+                    IsVisible="{Binding HasCreateButton}">
                 <Border.Shadow>
                     <Shadow Brush="Black"
                             Opacity="0.4"
@@ -276,7 +290,7 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding IsNotDraft}">
+                            IsVisible="{Binding HasEditButton}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
@@ -292,7 +306,7 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding IsNotDraft}">
+                            IsVisible="{Binding HasDeleteButton}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
@@ -308,7 +322,7 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding IsDraft}">
+                            IsVisible="{Binding HasCancelButton}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
@@ -324,7 +338,7 @@
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
                             HeightRequest="44"
-                            IsVisible="{Binding IsDraft}">
+                            IsVisible="{Binding HasSaveButton}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>
@@ -339,7 +353,8 @@
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             Padding="20, 0, 20, 0"
-                            HeightRequest="44">
+                            HeightRequest="44"
+                            IsVisible="{Binding HasDuplicateButton}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5"/>
                         </Border.StrokeShape>

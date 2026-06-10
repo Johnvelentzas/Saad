@@ -104,6 +104,9 @@ namespace Producion_Line_Manager.Helpers
                 case ProcessesType.DropOffApt:
                     tabItem = new TabItem(process.Id, "Drop Off", null, process.Type);
                     break;
+                case ProcessesType.TestTryApt:
+                    tabItem = new TabItem(process.Id, "Test Try", null, process.Type);
+                    break;
                 case ProcessesType.PickUpApt:
                     tabItem = new TabItem(process.Id, "Pick Up", null, process.Type);
                     break;

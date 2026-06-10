@@ -58,5 +58,52 @@ namespace Saad_Web_API.Controllers
 
             return activeTasks;
         }
+
+        [HttpGet("available")]
+        public async Task<ActionResult<List<Tasks>>> GetAvailableTasks([FromQuery] List<int> processIds)
+        {
+            var query = _context.Tasks.AsQueryable();
+
+            // 1. Filter by the list of processes (Translates to SQL: WHERE ProcessId IN (x, y, z))
+            if (processIds != null && processIds.Any())
+            {
+                query = query.Where(t => processIds.Contains(t.ProcessId));
+            }
+
+            // 2. The Core Logic: Not completed, and NO incomplete prerequisites
+            var availableTasks = await query
+                .Where(t => t.IsCompleted == false)
+                .Where(t => t.IsCancelled == false)
+                .Where(t => !_context.TaskDependencies
+                    .Where(td => td.TaskId == t.Id)
+                    .Join(_context.Tasks,
+                          td => td.DependsOnTaskId,
+                          prereq => prereq.Id,
+                          (td, prereq) => prereq)
+                    .Any(prereq => prereq.IsCompleted == false))
+                .OrderBy(t => t.FinishBy)
+                .ToListAsync();
+
+            return Ok(availableTasks);
+        }
+
+        [HttpPost("{id}/complete")]
+        public async Task<IActionResult> CompleteTask([FromRoute] int id, [FromQuery] int userId)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+
+            if (task == null) return NotFound("Task not found.");
+            if (task.IsCompleted) return BadRequest("Task is already completed.");
+            if (userId <= 0) return BadRequest("A valid UserId is required to complete a task.");
+
+            // Update the task state
+            task.IsCompleted = true;
+            task.UserId = userId; // Record exactly who did the work!
+
+            _context.Entry(task).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok("Task completed successfully.");
+        }
     }
 }

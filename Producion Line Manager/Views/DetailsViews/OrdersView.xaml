@@ -196,7 +196,7 @@
                                               RowDefinitions="auto, 1"
                                               Padding="20, 0, 20, 0">
                                             <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=OpenOrderCommand}"
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=OpenProductCommand}"
                                                                       CommandParameter="{Binding .}"/>
                                             </Grid.GestureRecognizers>
                                             <Border Grid.Row="1"
@@ -235,20 +235,8 @@
                         <HorizontalStackLayout Spacing="5"
                            Grid.Column="0"
                            HorizontalOptions="Start">
-                            <Label Text="{Binding NumberOfDraftProducts}"/>
-                            <Label Text="Orders"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="5"
-                           Grid.Column="1"
-                           HorizontalOptions="Center">
-                            <Label Text="{Binding NumberOfIncompleteProducts}"/>
-                            <Label Text="Incomplete"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="5"
-                           Grid.Column="2"
-                           HorizontalOptions="End">
-                            <Label Text="{Binding NumberOfFinishedProducts}"/>
-                            <Label Text="Finished"/>
+                            <Label Text="{Binding NumberOfProducts}"/>
+                            <Label Text="Products"/>
                         </HorizontalStackLayout>
                     </Grid>
                     <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}">
@@ -287,15 +275,15 @@
                                             </HorizontalStackLayout>
                                             <HorizontalStackLayout Grid.Column="2"
                                                VerticalOptions="Center">
-                                                <Label Text="Not Complete"
+                                                <Label Text="Has Not Started"
                                    IsVisible="True"
                                    FontSize="18">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label"
-                                                 Binding="{Binding IsCompleted}"
+                                                 Binding="{Binding HasStartedManufacturing}"
                                                  Value="True">
                                                             <Setter Property="Text"
-                                                Value="Complete"/>
+                                                Value="Has Started"/>
                                                         </DataTrigger>
                                                     </Label.Triggers>
                                                 </Label>
@@ -312,6 +300,43 @@
                             </CollectionView>
                         </RefreshView>
                     </Border>
+                    <Grid Margin="0, 20, 0, 20" HeightRequest="60">
+
+                        <Button Text="⚙️ START ALL"
+            Command="{Binding ManufactureCommand}"
+            IsVisible="{Binding CanManufacture}"
+            FontSize="20"
+            FontAttributes="Bold"
+            BackgroundColor="#007AFF" 
+            TextColor="White"
+            CornerRadius="10" />
+
+                        <Grid IsVisible="{Binding CanUpdateOrPause}" ColumnDefinitions="*, *">
+                            <Button Grid.Column="0" 
+                Text="🔄 UPDATE ALL"
+                Command="{Binding ManufactureCommand}"
+                Margin="0,0,5,0"
+                FontAttributes="Bold"
+                BackgroundColor="#34C759" 
+                TextColor="White"
+                CornerRadius="10" />
+
+                            <Button Grid.Column="1" 
+                Text="⏸️ PAUSE ALL"
+                Command="{Binding PauseProductionCommand}"
+                Margin="5,0,0,0"
+                FontAttributes="Bold"
+                BackgroundColor="#FF3B30" 
+                TextColor="White"
+                CornerRadius="10" />
+                        </Grid>
+
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                       IsVisible="{Binding IsBusy}"
+                       Color="#007AFF" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
+                    </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">

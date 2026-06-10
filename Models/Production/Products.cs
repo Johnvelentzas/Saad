@@ -19,6 +19,8 @@ namespace Models.Production
         public required int CategoryId { get; set; }
         [ForeignKey("Models")]
         public int ModelId { get; set; }
+        [ForeignKey("Brands")]
+        public int BrandId { get; set; }
         [ForeignKey("Patterns")]
         public int PatternId { get; set; }
         [ForeignKey("StitchTypes")]
@@ -42,14 +44,12 @@ namespace Models.Production
         public bool HasTestTryApt { get; set; } = false;
         public bool HasPickUpApt { get; set; } = false;
         public bool HasMultipleFabrics { get; set; } = false;
+        public bool HasMultipleYarnColors { get; set; } = false;
         public bool HasCustomPatternTask { get; set; } = false;
         public bool HasEmbroideryTask { get; set; } = false;
         public bool HasRipTask { get; set; } = false;
         public bool HasFoamTask { get; set; } = false;
         public bool HasGelTask { get; set; } = false;
-        public bool HasCutTask { get; set; } = true;
-        public bool HasSewTask { get; set; } = true;
-        public bool HasCheckTask { get; set; } = true;
         public bool HasBoltTask { get; set; } = false;
 
 
@@ -60,6 +60,7 @@ namespace Models.Production
 
         //Status
         public required bool IsCompleted { get; set; } = false;
+        public bool HasStartedManufacturing { get; set; } = false;
 
         //Time Details
         [DataType(DataType.Date)]

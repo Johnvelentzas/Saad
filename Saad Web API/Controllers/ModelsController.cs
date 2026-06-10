@@ -59,12 +59,12 @@ namespace Saad_Web_API.Controllers
             return Ok(pageResult);
         }
 
-        // GET api/models/search
-        [HttpGet("search")]
+        // GET api/models/search_by_brand_and_category
+        [HttpGet("search_by_brand_and_category")]
         public async Task<ActionResult<RequestResult<Models.Attributes.Models>>> SearchModels(
             [FromQuery] List<FilterType> filters,
-            [FromQuery] int? brandId = null,
-            [FromQuery] int? categoryId = null,
+            [FromQuery] int brandId = 0,
+            [FromQuery] int categoryId = 0,
             [FromQuery] SearchType searchType = SearchType.General,
             [FromQuery] string searchValue = "",
             [FromQuery] int page = 1,
@@ -72,16 +72,16 @@ namespace Saad_Web_API.Controllers
             [FromQuery] SortType sort = SortType.IdDecending)
         {
             IQueryable<Models.Attributes.Models> query = await GetQuery<Models.Attributes.Models>();
-            if (brandId.HasValue)
+            if (brandId > 0)
             {
-                query = query.Where(m => m.BrandId == brandId.Value);
+                query = query.Where(m => m.BrandId == brandId);
             }
-            if (categoryId.HasValue)
+            if (categoryId > 0)
             {
-                query = query.Where(m => m.CategoryId == categoryId.Value);
+                query = query.Where(m => m.CategoryId == categoryId);
             }
             query = await FilterEntities(query, filters);
-            query = await SearchEntities(query, searchType, searchValue.ToLower());
+            if (!String.IsNullOrEmpty(searchValue)) { query = await SearchEntities(query, searchType, searchValue.ToLower()); }
             query = await OrderQuery(query, sort);
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);

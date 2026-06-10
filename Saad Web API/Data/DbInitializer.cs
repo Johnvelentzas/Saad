@@ -95,15 +95,15 @@ namespace Saad_Web_API.Data
                 case ProcessesType.Products: process.IconText = "\ue1a1"; process.Color = "#5C93FA"; break;
 
                 // Management (Periwinkle)
-                case ProcessesType.Users: process.IconText = "\uf033"; process.Color = "#8C9EFF"; break;
+                case ProcessesType.Users: process.IconText = "\uf033"; process.Color = "#5C93FA"; break;
 
                 // Attributes (Lilacs & Plums)
                 case ProcessesType.ProductCategories: process.IconText = "\ue574"; process.Color = "#B39DDB"; break;
-                case ProcessesType.Brands: process.IconText = "\ue023"; process.Color = "#CE93D8"; break;
+                case ProcessesType.Brands: process.IconText = "\ue023"; process.Color = "#B39DDB"; break;
                 case ProcessesType.Models: process.IconText = "\ue9f9"; process.Color = "#B39DDB"; break;
-                case ProcessesType.Patterns: process.IconText = "\uf025"; process.Color = "#CE93D8"; break;
+                case ProcessesType.Patterns: process.IconText = "\uf025"; process.Color = "#B39DDB"; break;
                 case ProcessesType.StitchTypes: process.IconText = "\ue176"; process.Color = "#B39DDB"; break;
-                case ProcessesType.YarnColors: process.IconText = "\ue40a"; process.Color = "#CE93D8"; break;
+                case ProcessesType.YarnColors: process.IconText = "\ue40a"; process.Color = "#B39DDB"; break;
                 case ProcessesType.Fabrics: process.IconText = "\ue421"; process.Color = "#B39DDB"; break;
 
                 // Appointments (Mint Green)
@@ -118,13 +118,13 @@ namespace Saad_Web_API.Data
                 case ProcessesType.FoamAnatomical: process.IconText = "\ue92c"; process.Color = "#26C6DA"; break;
 
                 // Tasks (Warm Coral & Orange)
-                case ProcessesType.CoverRemove: process.IconText = "\ue53b"; process.Color = "#FF8A65"; break;
+                case ProcessesType.CoverRemove: process.IconText = "\ue53b"; process.Color = "#FFB74D"; break;
                 case ProcessesType.CustomPattern: process.IconText = "\uf10a"; process.Color = "#FFB74D"; break;
-                case ProcessesType.Cut: process.IconText = "\ue14e"; process.Color = "#FF8A65"; break;
+                case ProcessesType.Cut: process.IconText = "\ue14e"; process.Color = "#FFB74D"; break;
                 case ProcessesType.Sew: process.IconText = "\ue155"; process.Color = "#FFB74D"; break;
-                case ProcessesType.Embroider: process.IconText = "\ue65f"; process.Color = "#FF8A65"; break;
+                case ProcessesType.Embroider: process.IconText = "\ue65f"; process.Color = "#FFB74D"; break;
                 case ProcessesType.Bolt: process.IconText = "\uea59"; process.Color = "#FFB74D"; break;
-                case ProcessesType.Inspect: process.IconText = "\uf0c5"; process.Color = "#FF8A65"; break;
+                case ProcessesType.Inspect: process.IconText = "\uf0c5"; process.Color = "#FFB74D"; break;
 
                 // Tabs (Deep Slate)
                 case ProcessesType.Tasks: process.IconText = "\uf045"; process.Color = "#455A64"; break;

@@ -140,6 +140,94 @@ namespace Producion_Line_Manager.Services
             }
         }
 
+        // --- MANUFACTURING ENDPOINTS ---
+
+        public async Task<bool> PauseProduct(int productId)
+        {
+            var response = await _client.PostAsync($"{URI.GetURI<Products>(productId)}/pause", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> PauseOrder(int orderId)
+        {
+            var response = await _client.PostAsync($"{URI.GetURI<Orders>(orderId)}/pause", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ManufactureProduct(int productId)
+        {
+            // POST /api/products/{id}/manufacture
+            var response = await _client.PostAsync($"{URI.GetURI<Products>(productId)}/manufacture", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[MANUFACTURE ERROR] {error}");
+            }
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ManufactureOrder(int orderId)
+        {
+            // POST /api/orders/{id}/manufacture
+            var response = await _client.PostAsync($"{URI.GetURI<Orders>(orderId)}/manufacture", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[MANUFACTURE ERROR] {error}");
+            }
+            return response.IsSuccessStatusCode;
+        }
+
+        // --- TASK ENDPOINTS ---
+        // --- 1. THE SINGLE-INT OVERLOAD ---
+        public Task<RequestResult<Tasks>> GetAvailableTasks(int processId)
+        {
+            // Wrap the single ID and pass it to the main method
+            return GetAvailableTasks(new List<int> { processId });
+        }
+
+        // --- 2. THE MAIN LIST METHOD ---
+        public async Task<RequestResult<Tasks>> GetAvailableTasks(List<int>? processIds = null)
+        {
+            string uri = $"{URI.GetURI<Tasks>()}/available";
+
+            // Build the query string if the list has any IDs in it
+            if (processIds != null && processIds.Any())
+            {
+                string queryParams = string.Join("&", processIds.Select(id => $"processIds={id}"));
+                uri += $"?{queryParams}";
+            }
+
+            var response = await _client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                // 1. Download the flat list from the Azure API
+                var rawList = await response.Content.ReadFromJsonAsync<List<Tasks>>() ?? new List<Tasks>();
+
+                // 2. Wrap it into the RequestResult using your List<T> constructor
+                // This automatically sets TotalCount and safely packages the Items
+                return new RequestResult<Tasks>(rawList);
+            }
+
+            // If the request fails, return an empty RequestResult instead of null
+            return new RequestResult<Tasks>();
+        }
+
+        public async Task<bool> CompleteTask(int taskId, int userId)
+        {
+            // POST /api/tasks/{id}/complete?userId={userId}
+            var response = await _client.PostAsync($"{URI.GetURI<Tasks>(taskId)}/complete?userId={userId}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[TASK COMPLETE ERROR] {error}");
+            }
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task DeleteEntity(IEntity entity)
         {
             switch (entity)

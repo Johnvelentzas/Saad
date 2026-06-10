@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Production;
 using Saad_Web_API.Data;
+using Saad_Web_API.Helpers;
 
 namespace Saad_Web_API.Controllers
 {
@@ -10,64 +11,34 @@ namespace Saad_Web_API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : BasicController<Products>
     {
-        public ProductsController(ApplicationDbContext context) : base(context)
+
+        private readonly IProductionWorkflowService _workflowService;
+        public ProductsController(ApplicationDbContext context, IProductionWorkflowService workflowService) : base(context)
         {
+            _workflowService = workflowService;
         }
 
-        // GET api/products/search?
-        // {iscomplete}&
-        // {createdafter}&
-        // {createdbefore}&
-        // {expectedstartdatelow}&
-        // {expectedstartdatehigh}&
-        // {expectedfinishdatelow}&
-        // {expectedfinishdatehigh}
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Products>>> SearchProducts(
-            [FromQuery] bool? isComplete,
-            [FromQuery] DateTime? createdAfter,
-            [FromQuery] DateTime? createdBefore,
-            [FromQuery] DateTime? expectedStartDateLow,
-            [FromQuery] DateTime? expectedStartDateHigh,
-            [FromQuery] DateTime? expectedFinishDateLow,
-            [FromQuery] DateTime? expectedFinishDateHigh)
+        protected override async Task<IQueryable<Products>> SearchEntities(IQueryable<Products> products, SearchType type, string value)
         {
-            var querry = _context.Products.AsQueryable();
-            if (isComplete != null)
+            products = await base.SearchEntities(products, type, value);
+            switch (type)
             {
-                querry = querry.Where(c => c.IsCompleted == isComplete);
+                case SearchType.General:
+                    products = products.Where(c =>
+                    (c.Id.ToString().Contains(value)));
+                    break;
+                default:
+                    break;
             }
-            if (createdBefore != null)
-            {
-                querry = querry.Where(c => c.CreatedDate < createdBefore);
-            }
-            if (createdAfter != null)
-            {
-                querry = querry.Where(c => c.CreatedDate > createdAfter);
-            }
-            if (expectedStartDateHigh != null)
-            {
-                querry = querry.Where(c => c.ExpectedStartDate < expectedStartDateHigh);
-            }
-            if (expectedStartDateLow != null)
-            {
-                querry = querry.Where(c => c.ExpectedStartDate > expectedStartDateLow);
-            }
-            if (expectedFinishDateHigh != null)
-            {
-                querry = querry.Where(c => c.ExpectedFinishDate < expectedFinishDateHigh);
-            }
-            if (expectedFinishDateLow != null)
-            {
-                querry = querry.Where(c => c.ExpectedFinishDate > expectedFinishDateLow);
-            }
-
-            return Ok(await querry.ToListAsync());
+            return products;
         }
+
+
 
         [HttpGet("~/api/orders/{id}/products")]
         public async Task<ActionResult<RequestResult<Products>>> GetOrderProducts(
             [FromRoute] int id,
+            [FromQuery] List<FilterType> filters,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
             [FromQuery] SortType sort = SortType.IdAccending)
@@ -80,25 +51,36 @@ namespace Saad_Web_API.Controllers
 
             IQueryable<Products> query = await GetQuery<Products>();
             query = await OrderQuery(query, sort);
+            query = await FilterEntities(query, filters);
             query = query.Where(o => o.OrderId == id);
-
             var pageResult = await Paginate(query, page, pageSize);
             return Ok(pageResult);
         }
 
-
-        //GET api/products/{id}/tasks
-        [HttpGet("{id}/tasks")]
-        public async Task<ActionResult<IEnumerable<Tasks>>> GetProductTasks(
-            [FromRoute] int id)
+        [HttpPost("{id}/manufacture")]
+        public async Task<IActionResult> ManufactureProduct([FromRoute] int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product not found.");
             }
-            var tasks = await _context.Tasks.Where(o => o.ProductId == id).ToListAsync();
-            return Ok(tasks);
+
+            await _workflowService.SyncTasksForProduct(product);
+
+            return Ok("Product synced to manufacturing successfully.");
         }
+
+        [HttpPost("{id}/pause")]
+        public async Task<IActionResult> PauseProduct([FromRoute] int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null) return NotFound("Product not found.");
+
+            await _workflowService.PauseProductionForProduct(product);
+
+            return Ok("Production paused. Remaining tasks cancelled.");
+        }
+
     }
 }

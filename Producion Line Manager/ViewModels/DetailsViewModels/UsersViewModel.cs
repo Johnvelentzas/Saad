@@ -24,7 +24,9 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         //Permissions
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotAdmin))]
         private bool _isAdmin = true;
+        public bool IsNotAdmin => !IsAdmin;
         [ObservableProperty]
         private bool _sync = false;
 
@@ -219,6 +221,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             Name = user.Name;
             ImageUrl = user.ImageUrl ?? String.Empty;
             IsAdmin = user.Name.ToLower() == "admin";
+            
             base.LoadEntity(user);
             await LoadProcesses();
             Sync = true;

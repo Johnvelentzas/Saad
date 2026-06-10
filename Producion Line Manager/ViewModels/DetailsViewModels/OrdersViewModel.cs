@@ -42,6 +42,22 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
         private Customers Customer;
 
+
+        // Shows if AT LEAST ONE product has started manufacturing
+        public bool CanUpdateOrPause => !IsBusy &&
+                                        Item != null &&
+                                        Products != null &&
+                                        Products.Count > 0 &&
+                                        Products.Any(p => p.HasStartedManufacturing);
+
+        // Shows if there are ready products, BUT ONLY IF ZERO products have started manufacturing
+        public bool CanManufacture => !IsBusy &&
+                                      Item != null &&
+                                      Products != null &&
+                                      Products.Count > 0 &&
+                                      Products.Any(p => !p.IsDraft) &&
+                                      !Products.Any(p => p.HasStartedManufacturing);
+
         [ObservableProperty]
         private int _numberOfDraftProducts = 0;
         [ObservableProperty]
@@ -53,6 +69,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
         [ObservableProperty]
         private ObservableCollection<Products> _draftProducts = new ObservableCollection<Products>();
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanManufacture))]
+        [NotifyPropertyChangedFor(nameof(CanUpdateOrPause))]
         private ObservableCollection<Products> _products = new ObservableCollection<Products>();
         [ObservableProperty]
         private ObservableCollection<SaleChannel> _salesChannels = new ObservableCollection<SaleChannel>();
@@ -90,6 +108,104 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
 
             Customer = new Customers();
             Customer.LastName = "No Customer";
+        }
+
+        // --- THE PAUSE COMMAND ---
+
+        [RelayCommand]
+        public async Task PauseProduction()
+        {
+            if (!CanUpdateOrPause || Item == null) return;
+
+            IsBusy = true;
+            OnPropertyChanged(nameof(CanManufacture));
+            OnPropertyChanged(nameof(CanUpdateOrPause));
+            try
+            {
+                // Call the endpoint (Swap to PauseOrder(Item.Id) if in OrdersViewModel)
+                bool success = await restService.PauseOrder(Item.Id);
+
+                if (success)
+                {
+                    foreach (var p in Products.Where(x => x.HasStartedManufacturing))
+                    {
+                        p.HasStartedManufacturing = false;
+                    }
+
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+                OnPropertyChanged(nameof(CanManufacture));
+                OnPropertyChanged(nameof(CanUpdateOrPause));
+            }
+        }
+
+        [RelayCommand]
+        public async Task Manufacture()
+        {
+            // 1. Check lock
+            if (IsBusy || Item == null) return;
+
+            // 2. LOCK THE UI IMMEDIATELY before any network calls
+            IsBusy = true;
+            Autosave = false;
+            OnPropertyChanged(nameof(CanManufacture));
+            OnPropertyChanged(nameof(CanUpdateOrPause));
+
+            try
+            {
+                // 3. Flush the UI changes down to the model
+                SaveEntity();
+
+                // 4. Force publish state and resolve identity
+                if (Item.IsDraft)
+                {
+                    Item.IsDraft = false;
+                    IsDraft = false;
+
+                    // ONLY perform the merge if this is an Edit Draft (it has a parent)
+                    if (Item.FromId > 0)
+                    {
+                        // 1. Wipe the temporary draft row from Azure so it doesn't bloat the database
+                        if (Item.Id > 0)
+                        {
+                            await restService.DeleteEntity(Item);
+                        }
+
+                        // 2. Point back to the original published product ID
+                        Item.Id = Item.FromId;
+                    }
+                }
+
+
+                // 5. Guarantee the database has the latest options before generating tasks
+                await restService.Put<Orders>((Orders)Item);
+
+                // 6. Run the Idempotent Task Generator
+                bool success = await restService.ManufactureOrder(Item.Id);
+                if (success)
+                {
+                    foreach (var p in Products.Where(x => !x.IsDraft))
+                    {
+                        p.HasStartedManufacturing = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // If this fails, check the Visual Studio Output window
+                Console.WriteLine($"Error during manufacture: {ex.Message}");
+            }
+            finally
+            {
+                // 7. Always release the locks, even if the network crashes
+                IsBusy = false;
+                Autosave = true;
+                OnPropertyChanged(nameof(CanManufacture));
+                OnPropertyChanged(nameof(CanUpdateOrPause));
+            }
         }
 
         partial void OnSaleChannelValueChanged(SaleChannel? value)
@@ -307,6 +423,7 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
                 foreach (Products product in result.Items)
                 {
                     Products.Add(product);
+                    OnPropertyChanged(nameof(CanManufacture));
                 }
                 parameters.PageSize = 1;
                 parameters.Filters.Clear();
@@ -322,6 +439,8 @@ namespace Producion_Line_Manager.ViewModels.DetailsViewModels
             finally
             {
                 IsBusy = false;
+                OnPropertyChanged(nameof(CanManufacture));
+                OnPropertyChanged(nameof(CanUpdateOrPause));
             }
 
         }

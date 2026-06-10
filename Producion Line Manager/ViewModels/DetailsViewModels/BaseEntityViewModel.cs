@@ -18,6 +18,7 @@ namespace Producion_Line_Manager.Views.DetailsViews
         private bool _isDraft = false;
 
         public bool IsNotDraft => !IsDraft;
+        public bool Autosave = true;
 
         [ObservableProperty]
         private int _Id = 0;
@@ -31,14 +32,16 @@ namespace Producion_Line_Manager.Views.DetailsViews
 
         partial void OnCommentsChanged(string value)
         {
-            if (Item is Orders order)
+            if (Item != null)
             {
-                order.Comments = value;
+                Item.Comments = value;
                 TriggerDebouncedSave();
             }
         }
         protected void TriggerDebouncedSave()
         {
+            if(!Autosave || !IsDraft) { return; }
+
             // 1. Cancel the previous timer because the user is still interacting
             _debounceTokenSource?.Cancel();
 
@@ -55,7 +58,7 @@ namespace Producion_Line_Manager.Views.DetailsViews
                     await Task.Delay(2000, token);
 
                     // If the timer finishes and wasn't cancelled by new input...
-                    if (!token.IsCancellationRequested)
+                    if (!token.IsCancellationRequested && IsDraft && Autosave)
                     {
                         // Broadcast the signal! 
                         // Your TabListViewModel will catch this and run the actual API save.
@@ -81,19 +84,27 @@ namespace Producion_Line_Manager.Views.DetailsViews
 
         public void LoadEntity(IEntity entity)
         {
+            Autosave = false;
             Item = entity;
             IsDraft = entity.IsDraft;
             Id = entity.Id;
             Comments = entity.Comments ?? String.Empty;
+            CreatedDate = entity.CreatedDate;
             _debounceTokenSource?.Cancel();
+            Autosave = true;
         }
 
         public virtual void SaveEntity()
         {
             if (Item == null) { return; }
+            Autosave = false;
             Item.Id = Id;
             Item.IsDraft = IsDraft;
             Item.Comments = Comments;
+            Item.CreatedDate = CreatedDate;
+            _debounceTokenSource?.Cancel();
+            Autosave = true;
+
         }
     }
 }

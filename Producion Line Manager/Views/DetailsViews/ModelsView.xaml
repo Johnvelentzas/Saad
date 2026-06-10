@@ -290,6 +290,8 @@ Padding="15, 0, 15, 0">
                 </VerticalStackLayout>
             </VerticalStackLayout>
             <VerticalStackLayout Padding="20" Spacing="20" IsVisible="{Binding IsDraft}">
+
+                <Label Text="Edit Model" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
                 <Grid ColumnDefinitions="*, *"
                       ColumnSpacing="20">
                     <Picker Title="Select A Category"
@@ -302,7 +304,6 @@ Padding="15, 0, 15, 0">
                             SelectedItem="{Binding Brand}"
                             ItemDisplayBinding="{Binding BrandName}"/>
                 </Grid>
-                <Label Text="Edit Model" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Model Name" FontSize="14" TextColor="Gray" />
                     <Entry Text="{Binding ModelName}"/>

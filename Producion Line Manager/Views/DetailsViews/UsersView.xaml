@@ -28,31 +28,34 @@
                        FontSize="24"
                        FontAttributes="Bold"
                        Margin="0, 20, 0, 0"/>
-                <Border
-                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
-                    Padding="20"
-                    Margin="0, 20, 0, 0"
-                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="25"/>
-                    </Border.StrokeShape>
-                    <Label Text="{Binding Comments}"/>
-                </Border>
-                <Border
+                <Grid ColumnDefinitions="auto, *" ColumnSpacing="20">
+                    <Border
                         Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
                         Margin="0, 20, 0, 0"
                         IsVisible="{Binding ImageUrl, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
-                    HeightRequest="200"
-                    WidthRequest="200"
+                    HeightRequest="250"
+                    WidthRequest="250"
                     HorizontalOptions="Start">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="25"/>
-                    </Border.StrokeShape>
-                    <Image Source="{Binding ImageUrl}" 
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Image Source="{Binding ImageUrl}"
                            Aspect="AspectFill" 
-                           HeightRequest="200"
-                           WidthRequest="200"/>
-                </Border>
+                           HeightRequest="250"
+                           WidthRequest="250"/>
+                    </Border>
+                    <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}"
+                        Grid.Column="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding Comments}"/>
+                    </Border>
+                </Grid>
                 <Label Text="Production" FontSize="18" Margin="20, 10, 0, 0"/>
                 <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}" Padding="20, 0, 20, 0" Margin="0, 0, 0, 20">
                     <Border.StrokeShape>
@@ -61,17 +64,17 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Customers" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding CustomersPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CustomersPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Orders" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding OrdersPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding OrdersPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Products" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding ProductsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding ProductsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -83,37 +86,37 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Categories" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding CategoriesPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CategoriesPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Brands" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding BrandsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding BrandsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Models" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding ModelsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding ModelsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Patterns" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding PatternsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding PatternsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Stitch Types" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding StitchTypesPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding StitchTypesPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Yarn Colors" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding YarnColorsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding YarnColorsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Fabrics" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding FabricsPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FabricsPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -125,17 +128,17 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Drop Off Appointments" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding DropOffAptPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding DropOffAptPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Test Try Appointments" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding TestTryAptPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding TestTryAptPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Pickup Appointments" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding PickupAptPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding PickupAptPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -147,22 +150,22 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Foam Fix" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding FoamFixPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamFixPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Foam Adapt" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding FoamAdaptPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamAdaptPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Foam Gel" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding FoamGelPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamGelPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Foam Anatomical" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding FoamAnatomicalPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding FoamAnatomicalPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -174,37 +177,37 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Remove Cover" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding RemoveCoverPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding RemoveCoverPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Custom Pattern" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding CustomPatternPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CustomPatternPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Cutting" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding CuttingPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding CuttingPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Sewing" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding SewingPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding SewingPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Embroidery" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding EmbroideryPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding EmbroideryPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Bolting" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding BoltingPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding BoltingPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                         <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Inspections" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding InspectionPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding InspectionPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -216,7 +219,7 @@
                     <VerticalStackLayout>
                         <Grid ColumnDefinitions="auto, *, auto, auto"  HeightRequest="42">
                             <Label Text="Users" VerticalOptions="Center"/>
-                            <Switch Grid.Column="3" IsToggled="{Binding UsersPermission}"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding UsersPermission}" IsEnabled="{Binding IsNotAdmin}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>

@@ -16,6 +16,9 @@ namespace Models.Production
         [ForeignKey("Users")]
         public required int UserId { get; set; }
         public required bool IsCompleted { get; set; }
+        public required bool IsCancelled { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime FinishBy { get; set; } = DateTime.Now;
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? Comments { get; set; }

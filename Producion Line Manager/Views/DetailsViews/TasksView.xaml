@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.TasksView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             x:DataType="vm:TasksViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="Task #T-"
+                        FontSize="24"/>
+                    <Label
+                        Text="{Binding Task.Id}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                    <Label
+                        Margin="20, 0, 0, 0"
+                        Text="{Binding TaskName}"
+                        FontSize="24"/>
+                </HorizontalStackLayout>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" 
+        Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="auto, *, auto, 24" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToProductCommand}"/>
+                            </Grid.GestureRecognizers>
+
+                            <Label Text="Product" VerticalOptions="Center" FontAttributes="Bold" />
+                            <HorizontalStackLayout Grid.Column="2">
+                                <Label Text="Product #P-" VerticalOptions="Center"/>
+                                <Label Text="{Binding Product.Id}" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                            <Border Grid.Column="3" BackgroundColor="Transparent" StrokeThickness="0">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding Product, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Category" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding CategoryName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Brand" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding BrandName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Model" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding ModelName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Pattern" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding PatternName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Margin="0, 0, 0, 20"
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    IsVisible="True">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Product.Comments}"/>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsDropOffTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Drop Off Date" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding Product.DropOffDate, StringFormat='{0:dd MMM yyyy}'}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsTestTryTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Test Try Date" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding Product.TestTryDate, StringFormat='{0:dd MMM yyyy}'}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsPickUpTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Pick Up Date" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding Product.PickUpDate, StringFormat='{0:dd MMM yyyy}'}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsFoamTypeTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Foam Action" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding Product.FoamType}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsCoverRemoveTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Removal Action" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="Strip Existing Seat Cover" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsCutTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Primary Fabric (A)" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding AFabricName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <VerticalStackLayout IsVisible="{Binding BFabricName, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                                <Label Text="Secondary Fabric (B)" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                                <Label Grid.Column="2" Text="{Binding BFabricName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout IsVisible="{Binding CFabricName, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                                <Label Text="Accent Fabric (C)" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                                <Label Grid.Column="2" Text="{Binding CFabricName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout IsVisible="{Binding DFabricName, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                                <Label Text="Extra Fabric (D)" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                                <Label Grid.Column="2" Text="{Binding DFabricName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray100}}" 
+        Padding="20, 0, 20, 0" Margin="0, 0, 0, 20"
+        IsVisible="{Binding IsSewTask}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Stitch Pattern" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding StitchTypeName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                            <Label Text="Primary Thread Color" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                            <Label Grid.Column="2" Text="{Binding FirstYarnColorName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                        </Grid>
+
+                        <VerticalStackLayout IsVisible="{Binding SecondYarnColorName, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                            <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto" Padding="0, 8, 0, 8" HeightRequest="42">
+                                <Label Text="Secondary Thread Color" VerticalOptions="Center" TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}"/>
+                                <Label Grid.Column="2" Text="{Binding SecondYarnColorName}" VerticalOptions="Center" FontAttributes="Bold"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Grid Margin="0, 30, 0, 0" HeightRequest="60">
+
+                    <Button Text="✅ COMPLETE TASK" 
+            Command="{Binding CompleteTaskCommand}"
+            IsVisible="{Binding IsTaskIncomplete}"
+            FontSize="18"
+            FontAttributes="Bold"
+            BackgroundColor="#34C759"
+            TextColor="White"
+            CornerRadius="10" />
+
+                    <Border IsVisible="{Binding IsTaskComplete}"
+            BackgroundColor="{AppThemeBinding Dark={StaticResource Gray600}, Light={StaticResource Gray200}}"
+            Stroke="DarkGray"
+            StrokeThickness="1"
+            Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                            <Label Text="✓" 
+                   TextColor="#34C759" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   VerticalOptions="Center"/>
+                            <Label Text="TASK COMPLETE" 
+                   TextColor="Gray" 
+                   FontSize="18" 
+                   FontAttributes="Bold" 
+                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                       IsVisible="{Binding IsBusy}"
+                       Color="#34C759" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>

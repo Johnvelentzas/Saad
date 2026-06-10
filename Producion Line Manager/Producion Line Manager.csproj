@@ -80,6 +80,12 @@
 	  <Compile Update="Views\DetailsViews\BrandsView.xaml.cs">
 	    <DependentUpon>BrandsView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\DetailsViews\TasksView.xaml.cs">
+	    <DependentUpon>TasksView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DetailsViews\ProductsView.xaml.cs">
+	    <DependentUpon>ProductsView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\DetailsViews\UsersView.xaml.cs">
 	    <DependentUpon>UsersView.xaml</DependentUpon>
 	  </Compile>
@@ -117,6 +123,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailsViews\BrandsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\TasksView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetailsViews\ProductsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailsViews\UsersView.xaml">

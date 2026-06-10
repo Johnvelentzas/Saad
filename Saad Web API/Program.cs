@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Saad_Web_API.Data;
+using Saad_Web_API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<IProductionWorkflowService, ProductionWorkflowService>();
 
 var app = builder.Build();
 

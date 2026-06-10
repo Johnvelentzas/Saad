@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Production;
 using Saad_Web_API.Data;
+using Saad_Web_API.Helpers;
 
 namespace Saad_Web_API.Controllers
 {
@@ -10,9 +11,11 @@ namespace Saad_Web_API.Controllers
     [ApiController]
     public class OrdersController : BasicController<Orders>
     {
+        private readonly IProductionWorkflowService _workflowService;
 
-        public OrdersController(ApplicationDbContext context) : base(context)
+        public OrdersController(ApplicationDbContext context, IProductionWorkflowService workflowService) : base(context)
         {
+            _workflowService = workflowService;
         }
 
         protected override async Task<IQueryable<Orders>> FilterEntities(IQueryable<Orders> orders, FilterType filter)
@@ -69,26 +72,70 @@ namespace Saad_Web_API.Controllers
             return Ok(pageResult);
         }
 
-        /**
-        //GET api/orders/{id}/products?{page}&{pagesize}&{sort}
-        [HttpGet("{id}/products")]
-        public async Task<ActionResult<RequestResult<Products>>> GetOrderProducts(
-            [FromRoute] int id,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 100,
-            [FromQuery] SortType sort = SortType.IdAccending)
+        [HttpPost("{id}/manufacture")]
+        public async Task<IActionResult> ManufactureOrder([FromRoute] int id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
-                return NotFound();
+                return NotFound("Order not found.");
             }
-            IQueryable<Products> query = await GetQuery<Products>();
-            query = await OrderQuery(query);
-            query = query.Where(o => o.OrderId == id);
-            var pageResult = await Paginate(query, page, pageSize);
-            return Ok(pageResult);
+
+            // 1. Get the total count of products just so we know the overall state
+            var totalProductsCount = await _context.Products.CountAsync(p => p.OrderId == id);
+
+            if (totalProductsCount == 0)
+            {
+                return BadRequest("This order has no products to manufacture.");
+            }
+
+            // 2. THE FIX: Fetch ONLY the finalized (non-draft) products
+            var readyProducts = await _context.Products
+                .Where(p => p.OrderId == id && p.IsDraft == false)
+                .ToListAsync();
+
+            if (!readyProducts.Any())
+            {
+                // 3. Prevent the action entirely if they click Manufacture on an order full of drafts
+                return BadRequest("All products in this order are currently drafts. Please finalize a product first.");
+            }
+
+            // 4. Sync tasks for only the finalized products
+            foreach (var product in readyProducts)
+            {
+                await _workflowService.SyncTasksForProduct(product);
+            }
+
+            // 5. Build a smart response message for the MAUI UI
+            int skippedDrafts = totalProductsCount - readyProducts.Count;
+
+            if (skippedDrafts > 0)
+            {
+                return Ok($"Sent {readyProducts.Count} product(s) to manufacturing. Ignored {skippedDrafts} draft(s).");
+            }
+
+            return Ok($"Successfully synced all {readyProducts.Count} product(s) to manufacturing.");
         }
-        **/
+
+        [HttpPost("{id}/pause")]
+        public async Task<IActionResult> PauseOrder([FromRoute] int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound("Order not found.");
+
+            // Find all products in this order that are currently in production
+            var activeProducts = await _context.Products
+                .Where(p => p.OrderId == id && p.HasStartedManufacturing == true)
+                .ToListAsync();
+
+            if (!activeProducts.Any()) return BadRequest("No active products to pause.");
+
+            foreach (var product in activeProducts)
+            {
+                await _workflowService.PauseProductionForProduct(product);
+            }
+
+            return Ok($"Successfully paused production for {activeProducts.Count} product(s).");
+        }
     }
 }

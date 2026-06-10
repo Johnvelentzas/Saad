@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Saad_Web_API.Data;
 
@@ -11,9 +12,11 @@ using Saad_Web_API.Data;
 namespace Saad_Web_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260608210236_RemovedSomeProductSettings")]
+    partial class RemovedSomeProductSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,9 +505,6 @@ namespace Saad_Web_API.Migrations
                     b.Property<bool>("HasRipTask")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("HasStartedManufacturing")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("HasTestTryApt")
                         .HasColumnType("bit");
 
@@ -591,14 +591,8 @@ namespace Saad_Web_API.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FinishBy")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FromId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsCancelled")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");

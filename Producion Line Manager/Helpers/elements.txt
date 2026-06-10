@@ -21,8 +21,7 @@ VerticalOptions="Center"/>
 <Label Text="{Binding PatternName}" VerticalOptions="Center" Grid.Column="2"/>
 <Label/>
 </Grid>
-<Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey">
-</Border>
+<Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
 <Grid ColumnDefinitions="auto, *, auto, 24" Padding="0, 8, 0, 8" HeightRequest="42">
 <Grid.GestureRecognizers>
 <TapGestureRecognizer Command="{Binding OpenModelCommand}"/>

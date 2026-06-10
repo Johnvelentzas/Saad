@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseEntityView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Producion_Line_Manager.Views.DetailsViews"
+             x:Class="Producion_Line_Manager.Views.DetailsViews.ProductsView"
+             xmlns:vm="clr-namespace:Producion_Line_Manager.ViewModels.DetailsViewModels"
+             xmlns:models="clr-namespace:Models.Production;assembly=Models"
+             x:DataType="vm:ProductsViewModel">
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout Padding="20" Spacing="20" >
+
+                <Label Text="Edit Product" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10" IsVisible="{Binding IsDraft}"/>
+                <HorizontalStackLayout 
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    Padding="5, 0, 0, 0">
+                    <Label
+                        Text="Product #P-"
+                        FontSize="24"/>
+                    <Label
+                        Text="{Binding Id}"
+                        FontSize="24"
+                        FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <VerticalStackLayout Spacing="5" IsVisible="{Binding IsDraft}">
+                    <Label Text="Comments" FontSize="14" TextColor="Gray" />
+                    <Editor Text="{Binding Comments}"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10">
+
+                <VerticalStackLayout IsVisible="{Binding IsNotDraft}">
+
+                    <Border
+                    Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                    Padding="20"
+                    Margin="0, 20, 0, 0"
+                    IsVisible="{Binding Comments, Converter={StaticResource IsStringNotNullOrWhiteSpaceConverter}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding Comments}"/>
+                    </Border>
+                </VerticalStackLayout>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+                        Padding="20, 0, 20, 0"
+                        Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenOrderCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="auto, *, auto" Padding="20">
+                        <VerticalStackLayout VerticalOptions="Center" IsVisible="{Binding Order, Converter={StaticResource IsNotNullConverter}}">
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="Order #O-"
+                                   FontSize="18"/>
+                                <Label Text="{Binding Order.Id}"
+                                   FontSize="18"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="{Binding TotalProductsCount}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                                <Label Text="Total Products"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout IsVisible="{Binding Order, Converter={StaticResource IsNullConverter}}">
+                            <Label Text="No Order Selected"/>
+                        </VerticalStackLayout>
+
+                        <Border Grid.Column="4" IsVisible="{Binding Order, Converter={StaticResource IsNotNullConverter}}">
+                            <Label Text="&#xe5cc;"
+                                   FontFamily="Icons"
+                                   FontSize="28"/>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Label Text="Info" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenCategoryCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Category" VerticalOptions="Center"/>
+                            <Label Text="{Binding Category.CategoryName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding Category, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto, 42" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Category" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding CategoryOptions}" Grid.Column="2" SelectedItem="{Binding Category}" ItemDisplayBinding="{Binding CategoryName}"/>
+                            <Border Grid.Column="3" HorizontalOptions="End">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CreateNewCategoryCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="&#xe145;" VerticalOptions="Center" FontFamily="Icons" FontSize="24"/>
+                            </Border>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenBrandCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Brand" VerticalOptions="Center"/>
+                            <Label Text="{Binding Brand.BrandName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding Brand, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto, 42" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Brand" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding BrandOptions}" Grid.Column="2" SelectedItem="{Binding Brand}" ItemDisplayBinding="{Binding BrandName}"/>
+                            <Border Grid.Column="3" HorizontalOptions="End">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CreateNewBrandCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="&#xe145;" VerticalOptions="Center" FontFamily="Icons" FontSize="24"/>
+                            </Border>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenModelCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Model" VerticalOptions="Center"/>
+                            <Label Text="{Binding Model.ModelName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding Model, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto, 42" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Model" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding ModelOptions}" Grid.Column="2" SelectedItem="{Binding Model}" ItemDisplayBinding="{Binding ModelName}"/>
+                            <Border Grid.Column="3" HorizontalOptions="End">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CreateNewModelCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="&#xe145;" VerticalOptions="Center" FontFamily="Icons" FontSize="24"/>
+                            </Border>
+                        </Grid>
+                       
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Pattern" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+  HeightRequest="42">
+                            <Label Text="Custom Pattern"
+       VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasCustomPatternTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey" IsVisible="{Binding HasCustomPatternTask, Converter={StaticResource InvertedBoolConverter}}"/>
+                        <VerticalStackLayout IsVisible="{Binding HasCustomPatternTask, Converter={StaticResource InvertedBoolConverter}}">
+                            <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenPatternCommand}"/>
+                                </Grid.GestureRecognizers>
+                                <Label Text="Pattern" VerticalOptions="Center"/>
+                                <Label Text="{Binding Pattern.Name}" VerticalOptions="Center" Grid.Column="2"/>
+                                <Border Grid.Column="3">
+                                    <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding Pattern, Converter={StaticResource IsNotNullConverter}}"/>
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                                <Label Text="Pattern" VerticalOptions="Center"/>
+                                <Picker ItemsSource="{Binding PatternOptions}" Grid.Column="2" SelectedItem="{Binding Pattern}" ItemDisplayBinding="{Binding Name}"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Fabrics" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+                      HeightRequest="42">
+                            <Label Text="Multiple Fabrics"
+                           VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasMultipleFabrics}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+                    HeightRequest="1"
+                    BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenFabricACommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Main Fabric" VerticalOptions="Center"/>
+                            <Label Text="{Binding FabricA.FabricName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding FabricA, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Main Fabric" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding FabricOptions}" Grid.Column="2" SelectedItem="{Binding FabricA}" ItemDisplayBinding="{Binding FabricName}"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" IsVisible="{Binding HasMultipleFabrics}" HeightRequest="1"  BackgroundColor="DarkGrey"/>
+
+                        <VerticalStackLayout IsVisible="{Binding HasMultipleFabrics}">
+                            <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenFabricBCommand}"/>
+                                </Grid.GestureRecognizers>
+                                <Label Text="Fabric In Pattern Area B" VerticalOptions="Center"/>
+                                <Label Text="{Binding FabricB.FabricName}" VerticalOptions="Center" Grid.Column="2"/>
+                                <Border Grid.Column="3">
+                                    <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding FabricB, Converter={StaticResource IsNotNullConverter}}"/>
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                                <Label Text="Fabric In Pattern Area B" VerticalOptions="Center"/>
+                                <Picker ItemsSource="{Binding FabricOptions}" Grid.Column="2" SelectedItem="{Binding FabricB}" ItemDisplayBinding="{Binding FabricName}"/>
+                            </Grid>
+                            <Border Grid.ColumnSpan="4" HeightRequest="1"  BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenFabricCCommand}"/>
+                                </Grid.GestureRecognizers>
+                                <Label Text="Fabric In Pattern Area C" VerticalOptions="Center"/>
+                                <Label Text="{Binding FabricC.FabricName}" VerticalOptions="Center" Grid.Column="2"/>
+                                <Border Grid.Column="3">
+                                    <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding FabricC, Converter={StaticResource IsNotNullConverter}}"/>
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                                <Label Text="Fabric In Pattern Area C" VerticalOptions="Center"/>
+                                <Picker ItemsSource="{Binding FabricOptions}" Grid.Column="2" SelectedItem="{Binding FabricC}" ItemDisplayBinding="{Binding FabricName}"/>
+                            </Grid>
+                            <Border Grid.ColumnSpan="4" HeightRequest="1"  BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenFabricDCommand}"/>
+                                </Grid.GestureRecognizers>
+                                <Label Text="Fabric In Pattern Area D" VerticalOptions="Center"/>
+                                <Label Text="{Binding FabricD.FabricName}" VerticalOptions="Center" Grid.Column="2"/>
+                                <Border Grid.Column="3">
+                                    <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding FabricD, Converter={StaticResource IsNotNullConverter}}"/>
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                                <Label Text="Fabric In Pattern Area D" VerticalOptions="Center"/>
+                                <Picker ItemsSource="{Binding FabricOptions}" Grid.Column="2" SelectedItem="{Binding FabricD}" ItemDisplayBinding="{Binding FabricName}"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                        
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Sewing" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenStitchTypeCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Stitch Type" VerticalOptions="Center"/>
+                            <Label Text="{Binding StitchType.StitchTypeName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding StitchType, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Stitch Type" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding StitchTypeOptions}" Grid.Column="2" SelectedItem="{Binding StitchType}" ItemDisplayBinding="{Binding StitchTypeName}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+                      HeightRequest="42">
+                            <Label Text="Double Color"
+                           VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasMultipleYarnColors}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1"  BackgroundColor="DarkGrey"/>
+                        <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenFirstYarnColorCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Primary Color" VerticalOptions="Center"/>
+                            <Label Text="{Binding FirstYarnColor.YarnColorName}" VerticalOptions="Center" Grid.Column="2"/>
+                            <Border Grid.Column="3">
+                                <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding FirstYarnColor, Converter={StaticResource IsNotNullConverter}}"/>
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                            <Label Text="Primary Color" VerticalOptions="Center"/>
+                            <Picker ItemsSource="{Binding YarnColorOptions}" Grid.Column="2" SelectedItem="{Binding FirstYarnColor}" ItemDisplayBinding="{Binding YarnColorName}"/>
+                        </Grid>
+                        <VerticalStackLayout IsVisible="{Binding HasMultipleYarnColors}">
+                            <Border Grid.ColumnSpan="4" HeightRequest="1"  BackgroundColor="DarkGrey"/>
+                            <Grid ColumnDefinitions="auto, *, auto, 24" HeightRequest="42" IsVisible="{Binding IsNotDraft}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenSecondYarnColorCommand}"/>
+                                </Grid.GestureRecognizers>
+                                <Label Text="Secondary Color" VerticalOptions="Center"/>
+                                <Label Text="{Binding SecondYarnColor.YarnColorName}" VerticalOptions="Center" Grid.Column="2"/>
+                                <Border Grid.Column="3">
+                                    <Label Text="&#xe5cc;" VerticalOptions="Center" FontFamily="Icons" FontSize="24" IsVisible="{Binding SecondYarnColor, Converter={StaticResource IsNotNullConverter}}"/>
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding IsDraft}">
+                                <Label Text="Secondary Color" VerticalOptions="Center"/>
+                                <Picker ItemsSource="{Binding YarnColorOptions}" Grid.Column="2" SelectedItem="{Binding SecondYarnColor}" ItemDisplayBinding="{Binding YarnColorName}"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Foam" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+  HeightRequest="42">
+                            <Label Text="Foam Modifications"
+       VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasFoamTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" IsVisible="{Binding HasFoamTask}"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto" IsVisible="{Binding HasFoamTask}"
+  HeightRequest="42">
+                            <Label Text="Foam Type"
+   VerticalOptions="Center"/>
+                            <Label/>
+                            <Label Text="{Binding FoamType}" IsVisible="{Binding IsNotDraft}"
+       VerticalOptions="Center"
+       Grid.Column="2"/>
+                            <Picker Grid.Column="2" SelectedItem="{Binding FoamType}" ItemsSource="{Binding FoamTypeOptions}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+                      HeightRequest="42">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenFirstYarnColorCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Text="Add Gel"
+                       VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasGelTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Extra" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+  HeightRequest="42">
+                            <Label Text="Rip Old Seat Cover"
+       VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasRipTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" IsVisible="{Binding HasRipTask}"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding HasRipTask}">
+                            <Label Text="Dispose Old Seat Cover" VerticalOptions="Center"/>
+                            <Label Text="{Binding RipAction}" IsVisible="{Binding IsNotDraft}"
+       VerticalOptions="Center"
+       Grid.Column="2"/>
+                            <Picker Grid.Column="2" ItemsSource="{Binding RipActionOptions}" SelectedIndex="{Binding RipAction}" IsVisible="{Binding IsDraft}"/>
+
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+HeightRequest="42">
+                            <Label Text="Embroider Logo"
+ VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasEmbroideryTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+                      HeightRequest="42">
+
+                            <Label Text="Bolt New Seat Cover"
+                       VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasBoltTask}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+                <Label Text="Appointments" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+  HeightRequest="42">
+                            <Label Text="Drop Off"
+       VerticalOptions="Center"/>
+                            <Label/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasDropOffApt}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey" IsVisible="{Binding HasDropOffApt}"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding HasDropOffApt}">
+                            <Label Text="Drop Off Appointment" VerticalOptions="Center"/>
+                            <Label Text="{Binding DropOffApt, StringFormat='{0:dd/MM/yyyy}'}" Grid.Column="2" IsVisible="{Binding IsNotDraft}" VerticalOptions="Center"/>
+                            <DatePicker Grid.Column="2" Date="{Binding DropOffApt}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+HeightRequest="42">
+                            <Label Text="Test Try"
+ VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasTestTryApt}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey" IsVisible="{Binding HasTestTryApt}"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding HasTestTryApt}">
+                            <Label Text="Test Try Appointment" VerticalOptions="Center"/>
+                            <Label Text="{Binding TestTryApt, StringFormat='{0:dd/MM/yyyy}'}" Grid.Column="2" IsVisible="{Binding IsNotDraft}" VerticalOptions="Center"/>
+                            <DatePicker Grid.Column="2" Date="{Binding TestTryApt}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4"
+HeightRequest="1"
+BackgroundColor="DarkGrey">
+                        </Border>
+
+                        <Grid ColumnDefinitions="auto, *, auto, 42"
+                      HeightRequest="42">
+
+                            <Label Text="Pick Up"
+                       VerticalOptions="Center"/>
+                            <Switch Grid.Column="3" IsToggled="{Binding HasPickUpApt}" IsEnabled="{Binding IsDraft}"/>
+                        </Grid>
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey" IsVisible="{Binding HasPickUpApt}"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42" IsVisible="{Binding HasPickUpApt}">
+                            <Label Text="Pick Up Appointment" VerticalOptions="Center"/>
+                            <Label Text="{Binding PickUpApt, StringFormat='{0:dd/MM/yyyy}'}" Grid.Column="2" IsVisible="{Binding IsNotDraft}" VerticalOptions="Center"/>
+                            <DatePicker Grid.Column="2" Date="{Binding PickUpApt}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <Label Text="Timeline" FontSize="18" Margin="20, 10, 0, 0"/>
+                <Border Background="{AppThemeBinding Dark={StaticResource Gray600 }, Light={StaticResource Gray100}}"
+Padding="20, 0, 20, 0"
+Margin="0, 0, 0, 20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="25"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42">
+                            <Label Text="Start Date" VerticalOptions="Center"/>
+                            <Label Text="{Binding ExpectedStartDate, StringFormat='{0:dd/MM/yyyy}'}" Grid.Column="2" IsVisible="{Binding IsNotDraft}" VerticalOptions="Center"/>
+                            <DatePicker Grid.Column="2" Date="{Binding ExpectedStartDate}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+
+                        <Border Grid.ColumnSpan="4" HeightRequest="1" BackgroundColor="DarkGrey"/>
+
+                        <Grid ColumnDefinitions="auto, *, auto" HeightRequest="42">
+                            <Label Text="Fiish Date" VerticalOptions="Center"/>
+                            <Label Text="{Binding ExpectedFinishDate, StringFormat='{0:dd/MM/yyyy}'}" Grid.Column="2" IsVisible="{Binding IsNotDraft}" VerticalOptions="Center"/>
+                            <DatePicker Grid.Column="2" Date="{Binding ExpectedFinishDate}" IsVisible="{Binding IsDraft}"/>
+                        </Grid>
+                        
+
+                    </VerticalStackLayout>
+
+                </Border>
+                <Grid Margin="0, 20, 0, 20" HeightRequest="60">
+
+                    <Button Text="⚙️ START MANUFACTURING"
+            Command="{Binding ManufactureCommand}"
+            IsVisible="{Binding CanManufacture}"
+            FontSize="20"
+            FontAttributes="Bold"
+            BackgroundColor="#007AFF" 
+            TextColor="White"
+            CornerRadius="10" />
+
+                    <Grid IsVisible="{Binding CanUpdateOrPause}" ColumnDefinitions="*, *">
+                        <Button Grid.Column="0" 
+                Text="🔄 UPDATE PRODUCTION"
+                Command="{Binding ManufactureCommand}"
+                Margin="0,0,5,0"
+                FontAttributes="Bold"
+                BackgroundColor="#34C759" 
+                TextColor="White"
+                CornerRadius="10" />
+
+                        <Button Grid.Column="1" 
+                Text="⏸️ PAUSE"
+                Command="{Binding PauseProductionCommand}"
+                Margin="5,0,0,0"
+                FontAttributes="Bold"
+                BackgroundColor="#FF3B30" 
+                TextColor="White"
+                CornerRadius="10" />
+                    </Grid>
+
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                       IsVisible="{Binding IsBusy}"
+                       Color="#007AFF" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BaseEntityView>
